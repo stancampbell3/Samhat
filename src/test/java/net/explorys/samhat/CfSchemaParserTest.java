@@ -1,6 +1,8 @@
 package net.explorys.samhat;
 
 import static org.junit.Assert.*;
+
+import net.explorys.common.data.patient.billing.X12ParserConfigurations;
 import org.junit.Test;
 import org.pb.x12.Cf;
 import org.pb.x12.X12;
@@ -9,12 +11,15 @@ import scala.Option;
 import java.io.*;
 
 /**
- * Created by stan.campbell on 8/26/15.
+ * CfSchemaParserTest
+ *
+ * Ensure that we can load a Cf schema definition from XML, create a Cf from it, and that it behaves
+ * the same as the original Institutional schema from X12ParserConfigurations.getInstitutionalCf()
  */
 public class CfSchemaParserTest {
 
-    CfSchemaParser instance = new CfSchemaParser();
-    X12toAvroUtil parser = new X12toAvroUtil();
+    final CfSchemaParser instance = new CfSchemaParser();
+    final X12toAvroUtil parser = new X12toAvroUtil();
 
     @Test
     public void canParseString() {
@@ -54,9 +59,21 @@ public class CfSchemaParserTest {
             assertTrue(x12ParsedOpt2.isDefined());
 
             // Make sure the parsed documents are equivalent
-            boolean result = X12toAvroUtil.areEqual(x12ParsedOpt.get(), x12ParsedOpt2.get());
-            assertTrue(result);
+            System.out.println("X12ParserConfigurations.getInstitutionalCf:");
+            System.out.println(X12ParserConfigurations.getInstitutionalCf());
+            System.out.println("----------------------------------------------------");
+            System.out.println("Parsed version:");
+            System.out.println(schema);
 
+            // Dump both parsed files in XML
+            String xml1 = (x12ParsedOpt.get()).toXML();
+            String xml2 = (x12ParsedOpt2.get()).toXML();
+            System.out.println("Original recipe");
+            System.out.println(xml1);
+            System.out.println("Extra crispy");
+            System.out.println(xml2);
+
+            assertTrue( xml1.equals(xml2));
         } catch (Exception e) {
             e.printStackTrace();
             fail("Exception: "+e);
@@ -67,10 +84,11 @@ public class CfSchemaParserTest {
 
         StringBuilder bld = new StringBuilder();
         BufferedReader rdr = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(path)));
-        String line = null;
+        String line;
         do {
             line = rdr.readLine();
-            bld.append(line+"\n");
+            bld.append(line);
+            bld.append("\n");
         } while(line!=null);
         return bld.toString();
     }

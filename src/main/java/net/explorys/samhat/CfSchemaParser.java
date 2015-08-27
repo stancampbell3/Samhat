@@ -6,43 +6,50 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.pb.x12.Cf;
 import org.w3c.dom.*;
-import org.xml.sax.SAXException;
-
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
- * Created by stan.campbell on 8/26/15.
+ * CfSchemaParser
+ *
+ * The parser will load a Cf schema definition from the provided InputStream.
+ * The schema definition is given in XML and consists of a starting and ending x12_schema tag,
+ * a series of nested <child../> entries with at least "name" and "segment" attributes but possibly
+ * including "segmentQual" and "segmentQualPos" attributes.  <child../> elements may have nested
+ * <child../> elements to allow for specification of loops.  Single <child../> elements will be treated
+ * as segments in the X12 schema.
  */
 public class CfSchemaParser {
 
     protected Cf processSchema(Cf schema, Node current) throws CfSchemaParsingException {
+
         if(null==schema) {
             schema = new Cf("X12"); // top level
-        } else {
-            // push down one level
-            schema = schema.addChild(current.getNodeName(), current.getNodeName());
         }
         NodeList children = current.getChildNodes();
         for(int i=0;i<children.getLength();i++) {
             Node child = children.item(i);
-            final NamedNodeMap attributes = child.getAttributes();
-            Cf childSchema = null;
-            if(null == attributes || attributes.getLength() < 3) {
-                childSchema = schema.addChild(child.getNodeName(),child.getNodeName());
-            } else {
-                childSchema = schema.addChild(attributes.getNamedItem("name").getNodeValue(),
-                        attributes.getNamedItem("segment").getNodeValue(),
-                        attributes.getNamedItem("segmentQual").getNodeValue(),
-                        Integer.parseInt(attributes.getNamedItem("segmentQualPos").getNodeValue()));
-            }
-            if(null==childSchema) {
-                // failed to construct the child, throw an error
-                throw new CfSchemaParsingException("Error in parsing on child node: "+child.getNodeName());
-            }
-            if(child.hasChildNodes()) {
-                // Dive into the subnodes (the loop members)
-                processSchema(childSchema, child);
+
+            if("child".equalsIgnoreCase(child.getNodeName())) {
+                final NamedNodeMap attributes = child.getAttributes();
+                String childNodeName = attributes.getNamedItem("name").getTextContent();
+                String segmentName = attributes.getNamedItem("segment").getTextContent();
+                Cf childSchema;
+                if (attributes.getLength() < 3) {
+                    childSchema = schema.addChild(childNodeName, segmentName);
+                } else {
+                    childSchema = schema.addChild(attributes.getNamedItem("name").getNodeValue(),
+                            attributes.getNamedItem("segment").getNodeValue(),
+                            attributes.getNamedItem("segmentQual").getNodeValue(),
+                            Integer.parseInt(attributes.getNamedItem("segmentQualPos").getNodeValue()));
+                }
+                if (null == childSchema) {
+                    // failed to construct the child, throw an error
+                    throw new CfSchemaParsingException("Error in parsing on child node: " + child.getNodeName());
+                }
+                if (child.hasChildNodes()) {
+                    // Dive into the subnodes (the loop members)
+                    processSchema(childSchema, child);
+                }
             }
         }
         return schema;
@@ -67,16 +74,10 @@ public class CfSchemaParser {
             }
 
             Element elem = doc.getDocumentElement();
-            Cf schema = new Cf(elem.getAttribute("name"));
-            processSchema(schema, elem);
 
-            return schema;
+            return processSchema(null, elem);
 
-        } catch (ParserConfigurationException e) {
-            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
-        } catch (SAXException e) {
-            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
         }
     }

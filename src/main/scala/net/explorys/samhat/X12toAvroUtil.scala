@@ -34,8 +34,8 @@ class X12toAvroUtil {
   /**
    * Parse the given data string and yield either Some(x12 document) or None
    *
-   * @param data
-   * @param documentType
+   * @param data  the X12 formatted document to be parsed
+   * @param documentType  the schema type we are to use to parse the document
    * @return
    */
   def parseX12Document(data:String, documentType:X12_FORMAT):Option[X12] = {
@@ -54,8 +54,8 @@ class X12toAvroUtil {
   /**
    * Parse the given data string and yield either Some(x12 document) or None
    *
-   * @param data
-   * @param schema
+   * @param data  the X12 formatted document data to parse
+   * @param schema  the Cf schema to use to parse the X12 document
    * @return
    */
   def parseX12Document(data:String, schema:Cf):Option[X12] = {
@@ -114,9 +114,9 @@ object X12toAvroUtil {
       false
     } else {
       a.getSegments.size == b.getSegments.size &&
-        ( a.getSegments.size == 0 || a.getSegments.zip(b.getSegments).filter( p => p._1 != p._2).size == 0 ) &&
+        ( a.getSegments.size == 0 || a.getSegments.zip(b.getSegments).filter( p => p._1 != p._2).isEmpty ) &&
         a.getLoops.size == b.getLoops.size &&
-        ( a.getLoops.size == 0 || a.getLoops.zip(b.getLoops).filter( p => !areEqual(p._1, p._2)).size == 0)
+        ( a.getLoops.size == 0 || a.getLoops.zip(b.getLoops).filter( p => !areEqual(p._1, p._2)).isEmpty )
     }
   }
 }

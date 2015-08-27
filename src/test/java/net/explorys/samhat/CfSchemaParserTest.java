@@ -2,13 +2,16 @@ package net.explorys.samhat;
 
 import static org.junit.Assert.*;
 
-import net.explorys.common.data.patient.billing.X12ParserConfigurations;
+import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import org.pb.x12.Cf;
 import org.pb.x12.X12;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import scala.Option;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * CfSchemaParserTest
@@ -22,10 +25,25 @@ public class CfSchemaParserTest {
     final X12toAvroUtil parser = new X12toAvroUtil();
 
     @Test
-    public void canParseString() {
+    public void canParseStream() {
 
         try {
             Cf schema = instance.parseSchemaFromXml(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
+
+            assertNotNull(schema);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception: " + e);
+        }
+    }
+
+    @Test
+    public void canParseFile()
+    {
+
+        try {
+            Cf schema = instance.parseSchemaFromXml("./src/test/resources/x12_schema_837_professional.xml");
 
             assertNotNull(schema);
 
@@ -59,19 +77,9 @@ public class CfSchemaParserTest {
             assertTrue(x12ParsedOpt2.isDefined());
 
             // Make sure the parsed documents are equivalent
-            System.out.println("X12ParserConfigurations.getInstitutionalCf:");
-            System.out.println(X12ParserConfigurations.getInstitutionalCf());
-            System.out.println("----------------------------------------------------");
-            System.out.println("Parsed version:");
-            System.out.println(schema);
-
             // Dump both parsed files in XML
             String xml1 = (x12ParsedOpt.get()).toXML();
             String xml2 = (x12ParsedOpt2.get()).toXML();
-            System.out.println("Original recipe");
-            System.out.println(xml1);
-            System.out.println("Extra crispy");
-            System.out.println(xml2);
 
             assertTrue( xml1.equals(xml2));
         } catch (Exception e) {
@@ -80,6 +88,51 @@ public class CfSchemaParserTest {
         }
     }
 
+    @Test
+    public void canCreateJsonFromSchema() {
+
+        try {
+
+            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            List<ObjectNode> jsonObjects = instance.constructAvroJsonFromXmlSchema(schemaDefinition);
+
+            assertNotNull(jsonObjects);
+
+            System.out.println("JSON Schema:" + jsonObjects.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception: "+e);
+        }
+    }
+
+    @Test
+    public void canLoadXmlDocument() {
+
+        try {
+
+            Document doc = instance.loadXmlSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
+
+            assertNotNull(doc);
+
+            Element docElem = doc.getDocumentElement();
+            assertNotNull(docElem);
+            String topNodeName = docElem.getAttribute("name");
+            assertEquals( topNodeName, "X12" );
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception: "+e);
+        }
+    }
+
+    /**
+     * Utility.  Read the file at path, yielding a String with its contents.
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
     String loadResourceDocument(String path) throws IOException {
 
         StringBuilder bld = new StringBuilder();

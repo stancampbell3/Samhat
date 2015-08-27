@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x12_schema name="X12">
+   <child name="ISA" segment="ISA">
+      <child name="GS" segment="GS">
+         <child name="ST" segment="ST" segmentQual="837" segmentQualPos="1">
+            <child name="1000A" segment="NM" segmentQual="41" segmentQualPos="1" />
+            <child name="1000B" segment="NM" segmentQual="40" segmentQualPos="1" />
+            <child name="2000A" segment="HL" segmentQual="20" segmentQualPos="3">
+               <child name="2010AA" segment="NM1" segmentQual="85" segmentQualPos="1" />
+               <child name="2010AB" segment="NM1" segmentQual="87" segmentQualPos="1" />
+               <child name="2010AC" segment="NM1" segmentQual="PE" segmentQualPos="1" />
+            </child>
+            <child name="2000B" segment="HL" segmentQual="20" segmentQualPos="3">
+               <child name="2010BA" segment="NM1" segmentQual="IL" segmentQualPos="1" />
+               <child name="2010BB" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+            </child>
+            <child name="2000C" segment="HL" segmentQual="23" segmentQualPos="3">
+                <child name="2010CA" segment="NM1" segmentQual="QC" segmentQualPos="1" />
+                <child name="2300" segment="CLM">
+                    <child name="2310A" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                    <child name="2310B" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                    <child name="2310C" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                    <child name="2310D" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                    <child name="2310E" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                    <child name="2310F" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                    <child name="2320" segment="SBR">
+                        <child name="2330A" segment="NM1" segmentQual="IL" segmentQualPos="1" />
+                        <child name="2330B" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+                        <child name="2330C" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                        <child name="2330D" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <child name="2330E" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                        <child name="2330F" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                        <child name="2330G" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                        <child name="2330H" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                        <child name="2330I" segment="NM1" segmentQual="85" segmentQualPos="1" />
+                    </child>
+                    <child name="2400" segment="LX">
+                        <child name="2410" segment="LIN" />
+                        <child name="2420A" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <child name="2420B" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <child name="2420C" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <child name="2420D" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <child name="2430" segment="SVD" />
+                        <child name="2440" segment="LQ" />
+                    </child>
+                </child>
+            </child>
+         </child>
+         <child name="SE" segment="SE"/>
+      </child>
+      <child name="GE" segment="GE"/>
+   </child>
+   <child name="IEA" segment="IEA"/>
+</x12_schema>

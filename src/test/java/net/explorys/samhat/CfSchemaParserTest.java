@@ -89,24 +89,6 @@ public class CfSchemaParserTest {
     }
 
     @Test
-    public void canCreateJsonFromSchema() {
-
-        try {
-
-            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            List<ObjectNode> jsonObjects = instance.constructAvroJsonFromXmlSchema(schemaDefinition);
-
-            assertNotNull(jsonObjects);
-
-            System.out.println("JSON Schema:" + jsonObjects.toString());
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            fail("Exception: "+e);
-        }
-    }
-
-    @Test
     public void canLoadXmlDocument() {
 
         try {

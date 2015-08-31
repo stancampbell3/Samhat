@@ -27,8 +27,6 @@ import java.util.List;
  */
 public class CfSchemaParser {
 
-    private ObjectMapper mapper = new ObjectMapper();
-
     /**
      * Internally, processSchema walks the XML document whose head is current and returns
      * an equivalent X12 schema as a Cf instance.
@@ -158,95 +156,5 @@ public class CfSchemaParser {
     }
 
 
-    List<ObjectNode> constructAvroJsonFromXmlSchema(List<ObjectNode> nodesList, Node elem) {
 
-        // If nodesList is null, construct it
-        if(null==nodesList) {
-            nodesList = new LinkedList<ObjectNode>();
-        }
-
-        // Construct a new node
-        ObjectNode objectNode = mapper.createObjectNode();
-        nodesList.add(objectNode);
-
-        NamedNodeMap attributes = elem.getAttributes();
-        objectNode.put("name", attributes.getNamedItem("name").getTextContent());
-
-        ArrayNode fields = mapper.createArrayNode();
-        objectNode.put("fields", fields);
-
-        // Time to gather the fields array from each of the subelements of elem...
-        NodeList children = elem.getChildNodes();
-        for(int i=0;i<children.getLength();i++) {
-
-            Node child = children.item(i);
-
-            // Ignore any non-child elements (text, etc.)
-            if("child".equalsIgnoreCase(child.getNodeName())) {
-
-                NodeList grandkids = child.getChildNodes();
-
-                if (grandkids.getLength() != 0) {
-                    // If a nested element has children, it's a loop and we need to dive into it
-
-                    // Put a field of this type in our fields array
-                    NamedNodeMap fieldAttributes = child.getAttributes();
-                    String fieldType = fieldAttributes.getNamedItem("name").getNodeValue();
-                    ObjectNode fieldObject = mapper.createObjectNode();
-                    fieldObject.put("name", "z"+fieldType); // TODO: count occurencesAtThisLevel in case objects are repeated and make unique fieldNames
-                    fieldObject.put("type", fieldType);
-                    fields.add(fieldObject);
-
-                    // Process the child object
-                    constructAvroJsonFromXmlSchema(nodesList, child);
-                } else {
-                    // If a nested element has no children, it's a segment so create an field
-                    NamedNodeMap fieldAttributes = child.getAttributes();
-                    String fieldName = fieldAttributes.getNamedItem("name").getNodeValue();
-                    ObjectNode fieldObject = mapper.createObjectNode();
-                    fieldObject.put("name", fieldName);
-                    fieldObject.put("type", "string");  // TODO: get type from attributes
-                    fields.add(fieldObject);
-                }
-            }
-        }
-
-        return nodesList;
-    }
-
-    /**
-     * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
-     * representing the equivalent Avro schema.
-     *
-     * @param xmlSchema
-     * @return
-     */
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(Document xmlSchema) {
-
-        Element doc = xmlSchema.getDocumentElement();
-        List<ObjectNode> jsonObj = constructAvroJsonFromXmlSchema(null, doc);
-
-        return jsonObj;
-    }
-
-    /**
-     * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
-     * representing the equivalent Avro schema.
-     *
-     * @param xmlStream
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(InputStream xmlStream) throws IOException, SAXException, ParserConfigurationException {
-
-        Document xmlDoc = this.loadXmlSchema(xmlStream);
-        return constructAvroJsonFromXmlSchema(xmlDoc);
-    }
-
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
-
-        return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
-    }
 }

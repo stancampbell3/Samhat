@@ -1,16 +1,19 @@
 package net.explorys.samhat;
 
+import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -115,7 +118,8 @@ public class AvroSchemaGenerator {
 
     /**
      * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
-     * representing the equivalent Avro schema.
+     * representing the equivalent Avro schema record type.  The collection of JSON objects must be built into a
+     * complete AvroSchema before use by a serializer or deserializer.
      *
      * @param xmlStream
      * @return
@@ -132,5 +136,63 @@ public class AvroSchemaGenerator {
     public List<ObjectNode> constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
 
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
+    }
+
+    /**
+     * Accept a record type definition as a Json object.  Return a wrapping Json object including namespace,
+     * record type name, and field specifications.
+     *
+     * @param jsonObject
+     * @param namespace
+     * @return
+     */
+    public ObjectNode annotateJsonRecordNode(ObjectNode jsonObject, String namespace) {
+
+        // Create the array node to hold the definition
+        ObjectNode annotatedRecordNode = mapper.createObjectNode();
+        annotatedRecordNode.put("type", "record");
+        annotatedRecordNode.put("namespace", namespace);
+        annotatedRecordNode.put("name", jsonObject.get("name"));
+
+        // Add the fields definition
+        ArrayNode fieldsNode = (ArrayNode)jsonObject.get("fields");
+        ArrayNode schemaFieldsNode = mapper.createArrayNode();
+        annotatedRecordNode.put("fields", schemaFieldsNode);
+
+        Iterator<JsonNode> fieldsNodeElements = fieldsNode.getElements();
+        while(fieldsNodeElements.hasNext()) {
+            JsonNode fieldNode = fieldsNodeElements.next();
+            ObjectNode fieldEntry = mapper.createObjectNode();
+            fieldEntry.put("name", fieldNode.get("name"));
+            fieldEntry.put("type", fieldNode.get("type"));
+            schemaFieldsNode.add(fieldEntry);
+        }
+
+        return annotatedRecordNode;
+    }
+
+    /**
+     * Load the given XML schema, define the record types, and yield a complete Avro schema acceptable by an Avro parser.
+     *
+     * @param namespace
+     * @param xmlInputStream
+     * @return
+     */
+    public String constructAvroSchemaFromXmlSchema(String namespace, InputStream xmlInputStream) throws IOException, SAXException, ParserConfigurationException {
+
+        // Parse the xml definition and create the record type JSON objects
+        final Document document = parser.loadXmlSchema(xmlInputStream);
+        List<ObjectNode> recordTypes = constructAvroJsonFromXmlSchema(document);
+
+        // This will be an array of record type definitions
+        ArrayNode schemaArrayOfDefs = mapper.createArrayNode();
+
+        for(ObjectNode recordTypeEntry : recordTypes) {
+            ObjectNode schemaRecordType = annotateJsonRecordNode(recordTypeEntry, namespace);
+            schemaArrayOfDefs.add(schemaRecordType);
+        }
+
+        // Serialize to string
+        return schemaArrayOfDefs.toString();
     }
 }

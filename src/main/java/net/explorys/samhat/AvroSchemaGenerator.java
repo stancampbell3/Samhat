@@ -13,6 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -138,6 +139,16 @@ public class AvroSchemaGenerator {
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
     }
 
+    String makeAvroName(String prefix, String rawName) {
+
+        StringBuilder bld = new StringBuilder();
+        bld.append(prefix).append(rawName.substring(0, 1).toUpperCase());
+        if(rawName.length()>1) {
+            bld.append( rawName.substring(1).toUpperCase() );
+        }
+        return bld.toString();
+    }
+
     /**
      * Accept a record type definition as a Json object.  Return a wrapping Json object including namespace,
      * record type name, and field specifications.
@@ -152,7 +163,7 @@ public class AvroSchemaGenerator {
         ObjectNode annotatedRecordNode = mapper.createObjectNode();
         annotatedRecordNode.put("type", "record");
         annotatedRecordNode.put("namespace", namespace);
-        annotatedRecordNode.put("name", jsonObject.get("name"));
+        annotatedRecordNode.put("name", makeAvroName("Record", jsonObject.get("name").getTextValue()));
 
         // Add the fields definition
         ArrayNode fieldsNode = (ArrayNode)jsonObject.get("fields");
@@ -163,8 +174,15 @@ public class AvroSchemaGenerator {
         while(fieldsNodeElements.hasNext()) {
             JsonNode fieldNode = fieldsNodeElements.next();
             ObjectNode fieldEntry = mapper.createObjectNode();
-            fieldEntry.put("name", fieldNode.get("name"));
-            fieldEntry.put("type", fieldNode.get("type"));
+            fieldEntry.put("name", makeAvroName("Field", fieldNode.get("name").getTextValue()));
+
+            String type = fieldNode.get("type").getTextValue();
+            // TODO: expand as we handle more Avro types, for now they're all schema defined record types
+            if("string".equalsIgnoreCase(type)) {
+                fieldEntry.put("type", type);
+            } else {
+                fieldEntry.put("type", makeAvroName("Record", type));
+            }
             schemaFieldsNode.add(fieldEntry);
         }
 
@@ -187,10 +205,20 @@ public class AvroSchemaGenerator {
         // This will be an array of record type definitions
         ArrayNode schemaArrayOfDefs = mapper.createArrayNode();
 
+        // Attempting to avoid forward reference issue by applying definitions in reverse.
+        Collections.reverse(recordTypes);
         for(ObjectNode recordTypeEntry : recordTypes) {
             ObjectNode schemaRecordType = annotateJsonRecordNode(recordTypeEntry, namespace);
             schemaArrayOfDefs.add(schemaRecordType);
         }
+
+        // Collapse any identical record definitions, removing duplicates
+        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records
+        // -- if a record is already present
+        // ---- if the two types are equal, don't place the second definition in the map
+        // ---- if the two types are nonequal, differentiate the contained type by name using a path, but add it to the map
+
+        // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
 
         // Serialize to string
         return schemaArrayOfDefs.toString();

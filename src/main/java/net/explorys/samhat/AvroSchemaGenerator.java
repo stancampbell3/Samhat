@@ -13,10 +13,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by stan.campbell on 8/31/15.
@@ -81,7 +78,7 @@ public class AvroSchemaGenerator {
                     NamedNodeMap fieldAttributes = child.getAttributes();
                     String fieldType = fieldAttributes.getNamedItem("name").getNodeValue();
                     ObjectNode fieldObject = mapper.createObjectNode();
-                    fieldObject.put("name", "z"+fieldType); // TODO: count occurencesAtThisLevel in case objects are repeated and make unique fieldNames
+                    fieldObject.put("name", fieldType);
                     fieldObject.put("type", fieldType);
                     fields.add(fieldObject);
 
@@ -189,6 +186,56 @@ public class AvroSchemaGenerator {
         return annotatedRecordNode;
     }
 
+    boolean isRecordTypeEntryEqual(ObjectNode rec1, ObjectNode rec2) {
+
+        if(rec1==rec2) {
+            return true;
+        } else {
+            if(null!=rec1 && null!=rec2) {
+
+                // Must be named the same
+                if(rec1.get("name").getTextValue().equalsIgnoreCase(rec2.get("name").getTextValue())) {
+
+                    ArrayNode rec1Fields = (ArrayNode)rec1.get("fields");
+                    ArrayNode rec2Fields = (ArrayNode)rec2.get("fields");
+
+                    // Must have same size fields list
+                    if(rec1Fields.size() != rec2Fields.size()) {
+                        return false;
+                    } else {
+
+                        // All fields must have the same name and type
+                        Iterator<JsonNode> rec1FieldsItr = rec1Fields.getElements();
+                        Iterator<JsonNode> rec2FieldsItr = rec2Fields.getElements();
+                        while(rec1FieldsItr.hasNext()) {
+
+                            ObjectNode rec1Node = (ObjectNode)rec1FieldsItr.next();
+                            ObjectNode rec2Node = (ObjectNode)rec2FieldsItr.next();
+
+                            String nameRec1Field = rec1Node.get("name").getTextValue();
+                            String nameRec2Field = rec2Node.get("name").getTextValue();
+
+                            String typeRec1Field = rec1Node.get("type").getTextValue();
+                            String typeRec2Field = rec2Node.get("type").getTextValue();
+
+                            if( !(nameRec1Field.equalsIgnoreCase( nameRec2Field ) &&
+                                    typeRec1Field.equalsIgnoreCase( typeRec2Field ))){
+                                return false;
+                            }
+                        }
+
+                        return true;  // all names and fields are equal
+                    }
+
+                } else {
+                    return false;
+                }
+            } else {
+                return false; // only one is non-null
+            }
+        }
+    }
+
     /**
      * Load the given XML schema, define the record types, and yield a complete Avro schema acceptable by an Avro parser.
      *
@@ -196,7 +243,7 @@ public class AvroSchemaGenerator {
      * @param xmlInputStream
      * @return
      */
-    public String constructAvroSchemaFromXmlSchema(String namespace, InputStream xmlInputStream) throws IOException, SAXException, ParserConfigurationException {
+    public String constructAvroSchemaFromXmlSchema(String namespace, InputStream xmlInputStream) throws IOException, SAXException, ParserConfigurationException, AvroSchemaParsingException {
 
         // Parse the xml definition and create the record type JSON objects
         final Document document = parser.loadXmlSchema(xmlInputStream);
@@ -205,18 +252,41 @@ public class AvroSchemaGenerator {
         // This will be an array of record type definitions
         ArrayNode schemaArrayOfDefs = mapper.createArrayNode();
 
-        // Attempting to avoid forward reference issue by applying definitions in reverse.
-        Collections.reverse(recordTypes);
+        // First pass
+        // Collapse any identical record definitions, removing duplicates
+        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records
+        HashMap<String, ObjectNode> symbolMap = new HashMap<String, ObjectNode>();
         for(ObjectNode recordTypeEntry : recordTypes) {
+
+            String recordTypeEntryName = makeAvroName("Record", recordTypeEntry.get("name").getTextValue());
+
+            // -- if a record is already present
+            if(symbolMap.containsKey(recordTypeEntryName)) {
+                if(isRecordTypeEntryEqual(recordTypeEntry, symbolMap.get(recordTypeEntryName))) {
+                    // ---- if the two types are equal, don't place the second definition in the map
+                    // TODO: log the duplicate
+                    // NOP
+                } else {
+                    // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
+                    // TODO: come up with a scheme for resolving this problem
+                    throw new AvroSchemaParsingException("Couldn't resolve record types for: "+recordTypeEntryName);
+                }
+            } else {
+                // -- else just add the record
+                symbolMap.put(recordTypeEntryName, recordTypeEntry);
+            }
+        }
+
+        // Second pass
+        // TODO: fix this approach, reversing the order isn't enough.. need to actually build a symbol table with a ref count per record type
+        // Generate the schema, reverse the order to work around forward references
+        List<ObjectNode> sanitizedSymbolTable = new ArrayList<ObjectNode>(symbolMap.values());
+        Collections.reverse(sanitizedSymbolTable);
+        for(ObjectNode recordTypeEntry : sanitizedSymbolTable) {
+
             ObjectNode schemaRecordType = annotateJsonRecordNode(recordTypeEntry, namespace);
             schemaArrayOfDefs.add(schemaRecordType);
         }
-
-        // Collapse any identical record definitions, removing duplicates
-        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records
-        // -- if a record is already present
-        // ---- if the two types are equal, don't place the second definition in the map
-        // ---- if the two types are nonequal, differentiate the contained type by name using a path, but add it to the map
 
         // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
 

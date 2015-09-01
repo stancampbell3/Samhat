@@ -237,6 +237,47 @@ public class AvroSchemaGenerator {
     }
 
     /**
+     * Is this a primitive Avro type or a record type?
+     *
+     * @param typeName
+     * @return
+     */
+    boolean isPrimitiveAvroType(String typeName) {
+
+        // TODO: update when we handle more than string and record types
+        if("string".equalsIgnoreCase(typeName)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * Given an record type entry containing a record definition, parse the fields list and return all referred to types
+     * which are not primitive so must be record types.
+     *
+     * @param recordTypeEntry
+     * @return
+     */
+    Set<String> getReferredRecordTypes(ObjectNode recordTypeEntry) {
+        // Return a set of id's which are not in our recognized types so which must be record types
+        // TODO: update when we handle more than string types and record types
+        HashSet<String> referredRecordTypesSet = new HashSet<>();
+        ArrayNode fieldsArray = (ArrayNode)recordTypeEntry.get("fields");
+        Iterator<JsonNode> fieldsItr = fieldsArray.getElements();
+        while(fieldsItr.hasNext()) {
+            ObjectNode fieldNode = (ObjectNode)fieldsItr.next();
+            String fieldType = fieldNode.get("type").getTextValue();
+            if(!isPrimitiveAvroType(fieldType)) {
+                referredRecordTypesSet.add(fieldType);
+            } else {
+                // NOP, don't add the type as a referred type
+            }
+        }
+        return referredRecordTypesSet;
+    }
+
+    /**
      * Load the given XML schema, define the record types, and yield a complete Avro schema acceptable by an Avro parser.
      *
      * @param namespace
@@ -254,34 +295,48 @@ public class AvroSchemaGenerator {
 
         // First pass
         // Collapse any identical record definitions, removing duplicates
-        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records
-        HashMap<String, ObjectNode> symbolMap = new HashMap<String, ObjectNode>();
+        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records together with their referring types
+        AvroSchemaSymbolTable symbolTable = new AvroSchemaSymbolTable();
         for(ObjectNode recordTypeEntry : recordTypes) {
 
             String recordTypeEntryName = makeAvroName("Record", recordTypeEntry.get("name").getTextValue());
 
             // -- if a record is already present
-            if(symbolMap.containsKey(recordTypeEntryName)) {
-                if(isRecordTypeEntryEqual(recordTypeEntry, symbolMap.get(recordTypeEntryName))) {
-                    // ---- if the two types are equal, don't place the second definition in the map
-                    // TODO: log the duplicate
-                    // NOP
+            if(symbolTable.containsKey(recordTypeEntryName)) {
+                // -- if there is no object node
+                if(symbolTable.getRecordDefinition(recordTypeEntryName)==null) {
+                    // -- then we need to update the record in the symbol table, preserving the referring types
+                    Set<String> referringTypes = symbolTable.getReferringTypes(recordTypeEntryName);
+                    symbolTable.put(recordTypeEntryName, recordTypeEntry, referringTypes);
                 } else {
-                    // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
-                    // TODO: come up with a scheme for resolving this problem
-                    throw new AvroSchemaParsingException("Couldn't resolve record types for: "+recordTypeEntryName);
+                    // -- there's an existing record with an object node, resolve any conflicts
+                    if (isRecordTypeEntryEqual(recordTypeEntry, symbolTable.getRecordDefinition(recordTypeEntryName))) {
+                        // ---- if the two types are equal, don't place the second definition in the map
+                        // TODO: log the duplicate
+                        // NOP
+                    } else {
+                        // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
+                        // TODO: come up with a scheme for resolving this problem
+                        throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
+                    }
                 }
             } else {
-                // -- else just add the record
-                symbolMap.put(recordTypeEntryName, recordTypeEntry);
+                // -- else gather the types to which this type refers
+
+                Set<String> referredTypes = getReferredRecordTypes(recordTypeEntry);
+
+                // -- add this as a referring type to all of those types, if they don't exist then stub out those types with
+                //    empty ObjectNodes
+
+                for(String referredType : referredTypes) {
+                    symbolTable.put(referredType, recordTypeEntry, recordTypeEntryName);
+                }
             }
         }
 
-        // Second pass
-        // TODO: fix this approach, reversing the order isn't enough.. need to actually build a symbol table with a ref count per record type
-        // Generate the schema, reverse the order to work around forward references
-        List<ObjectNode> sanitizedSymbolTable = new ArrayList<ObjectNode>(symbolMap.values());
-        Collections.reverse(sanitizedSymbolTable);
+        // Second pass, generate the schema defining record types in order
+        List<ObjectNode> sanitizedSymbolTable = symbolTable.getRecordDefinitionsInDeclarativeOrder();
+        System.out.println("Sanitized: "+sanitizedSymbolTable);
         for(ObjectNode recordTypeEntry : sanitizedSymbolTable) {
 
             ObjectNode schemaRecordType = annotateJsonRecordNode(recordTypeEntry, namespace);

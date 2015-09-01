@@ -20,10 +20,10 @@ import java.util.List;
  *
  * The parser will load a Cf schema definition from the provided InputStream.
  * The schema definition is given in XML and consists of a starting and ending x12_schema tag,
- * a series of nested <child../> entries with at least "name" and "segment" attributes but possibly
- * including "segmentQual" and "segmentQualPos" attributes.  <child../> elements may have nested
- * <child../> elements to allow for specification of loops.  Single <child../> elements will be treated
- * as segments in the X12 schema.
+ * a series of nested entries with at least "name" and "segment" attributes but possibly
+ * including "segmentQual" and "segmentQualPos" attributes.  <loop../> elements may have nested
+ * elements.  Single <segment../> elements will be treated
+ * as fields/segments in the X12 schema.
  */
 public class CfSchemaParser {
 

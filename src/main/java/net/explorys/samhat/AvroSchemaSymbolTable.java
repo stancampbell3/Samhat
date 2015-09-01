@@ -2,9 +2,7 @@ package net.explorys.samhat;
 
 import org.codehaus.jackson.node.ObjectNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by stan.campbell on 8/31/15.
@@ -13,35 +11,43 @@ import java.util.List;
  */
 public class AvroSchemaSymbolTable {
 
-    class SymbolTableEntry {
+    private HashMap<String, SymbolTableEntry> symbolMap = new HashMap<>();
 
-        private String symbol;
-        private ObjectNode objectNode;
-        private int usageCount;
 
-        public SymbolTableEntry(String symbol, ObjectNode objectNode) {
+    public void put(String key, ObjectNode node, Set<String> referringTypes) {
 
-            this.symbol = symbol;
-            this.objectNode = objectNode;
-        }
-
-        public SymbolTableEntry(String symbol, ObjectNode objectNode, int usageCount) {
-
-            this.symbol = symbol;
-            this.objectNode = objectNode;
-            this.usageCount = usageCount;
+        if(!symbolMap.containsKey(key)) {
+            symbolMap.put(key, new SymbolTableEntry(key, node, referringTypes));
+        } else {
+            SymbolTableEntry entry = symbolMap.get(key);
+            symbolMap.put(key, entry.addAllReferringTypes(referringTypes));
         }
     }
 
-    private HashMap<String, SymbolTableEntry> symbolMap = new HashMap<String, SymbolTableEntry>();
-
-    public void put(String key, ObjectNode node) {
+    public void put(String key, ObjectNode node, String referrent) {
 
         if(!symbolMap.containsKey(key)) {
-            symbolMap.put(key, new SymbolTableEntry(key, node, 0));
+            symbolMap.put(key, new SymbolTableEntry(key, node, new HashSet<String>()));
         } else {
             SymbolTableEntry entry = symbolMap.get(key);
-            symbolMap.put(key, new SymbolTableEntry(key, node, entry.usageCount+1));
+            symbolMap.put(key, entry.addReferringType(referrent));
+        }
+    }
+
+    public void put(String key, String referrent) {
+        if(!symbolMap.containsKey(key)) {
+            symbolMap.put(key, new SymbolTableEntry(key, null, new HashSet<String>()));
+        } else {
+            SymbolTableEntry entry = symbolMap.get(key);
+            symbolMap.put(key, entry.addReferringType(referrent));
+        }
+    }
+
+    public Set<String> getReferringTypes(String key) throws NoSuchElementException {
+        if(!symbolMap.containsKey(key)) {
+            throw new NoSuchElementException("No entry for: "+key);
+        } else {
+            return symbolMap.get(key).getReferringTypes();
         }
     }
 
@@ -50,8 +56,78 @@ public class AvroSchemaSymbolTable {
         ArrayList<ObjectNode> list = new ArrayList<ObjectNode>();
         for( SymbolTableEntry entry : symbolMap.values() ) {
 
-            list.add(entry.objectNode);
+            list.add(entry.getObjectNode());
         }
         return list;
+    }
+
+    /**
+     * Return any associated record definition for this key.  If no record exists throw NoSuchElementException.
+     * Note the returned object node could be null.
+     *
+     * @param key
+     * @return
+     * @throws NoSuchElementException
+     */
+    public ObjectNode getRecordDefinition(String key) throws NoSuchElementException {
+
+        if(symbolMap.containsKey(key)) {
+            return symbolMap.get(key).getObjectNode();
+        } else {
+            throw new NoSuchElementException("No such record definition for: "+key);
+        }
+    }
+
+    public boolean containsKey(String key) {
+        return symbolMap.containsKey(key);
+    }
+
+    public Set<String> keySet() {
+        return symbolMap.keySet();
+    }
+
+    /**
+     * Return a List of ObjectNode's defining the types so that forward references are resolved.
+     * For instance, if Record2300 is referred to by Record200C then the former will appear in the list *before*
+     * the latter.
+     *
+     * @return
+     */
+    public List<ObjectNode> getRecordDefinitionsInDeclarativeOrder() throws AvroSchemaParsingException {
+
+        LinkedList<SymbolTableEntry> entries = new LinkedList<>();
+        for(SymbolTableEntry entry : symbolMap.values()) {
+            if(entry.getReferringTypes().size()==0) {
+                System.out.println("Adding "+entry.getSymbol()+" to end of list");
+                entries.addLast(entry);
+            } else {
+                // find the first entry which refers to this entry
+                String firstReferring = entry.getReferringTypes().toArray()[0].toString();
+                int targetPos = entries.indexOf( symbolMap.get("Record"+firstReferring) );
+                if(targetPos>=0) {
+                    // insert this item before that entry
+                    System.out.println("Adding "+entry.getSymbol()+" to position "+targetPos);
+                    entries.add(targetPos, entry);
+                } else {
+                    // haven't seen the referring type yet, just insert the entry at the end
+                    System.out.println("Couldn't find "+firstReferring+" adding "+entry.getSymbol()+" to end of list");
+                    entries.addLast(entry);
+                }
+            }
+        }
+        ArrayList<ObjectNode> nodes = new ArrayList<>();
+        for(SymbolTableEntry entry : entries) {
+            nodes.add(entry.getObjectNode());
+        }
+        return nodes;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder bld = new StringBuilder();
+        for(SymbolTableEntry entry : symbolMap.values()) {
+            bld.append(entry.toString()).append("\n");
+        }
+        return bld.toString();
     }
 }

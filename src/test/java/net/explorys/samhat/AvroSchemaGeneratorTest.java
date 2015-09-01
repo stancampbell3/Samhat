@@ -85,9 +85,9 @@ public class AvroSchemaGeneratorTest {
 
         ObjectNode sampleNode = getTestNode();
 
-        String name = instance.makeAvroName("Record", sampleNode.get("name").getTextValue());
+        String name = instance.makeAvroName(sampleNode.get("name").getTextValue());
 
-        assertEquals("RecordX12", name);
+        assertEquals("zX12", name);
     }
 
     @Test

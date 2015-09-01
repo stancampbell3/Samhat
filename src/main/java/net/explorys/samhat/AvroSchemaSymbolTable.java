@@ -13,6 +13,19 @@ public class AvroSchemaSymbolTable {
 
     private HashMap<String, SymbolTableEntry> symbolMap = new HashMap<>();
 
+    public void put(String key, ObjectNode node) {
+
+        if(!symbolMap.containsKey(key)) {
+            symbolMap.put(key, new SymbolTableEntry(key, node, new HashSet<String>()));
+        } else {
+            SymbolTableEntry oldEntry = symbolMap.get(key);
+            HashSet<String> referringTypes = new HashSet<>();
+            if(oldEntry.getReferringTypes()!=null) {
+                referringTypes.addAll(oldEntry.getReferringTypes());
+            }
+            symbolMap.put(key, new SymbolTableEntry(key, node, referringTypes));
+        }
+    }
 
     public void put(String key, ObjectNode node, Set<String> referringTypes) {
 
@@ -20,23 +33,18 @@ public class AvroSchemaSymbolTable {
             symbolMap.put(key, new SymbolTableEntry(key, node, referringTypes));
         } else {
             SymbolTableEntry entry = symbolMap.get(key);
-            symbolMap.put(key, entry.addAllReferringTypes(referringTypes));
-        }
-    }
-
-    public void put(String key, ObjectNode node, String referrent) {
-
-        if(!symbolMap.containsKey(key)) {
-            symbolMap.put(key, new SymbolTableEntry(key, node, new HashSet<String>()));
-        } else {
-            SymbolTableEntry entry = symbolMap.get(key);
-            symbolMap.put(key, entry.addReferringType(referrent));
+            HashSet<String> knownReferringTypes = new HashSet(entry.getReferringTypes());
+            knownReferringTypes.addAll(referringTypes);
+            symbolMap.put(key, new SymbolTableEntry(key, node, knownReferringTypes));
         }
     }
 
     public void put(String key, String referrent) {
+
         if(!symbolMap.containsKey(key)) {
-            symbolMap.put(key, new SymbolTableEntry(key, null, new HashSet<String>()));
+            HashSet<String> referringTypes = new HashSet<>();
+            referringTypes.add(referrent);
+            symbolMap.put(key, new SymbolTableEntry(key, null, referringTypes));
         } else {
             SymbolTableEntry entry = symbolMap.get(key);
             symbolMap.put(key, entry.addReferringType(referrent));
@@ -103,7 +111,7 @@ public class AvroSchemaSymbolTable {
             } else {
                 // find the first entry which refers to this entry
                 String firstReferring = entry.getReferringTypes().toArray()[0].toString();
-                int targetPos = entries.indexOf( symbolMap.get("Record"+firstReferring) );
+                int targetPos = entries.indexOf( symbolMap.get(""+firstReferring) );
                 if(targetPos>=0) {
                     // insert this item before that entry
                     System.out.println("Adding "+entry.getSymbol()+" to position "+targetPos);

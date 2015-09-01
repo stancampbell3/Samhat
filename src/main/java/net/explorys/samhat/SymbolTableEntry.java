@@ -62,8 +62,8 @@ class SymbolTableEntry {
     @Override
     public String toString() {
         return (new StringBuilder()).append(symbol).
-                append("\t").append(objectNode.toString()).
-                append("\t").append(referringTypes).toString();
+                append("\t").append(objectNode!=null ? objectNode.toString() : "NULL").
+                append("\t").append(referringTypes!=null ? referringTypes.toString() : "NONE").toString();
     }
 
 

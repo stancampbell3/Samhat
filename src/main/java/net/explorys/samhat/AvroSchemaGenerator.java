@@ -20,6 +20,10 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
+    public enum AvroIdentifierType {
+        RECORD, FIELD
+    }
+
     private ObjectMapper mapper;
     private CfSchemaParser parser;
 
@@ -136,7 +140,10 @@ public class AvroSchemaGenerator {
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
     }
 
-    String makeAvroName(String prefix, String rawName) {
+    String makeAvroName(String rawName) {
+
+        // Avro doesn't like identifiers like "2003D" so just make them z2003D
+        String prefix = "z";
 
         StringBuilder bld = new StringBuilder();
         bld.append(prefix).append(rawName.substring(0, 1).toUpperCase());
@@ -160,7 +167,7 @@ public class AvroSchemaGenerator {
         ObjectNode annotatedRecordNode = mapper.createObjectNode();
         annotatedRecordNode.put("type", "record");
         annotatedRecordNode.put("namespace", namespace);
-        annotatedRecordNode.put("name", makeAvroName("Record", jsonObject.get("name").getTextValue()));
+        annotatedRecordNode.put("name", makeAvroName(jsonObject.get("name").getTextValue()));
 
         // Add the fields definition
         ArrayNode fieldsNode = (ArrayNode)jsonObject.get("fields");
@@ -171,14 +178,14 @@ public class AvroSchemaGenerator {
         while(fieldsNodeElements.hasNext()) {
             JsonNode fieldNode = fieldsNodeElements.next();
             ObjectNode fieldEntry = mapper.createObjectNode();
-            fieldEntry.put("name", makeAvroName("Field", fieldNode.get("name").getTextValue()));
+            fieldEntry.put("name", makeAvroName(fieldNode.get("name").getTextValue()));
 
             String type = fieldNode.get("type").getTextValue();
             // TODO: expand as we handle more Avro types, for now they're all schema defined record types
             if("string".equalsIgnoreCase(type)) {
                 fieldEntry.put("type", type);
             } else {
-                fieldEntry.put("type", makeAvroName("Record", type));
+                fieldEntry.put("type", makeAvroName(type));
             }
             schemaFieldsNode.add(fieldEntry);
         }
@@ -269,7 +276,7 @@ public class AvroSchemaGenerator {
             ObjectNode fieldNode = (ObjectNode)fieldsItr.next();
             String fieldType = fieldNode.get("type").getTextValue();
             if(!isPrimitiveAvroType(fieldType)) {
-                referredRecordTypesSet.add(fieldType);
+                referredRecordTypesSet.add(makeAvroName(fieldType));
             } else {
                 // NOP, don't add the type as a referred type
             }
@@ -299,7 +306,8 @@ public class AvroSchemaGenerator {
         AvroSchemaSymbolTable symbolTable = new AvroSchemaSymbolTable();
         for(ObjectNode recordTypeEntry : recordTypes) {
 
-            String recordTypeEntryName = makeAvroName("Record", recordTypeEntry.get("name").getTextValue());
+            System.out.println("First pass, processing: "+recordTypeEntry);
+            String recordTypeEntryName = makeAvroName(recordTypeEntry.get("name").getTextValue());
 
             // -- if a record is already present
             if(symbolTable.containsKey(recordTypeEntryName)) {
@@ -310,14 +318,16 @@ public class AvroSchemaGenerator {
                     symbolTable.put(recordTypeEntryName, recordTypeEntry, referringTypes);
                 } else {
                     // -- there's an existing record with an object node, resolve any conflicts
-                    if (isRecordTypeEntryEqual(recordTypeEntry, symbolTable.getRecordDefinition(recordTypeEntryName))) {
+                    ObjectNode otherRecordTypeEntry = symbolTable.getRecordDefinition(recordTypeEntryName);
+                    if (isRecordTypeEntryEqual(recordTypeEntry, otherRecordTypeEntry)) {
                         // ---- if the two types are equal, don't place the second definition in the map
                         // TODO: log the duplicate
                         // NOP
                     } else {
                         // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
                         // TODO: come up with a scheme for resolving this problem
-                        throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
+                        // throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
+                        System.out.println("Couldn't resolve record types for: " + recordTypeEntryName);
                     }
                 }
             } else {
@@ -329,8 +339,11 @@ public class AvroSchemaGenerator {
                 //    empty ObjectNodes
 
                 for(String referredType : referredTypes) {
-                    symbolTable.put(referredType, recordTypeEntry, recordTypeEntryName);
+                    symbolTable.put(referredType, recordTypeEntryName);
                 }
+
+                // -- don't forget to add this node as well
+                symbolTable.put(recordTypeEntryName, recordTypeEntry);
             }
         }
 

@@ -300,57 +300,31 @@ public class AvroSchemaGenerator {
         // This will be an array of record type definitions
         ArrayNode schemaArrayOfDefs = mapper.createArrayNode();
 
-        // First pass
-        // Collapse any identical record definitions, removing duplicates
-        // -- build our map of RecordTYPE names -> Json ObjectNodes defining those records together with their referring types
-        AvroSchemaSymbolTable symbolTable = new AvroSchemaSymbolTable();
+        // Create our dependency graph, collapsing any identical record definitions (removing duplicates) and recording dependencies
+        DependencyGraph dependencyGraph = new DependencyGraph();
+        HashMap<String, ObjectNode> labelToObjectNodeMap = new HashMap<>();
         for(ObjectNode recordTypeEntry : recordTypes) {
 
             String recordTypeEntryName = makeAvroName(recordTypeEntry.get("name").getTextValue());
+            // Record the node by name (since our DependencyGraph only tracks the labels
+            labelToObjectNodeMap.put( recordTypeEntryName, recordTypeEntry );
 
-            // -- if a record is already present
-            if(symbolTable.containsKey(recordTypeEntryName)) {
-                // -- if there is no object node
-                if(symbolTable.getRecordDefinition(recordTypeEntryName)==null) {
-                    // -- then we need to update the record in the symbol table, preserving the referring types
-                    Set<String> referringTypes = symbolTable.getReferringTypes(recordTypeEntryName);
-                    symbolTable.put(recordTypeEntryName, recordTypeEntry, referringTypes);
-                } else {
-                    // -- there's an existing record with an object node, resolve any conflicts
-                    ObjectNode otherRecordTypeEntry = symbolTable.getRecordDefinition(recordTypeEntryName);
-                    if (isRecordTypeEntryEqual(recordTypeEntry, otherRecordTypeEntry)) {
-                        // ---- if the two types are equal, don't place the second definition in the map
-                        // TODO: log the duplicate
-                        // NOP
-                    } else {
-                        // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
-                        // TODO: come up with a scheme for resolving this problem
-                        throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
-                    }
-                }
-            } else {
-                // -- else gather the types to which this type refers
+            // Get its dependencies: the record types to which this node refers in its fields array
+            final Set<String> referredRecordTypes = getReferredRecordTypes(recordTypeEntry);
 
-                Set<String> referredTypes = getReferredRecordTypes(recordTypeEntry);
+            System.out.println(recordTypeEntryName+" refers to "+referredRecordTypes);
 
-                // -- add this as a referring type to all of those types, if they don't exist then stub out those types with
-                //    empty ObjectNodes
-
-                for(String referredType : referredTypes) {
-                    symbolTable.put(referredType, recordTypeEntryName);
-                }
-
-                // -- don't forget to add this node as well
-                symbolTable.put(recordTypeEntryName, recordTypeEntry);
-            }
+            // Record the dependencies
+            dependencyGraph.addDependencyEntries(recordTypeEntryName, referredRecordTypes);
         }
 
-        // Second pass, generate the schema defining record types in order
-        List<ObjectNode> sanitizedSymbolTable = symbolTable.getRecordDefinitionsInDeclarativeOrder();
-        System.out.println("Sanitized: "+sanitizedSymbolTable);
-        for(ObjectNode recordTypeEntry : sanitizedSymbolTable) {
+        // Generate the schema defining record types in order
+        System.out.println(dependencyGraph);
+        List<String> dependenciesInOrder = dependencyGraph.getDependenciesInOrder();
+        System.out.println("Sanitized: "+dependenciesInOrder);
+        for(String recordTypeEntryName : dependenciesInOrder) {
 
-            ObjectNode schemaRecordType = annotateJsonRecordNode(recordTypeEntry, namespace);
+            ObjectNode schemaRecordType = annotateJsonRecordNode(labelToObjectNodeMap.get(recordTypeEntryName), namespace);
             schemaArrayOfDefs.add(schemaRecordType);
         }
 

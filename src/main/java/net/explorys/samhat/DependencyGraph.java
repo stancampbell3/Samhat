@@ -3,12 +3,9 @@ package net.explorys.samhat;
 import org.jgrapht.DirectedGraph;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.DepthFirstIterator;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by stan.campbell on 9/2/15.
@@ -17,7 +14,7 @@ public class DependencyGraph {
 
     private DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
 
-    public void addDependencyEntries(String label, List<String> refersTo) {
+    public void addDependencyEntries(String label, Collection<String> refersTo) {
 
         if(null==label || null==refersTo) {
             throw new IllegalArgumentException("label and refersTo list must not be null");
@@ -49,11 +46,20 @@ public class DependencyGraph {
         ArrayList<String> result = new ArrayList<>();
 
         // return a depth-first traversal of the graph
-        DepthFirstIterator<String, DefaultEdge> itr = new DepthFirstIterator<>(graph);
+        TopologicalOrderIterator<String, DefaultEdge> itr = new TopologicalOrderIterator<>(graph);
         while(itr.hasNext()) {
-            result.add(0, itr.next()); // push onto the list
+            String v = itr.next();
+            System.out.println("\tVisiting "+v);
+            result.add(0, v); // push onto the list
         }
 
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "DependencyGraph{" +
+                "graph=" + graph +
+                '}';
     }
 }

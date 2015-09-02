@@ -106,7 +106,7 @@ public class AvroSchemaSymbolTable {
         LinkedList<SymbolTableEntry> entries = new LinkedList<>();
         for(SymbolTableEntry entry : symbolMap.values()) {
             if(entry.getReferringTypes().size()==0) {
-                System.out.println("Adding "+entry.getSymbol()+" to end of list");
+                System.out.println("Adding "+entry.getSymbol()+" to end of list.  Referring types: "+entry.getReferringTypes());
                 entries.addLast(entry);
             } else {
                 // find the first entry which refers to this entry
@@ -114,11 +114,11 @@ public class AvroSchemaSymbolTable {
                 int targetPos = entries.indexOf( symbolMap.get(""+firstReferring) );
                 if(targetPos>=0) {
                     // insert this item before that entry
-                    System.out.println("Adding "+entry.getSymbol()+" to position "+targetPos);
+                    System.out.println("Adding "+entry.getSymbol()+" to position "+targetPos+".  Referring types: "+entry.getReferringTypes());
                     entries.add(targetPos, entry);
                 } else {
                     // haven't seen the referring type yet, just insert the entry at the end
-                    System.out.println("Couldn't find "+firstReferring+" adding "+entry.getSymbol()+" to end of list");
+                    System.out.println("Couldn't find " + firstReferring + " adding " + entry.getSymbol() + " to end of list.  Referring types: "+entry.getReferringTypes());
                     entries.addLast(entry);
                 }
             }

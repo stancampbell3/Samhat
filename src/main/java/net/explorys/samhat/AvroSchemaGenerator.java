@@ -326,8 +326,7 @@ public class AvroSchemaGenerator {
                     } else {
                         // ---- if the two types are nonequal try to resolve by unification, otherwise throw an exception
                         // TODO: come up with a scheme for resolving this problem
-                        // throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
-                        System.out.println("Couldn't resolve record types for: " + recordTypeEntryName);
+                        throw new AvroSchemaParsingException("Couldn't resolve record types for: " + recordTypeEntryName);
                     }
                 }
             } else {

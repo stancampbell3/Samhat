@@ -6,7 +6,12 @@ import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
+import java.io.BufferedReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -57,6 +62,41 @@ public class AvroSchemaGeneratorTest {
         } catch (Exception e) {
             e.printStackTrace();
             fail("Exception: "+e);
+        }
+    }
+
+    /**
+     * This test is primarily intended to ensure that our target schema format is compatible with the Avro parser.
+     * If the parser is upgraded and our code generation becomes invalid, this test will begin to fail.
+     *
+     */
+    @Test
+    public void avroSchemaIsCompilable() {
+
+        try {
+
+            InputStream testSchema = getClass().getResourceAsStream("/x12_schema_837_professional_avro.json");
+            StringBuffer buf = new StringBuffer();
+            BufferedReader rdr = new BufferedReader( new InputStreamReader(testSchema));
+            String line;
+            do {
+                line = rdr.readLine();
+                buf.append(line+"\n");
+            } while(line!=null);
+
+            String schema = buf.toString();
+
+            assertNotNull(schema);
+
+            // Try to compile the schema
+            Schema.Parser avroParser = new Schema.Parser();
+            Schema schemaCooked = avroParser.parse(schema);
+
+            assertNotNull(schemaCooked);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            fail("Exception: " + e);
         }
     }
 

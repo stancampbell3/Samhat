@@ -306,7 +306,6 @@ public class AvroSchemaGenerator {
         AvroSchemaSymbolTable symbolTable = new AvroSchemaSymbolTable();
         for(ObjectNode recordTypeEntry : recordTypes) {
 
-            System.out.println("First pass, processing: "+recordTypeEntry);
             String recordTypeEntryName = makeAvroName(recordTypeEntry.get("name").getTextValue());
 
             // -- if a record is already present

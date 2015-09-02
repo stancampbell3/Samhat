@@ -117,9 +117,9 @@ public class AvroSchemaSymbolTable {
                     System.out.println("Adding "+entry.getSymbol()+" to position "+targetPos+".  Referring types: "+entry.getReferringTypes());
                     entries.add(targetPos, entry);
                 } else {
-                    // haven't seen the referring type yet, just insert the entry at the end
-                    System.out.println("Couldn't find " + firstReferring + " adding " + entry.getSymbol() + " to end of list.  Referring types: "+entry.getReferringTypes());
-                    entries.addLast(entry);
+                    // haven't seen the referring type yet, insert this at the head
+                    System.out.println("Couldn't find " + firstReferring + " adding " + entry.getSymbol() + " to head of list.  Referring types: "+entry.getReferringTypes());
+                    entries.add(0, entry);
                 }
             }
         }

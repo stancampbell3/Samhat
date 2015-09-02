@@ -19,9 +19,9 @@ public class Avro837Test {
 
         Avro837Tool job = new Avro837Tool();
         job.setConf(c);
-        job.setSchemaPath("testdata/user.avsc");
-        job.setInputPath("testdata/avro/users.avro");
-        job.setOutputPath("tmp/AvroInAvroOut-" + System.currentTimeMillis());
+        job.setSchemaPath("src/test/resources/user.avsc");
+        job.setInputPath("src/test/resources/users.avro");
+        job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
 
         job.run(null);
 

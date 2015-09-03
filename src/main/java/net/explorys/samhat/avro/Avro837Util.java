@@ -9,6 +9,7 @@ import org.apache.avro.io.DatumWriter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.file.*;
@@ -29,6 +30,11 @@ public class Avro837Util {
     public Avro837Util(String x12FlatDataSchemaPath) throws IOException {
 
         x12FlatDataSchema = (new Schema.Parser()).parse(new File(x12FlatDataSchemaPath));
+    }
+
+    public Avro837Util(InputStream x12FlatDataSchemaStream) throws IOException {
+
+        x12FlatDataSchema = (new Schema.Parser()).parse(x12FlatDataSchemaStream);
     }
 
 

@@ -33,6 +33,7 @@ public class Avro837Test {
         Avro837Tool job = new Avro837Tool();
         job.setConf(c);
         job.setX837FlatSchemaPath("src/test/resources/Flat837.avsc");
+        job.setX837ExpandedSchemaPath("src/test/resources/x12_schema_837_professional_avro.json");
         job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_e4b272a8-72fe-4093-8a5b-9606f02fc207.avro");
         job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
 

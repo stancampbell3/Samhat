@@ -1,4 +1,4 @@
-package net.explorys.samhat.mr;
+package net.explorys.samhat.avro.mr;
 
 import java.io.File;
 
@@ -18,20 +18,20 @@ import org.apache.hadoop.util.Tool;
  */
 public class Avro837Tool extends Configured implements Tool {
 
-    private String inputPath = null;
+    private String x837FlatDataPath = null;
     private String outputPath = null;
-    private String schemaPath = null;
+    private String x837FlatSchemaPath = null;
 
-    public void setInputPath(String path) {
-        inputPath = path;
+    public void setX837FlatDataPath(String path) {
+        x837FlatDataPath = path;
     }
 
     public void setOutputPath(String path) {
         outputPath = path;
     }
 
-    public void setSchemaPath(String path) {
-        schemaPath = path;
+    public void setX837FlatSchemaPath(String path) {
+        x837FlatSchemaPath = path;
     }
 
     @Override
@@ -40,12 +40,12 @@ public class Avro837Tool extends Configured implements Tool {
         JobConf conf = new JobConf(getConf(), Avro837Tool.class);
         conf.setJobName("Avro837Tool");
 
-        FileInputFormat.setInputPaths(conf, new Path(inputPath));
+        FileInputFormat.setInputPaths(conf, new Path(x837FlatDataPath));
         FileOutputFormat.setOutputPath(conf, new Path(outputPath));
 
         conf.setNumReduceTasks(0);
 
-        Schema schema = new Schema.Parser().parse(new File(schemaPath));
+        Schema schema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
 
         AvroJob.setMapperClass(conf, Avro837Mapper.class);
         AvroJob.setInputSchema(conf, schema);

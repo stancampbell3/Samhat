@@ -1,4 +1,4 @@
-package net.explorys.samhat.mr;
+package net.explorys.samhat.avro.mr;
 
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;

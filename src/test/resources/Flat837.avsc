@@ -1,0 +1,23 @@
+{
+   "namespace":"net.explorys.samhat.z12.r837",
+   "type":"record",
+   "name":"Flat837",
+   "fields":[
+      {
+         "name": "source_filename",
+         "type": "string"
+      },
+      {
+         "name": "ingested_timestamp",
+         "type": "long"
+      },
+      {
+         "name": "organization",
+         "type": "string"
+      },
+      {
+         "name": "data",
+         "type": "bytes"
+      }
+   ]
+}

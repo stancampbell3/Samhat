@@ -34,7 +34,7 @@ public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
 
         // reminder:  "name" is an attribute defined in the schema.
         for(Schema.Field f : outputSchema.getFields()) {
-            if (f.name().equals("name")) {
+            if (f.name().equals("organization")) {
                 outRecord.put(f.name(), inRecord.get(f.name()) + "-transformed");
             } else {
                 outRecord.put(f.name(), inRecord.get(f.name()));

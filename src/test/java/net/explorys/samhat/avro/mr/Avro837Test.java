@@ -23,7 +23,7 @@ public class Avro837Test {
 
     /**
      * This test needs fixing to actually exercise the flat 837 schema
-     *
+     */
     @Test
     public void testIt() throws Exception {
 
@@ -32,14 +32,13 @@ public class Avro837Test {
 
         Avro837Tool job = new Avro837Tool();
         job.setConf(c);
-        job.setX837FlatSchemaPath("src/test/resources/users.avsc");
-        job.setX837FlatDataPath("src/test/resources/users.avro");
+        job.setX837FlatSchemaPath("src/test/resources/Flat837.avsc");
+        job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_e4b272a8-72fe-4093-8a5b-9606f02fc207.avro");
         job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
 
         job.run(null);
 
     }
-    */
 
     /**
      * This class provides a convenient way to repeat the same data a given number of times
@@ -79,13 +78,14 @@ public class Avro837Test {
 
         try {
 
+            final long NUM_RECS = 100;
             String flatDataSchemaPath = "src/test/resources/Flat837.avsc";
             String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X223 Health Care Claim Institutional/X223-837-institutional-claim.edi";
             String data = loadResourceDocument(x12837Path);
             byte[] bytes = data.getBytes("utf-8");
             ByteBuffer bytesBuffer = ByteBuffer.wrap(bytes);
 
-            SingleDataIterator dataIterator = new SingleDataIterator(bytesBuffer, 10000); // 10k records
+            SingleDataIterator dataIterator = new SingleDataIterator(bytesBuffer, NUM_RECS);
 
             Avro837Util util = new Avro837Util(flatDataSchemaPath);
 
@@ -93,7 +93,7 @@ public class Avro837Test {
                     1441229222420L, "80", dataIterator, new URI("file:///"),
                     "/tmp");
 
-            assertEquals(recordsWritten, 10000);
+            assertEquals(recordsWritten, NUM_RECS);
 
         } catch (Exception e) {
 

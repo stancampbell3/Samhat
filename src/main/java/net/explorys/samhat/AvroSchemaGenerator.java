@@ -1,6 +1,7 @@
 package net.explorys.samhat;
 
 import net.explorys.samhat.avro.Avro837Util;
+import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -20,43 +21,57 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
+    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
+    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
+    public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
 
     private ObjectMapper mapper;
     private CfSchemaParser parser;
-    private JsonNode segmentsFieldEntry;
+    private JsonNode segmentsFieldEntry;  // Inserted into the fields list
+    private JsonNode segmentsTypeEntry;   // Inserted as the type of a leaf field like "1000A"
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
         this.parser = new CfSchemaParser();
-        try {
-            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
-        } catch (IOException e){
-
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
-        }
+        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
+        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     public AvroSchemaGenerator(ObjectMapper mapper, CfSchemaParser parser) {
         this.mapper = mapper;
         this.parser = parser;
-        try {
-            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
-        } catch (IOException e){
-
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
-        }
+        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
+        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     public AvroSchemaGenerator(CfSchemaParser parser) {
         this.parser = parser;
         this.mapper = new ObjectMapper();
+        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
+        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
+    }
+
+    public AvroSchemaGenerator(ObjectMapper mapper) {
+        this.mapper = mapper;
+        this.parser = new CfSchemaParser();
+        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
+        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
+    }
+
+    public static Schema getSegmentsArraySchemaDefinition(Schema.Parser parser) {
         try {
-            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+            return parser.parse(SEGMENTS_ARRAY_SCHEMA_DEFINITION);
+        } catch (Exception e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of SEGMENTS_ARRAY_SCHEMA_DEFINITION is faulty!", e);
+        }
+    }
+
+    public static JsonNode getSegmentsAvroTypeDefinition(ObjectMapper mapper) {
+        try {
+            return mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
         } catch (IOException e){
 
             // This should never occur because the field definition is static
@@ -65,16 +80,14 @@ public class AvroSchemaGenerator {
         }
     }
 
-    public AvroSchemaGenerator(ObjectMapper mapper) {
-        this.mapper = mapper;
-        this.parser = new CfSchemaParser();
+    public static JsonNode getSegmentsNamedAvroTypeDefinition(ObjectMapper mapper) {
         try {
-            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+            return mapper.readValue(SEGMENTS_NAMED_AVRO_TYPE_DEFINITION, JsonNode.class);
         } catch (IOException e){
 
             // This should never occur because the field definition is static
             // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+            throw new RuntimeException("Definition of SEGMENTS_NAMED_AVRO_TYPE_DEFINITION is faulty!", e);
         }
     }
 
@@ -199,17 +212,24 @@ public class AvroSchemaGenerator {
         Iterator<JsonNode> fieldsNodeElements = fieldsNode.getElements();
         while(fieldsNodeElements.hasNext()) {
             JsonNode fieldNode = fieldsNodeElements.next();
-            ObjectNode fieldEntry = mapper.createObjectNode();
-            fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
-
             String type = fieldNode.get("type").getTextValue();
             // TODO: expand as we handle more Avro types, for now they're all schema defined record types
+
             if("string".equalsIgnoreCase(type)) {
-                fieldEntry.put("type", type);
+
+                // for leaf nodes, we actually need to generate record types holding only an array field.
+                // fieldEntry.put("type", type);
+
+                ObjectNode fieldEntry = mapper.createObjectNode();
+                fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
+                fieldEntry.put("type", segmentsTypeEntry);
+                schemaFieldsNode.add(fieldEntry);
             } else {
+                ObjectNode fieldEntry = mapper.createObjectNode();
+                fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
                 fieldEntry.put("type", Avro837Util.makeAvroName(type));
+                schemaFieldsNode.add(fieldEntry);
             }
-            schemaFieldsNode.add(fieldEntry);
         }
 
         return annotatedRecordNode;

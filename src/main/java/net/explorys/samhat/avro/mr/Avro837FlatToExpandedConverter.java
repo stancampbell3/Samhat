@@ -1,12 +1,15 @@
 package net.explorys.samhat.avro.mr;
 
+import net.explorys.samhat.AvroSchemaGenerator;
 import net.explorys.samhat.CfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
 import net.explorys.samhat.avro.Avro837Util;
 import net.explorys.samhat.avro.SchemaNotFoundException;
 import org.apache.avro.Schema;
+import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.util.Utf8;
 import org.pb.x12.*;
 
 import java.io.ByteArrayInputStream;
@@ -26,7 +29,9 @@ public class Avro837FlatToExpandedConverter {
     private CfSchemaParser cfSchemaParser;
     private Cf schema;
     private X12Parser x12Parser;
+    private Schema.Parser avroParser;
     private Schema x837AvroSchema;
+    private Schema segmentsArraySchema;
 
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
 
@@ -41,7 +46,9 @@ public class Avro837FlatToExpandedConverter {
         x12Parser = new X12Parser(schema);
 
         // Instantiate our Avro schemas.  This is expected to be a Union schema defining all of our record types.
-        x837AvroSchema = (new Schema.Parser()).parse(x837AvroSchemaStream);
+        avroParser = (new Schema.Parser());
+        x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
+        segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
     }
 
     /**
@@ -49,11 +56,12 @@ public class Avro837FlatToExpandedConverter {
      * However, it's implemented as a Union Schema and so we need to retrieve the "X12" portion
      * so that the parser knows which record to expect when de/serializing.
      *
+     * We return null in the case where we don't find a matching schema.
+     *
      * @param schemaName
      * @return
-     * @throws SchemaNotFoundException
      */
-    Schema findRecordSchema(String schemaName) throws SchemaNotFoundException {
+    Schema findRecordSchema(String schemaName) {
 
         if(null==schemaName) {
             throw new IllegalArgumentException("schemaName must not be null");
@@ -66,7 +74,7 @@ public class Avro837FlatToExpandedConverter {
             }
         }
 
-        throw new SchemaNotFoundException("Couldn't find the schema for: "+schemaName);
+        return null;
     }
 
     /**
@@ -107,7 +115,7 @@ public class Avro837FlatToExpandedConverter {
 
         // Set data from segments
         for(Segment segment : currentLoop.getSegments()) {
-
+            // TODO: add segment data to the "zSEGMENTS" array of strings field on the record
             System.out.println("Segment: "+segment.toString());
         }
 
@@ -116,21 +124,43 @@ public class Avro837FlatToExpandedConverter {
 
             // Select the proper schema for the next loop
             String loopName = loop.getName();
-            Schema schema = findRecordSchema(Avro837Util.makeAvroName(loopName)); // eg. "zX12"
+            String recordSchemaName = Avro837Util.makeAvroName(loopName);
+            Schema recordSchema;
 
-            // Create the nested record representing the loop
-            GenericRecord nestedRecord = new GenericData.Record(schema);
+            recordSchema = findRecordSchema(recordSchemaName); // eg. "zX12"
+            if(null!=recordSchema) {
 
-            // walkThe nested loop
-            walkTheLoop(nestedRecord, loop);
+                // Create the nested record representing the loop
+                GenericRecord nestedRecord = new GenericData.Record(recordSchema);
 
-            // set the property of the outer record for this loop
-            x837Record.put( loopName, nestedRecord);
+                // walkThe nested loop
+                walkTheLoop(nestedRecord, loop);
+
+                // set the property of the outer record for this loop
+                x837Record.put(recordSchemaName, nestedRecord);
+
+            } else {
+
+                // The segment data for this loop (it's a leaf) rolls up into the value of a property
+                // of the current record.  For instance, 1000A (Submitter Name) is a property of the enclosing loop
+                // and is implemented in the avro schema as an array of strings.
+
+                // Set the segment values of loop into the enclosing GenericRecord, x837Record
+
+                // -- Construct an avro array object to hold the segment info
+                GenericArray segmentsArray = new GenericData.Array<Utf8>(loop.getSegments().size(), segmentsArraySchema);
+
+                // -- Go through the segments and fill the array
+                for(Segment segment : loop.getSegments()) {
+                    segmentsArray.add(new Utf8(segment.toString()));
+                }
+
+                // -- the field of the enclosing x837Record is named the same as the recordSchema
+                // -- add the array object as a value of that field
+                x837Record.put(recordSchemaName, segmentsArray);
+            }
 
             // TODO: investigate whether we need to make (and I think we do) subloops nullable in the schema
         }
-
-        throw new RuntimeException("Not yet implemented.");
     }
-
 }

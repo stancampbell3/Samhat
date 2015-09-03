@@ -14,13 +14,14 @@ import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.util.Tool;
 
 /**
- * Derives from SourceDataStaging's test
+ * Derives from SourceDataStaging's test, so totally lifted from doug miel's code
  */
 public class Avro837Tool extends Configured implements Tool {
 
     private String x837FlatDataPath = null;
     private String outputPath = null;
     private String x837FlatSchemaPath = null;
+    private String x837ExpandedSchemaPath = null;
 
     public void setX837FlatDataPath(String path) {
         x837FlatDataPath = path;
@@ -34,6 +35,10 @@ public class Avro837Tool extends Configured implements Tool {
         x837FlatSchemaPath = path;
     }
 
+    public void setX837ExpandedSchemaPath(String x837ExpandedSchemaPath) {
+        this.x837ExpandedSchemaPath = x837ExpandedSchemaPath;
+    }
+
     @Override
     public int run(String[] args) throws Exception {
 
@@ -45,15 +50,14 @@ public class Avro837Tool extends Configured implements Tool {
 
         conf.setNumReduceTasks(0);
 
-        Schema schema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
+        // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
+        Schema inputSchema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
+        Schema outputSchema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
 
         AvroJob.setMapperClass(conf, Avro837Mapper.class);
-        AvroJob.setInputSchema(conf, schema);
 
-        AvroJob.setOutputSchema(conf, schema);
-        // note:  this is a bit goofy because it's the same schema
-        // however, we could put in any schema we wanted.
-        // -dsm
+        AvroJob.setInputSchema(conf, inputSchema);
+        AvroJob.setOutputSchema(conf, outputSchema);
 
         RunningJob rj = JobClient.runJob(conf);
         if (!rj.isSuccessful()) {

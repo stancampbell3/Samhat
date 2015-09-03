@@ -12,9 +12,10 @@ import org.apache.hadoop.mapred.Reporter;
 import java.io.IOException;
 
 /**
- * Derives from SourceDataStaging's test
+ * Derives from SourceDataStaging's test, so absolutely lifted from d miel's code
  */
 public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
+
     private Schema outputSchema = null;
 
     @Override
@@ -26,13 +27,11 @@ public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
 
     public void map(GenericRecord inRecord, AvroCollector<GenericRecord> collector, Reporter reporter) throws IOException {
 
-        // again, we happen to be emitting User records back out so this isn't terribly exciting,
-        // however, we could very easily supply a different type on the config.
-        // -dsm
-
         GenericRecord outRecord = new GenericData.Record(outputSchema);
 
-        // reminder:  "name" is an attribute defined in the schema.
+        // Ok, need to
+        // 1.  Parse the data from the incoming record using
+
         for(Schema.Field f : outputSchema.getFields()) {
             if (f.name().equals("organization")) {
                 outRecord.put(f.name(), inRecord.get(f.name()) + "-transformed");

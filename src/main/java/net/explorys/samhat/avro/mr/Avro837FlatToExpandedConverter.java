@@ -2,18 +2,14 @@ package net.explorys.samhat.avro.mr;
 
 import net.explorys.samhat.CfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
+import net.explorys.samhat.avro.Avro837Util;
 import net.explorys.samhat.avro.SchemaNotFoundException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.util.ByteBufferInputStream;
-import org.pb.x12.Cf;
-import org.pb.x12.FormatException;
-import org.pb.x12.X12;
-import org.pb.x12.X12Parser;
+import org.pb.x12.*;
 
 import java.io.ByteArrayInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -23,6 +19,55 @@ import java.util.List;
  * Created by stan.campbell on 9/3/15.
  */
 public class Avro837FlatToExpandedConverter {
+
+    private InputStream cfSchemaXML;
+    private InputStream x837AvroSchemaStream;
+
+    private CfSchemaParser cfSchemaParser;
+    private Cf schema;
+    private X12Parser x12Parser;
+    private Schema x837AvroSchema;
+
+    public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
+
+        this.cfSchemaXML = cfSchemaXML;
+        this.x837AvroSchemaStream = x837AvroSchemaStream;
+
+        // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
+        cfSchemaParser = new CfSchemaParser();
+        schema = cfSchemaParser.parseSchemaFromXml(cfSchemaXML);
+
+        // Instantiate our x12Parser for the given cfSchema
+        x12Parser = new X12Parser(schema);
+
+        // Instantiate our Avro schemas.  This is expected to be a Union schema defining all of our record types.
+        x837AvroSchema = (new Schema.Parser()).parse(x837AvroSchemaStream);
+    }
+
+    /**
+     * Our schema defines all of the loop and segment names we expect in an X12.
+     * However, it's implemented as a Union Schema and so we need to retrieve the "X12" portion
+     * so that the parser knows which record to expect when de/serializing.
+     *
+     * @param schemaName
+     * @return
+     * @throws SchemaNotFoundException
+     */
+    Schema findRecordSchema(String schemaName) throws SchemaNotFoundException {
+
+        if(null==schemaName) {
+            throw new IllegalArgumentException("schemaName must not be null");
+        }
+
+        List<Schema> schemaList = x837AvroSchema.getTypes();
+        for(Schema schema : schemaList) {
+            if(schemaName.equalsIgnoreCase(schema.getName())) {
+                return schema;
+            }
+        }
+
+        throw new SchemaNotFoundException("Couldn't find the schema for: "+schemaName);
+    }
 
     /**
      * Take an instance of an Avro record in flat format, parse it using the appropriate X12/837 Cf schema and
@@ -36,48 +81,54 @@ public class Avro837FlatToExpandedConverter {
      * data                  a ByteBuffer containing the text contents of the 837 as bytes in UTF-8 encoding
      *
      * @param flat837Record
-     * @param cfSchemaXML
-     * @param x837AvroSchemaStream
      * @return
      */
-    public GenericRecord expand837(GenericRecord flat837Record, InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws
+    public GenericRecord expand837(GenericRecord flat837Record) throws
             CfSchemaParsingException, IOException, FormatException, SchemaNotFoundException {
 
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
-
-        // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
-        CfSchemaParser cfSchemaParser = new CfSchemaParser();
-        Cf schema = cfSchemaParser.parseSchemaFromXml(cfSchemaXML);
-
-        // TODO: expand our generated schema to include the sourceFile, ingestionTimestamp, etc. as well as the expanded x12/837 data
-        X12Parser x12Parser = new X12Parser(schema);
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
 
-
-        Schema x837AvroSchema = parseAndReturnX12Schema(x837AvroSchemaStream);
-        GenericRecord x837Record = new GenericData.Record(x837AvroSchema);
+        // TODO: expand our generated schema to include the sourceFile, ingestionTimestamp, etc. as well as the expanded x12/837 data
 
         // Build the GenericRecord by walking the parsed X12 instance
-        walkTheX12(x837, x837Record);
+        Schema x12Schema = findRecordSchema(Avro837Util.makeAvroName("X12"));
+        GenericRecord x837Record = new GenericData.Record(x12Schema);
+        walkTheLoop(x837Record, x837);
 
         return x837Record;
     }
 
-    Schema parseAndReturnX12Schema(InputStream x837AvroSchemaStream) throws IOException, SchemaNotFoundException {
-        // Our schema defines all of the loop and segment names we expect in an X12.
-        // However, it's implemented as a Union Schema and so we need to retrieve the "X12" portion so that the parser
-        // knows which record to expect when de/serializing.
-        Schema x837AvroSchema = (new Schema.Parser()).parse(x837AvroSchemaStream);
-        List<Schema> schemaList = x837AvroSchema.getTypes();
-        for(Schema schema : schemaList) {
-            if("zX12".equalsIgnoreCase(schema.getName())) {
-                return schema;
-            }
-        }
-        throw new SchemaNotFoundException("Couldn't find the X12 schema");
-    }
+    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) throws SchemaNotFoundException {
 
-    void walkTheX12(X12 x837, GenericRecord x837AvroRecord) {
+        // An X12 is composed of loops and segments.
+        // Segments contain data at this loop level.
+        // Loops are nested collections of loops and segments.
+
+        // Set data from segments
+        for(Segment segment : currentLoop.getSegments()) {
+
+            System.out.println("Segment: "+segment.toString());
+        }
+
+        // For each loop in currentLoop
+        for(Loop loop : currentLoop.getLoops()) {
+
+            // Select the proper schema for the next loop
+            String loopName = loop.getName();
+            Schema schema = findRecordSchema(Avro837Util.makeAvroName(loopName)); // eg. "zX12"
+
+            // Create the nested record representing the loop
+            GenericRecord nestedRecord = new GenericData.Record(schema);
+
+            // walkThe nested loop
+            walkTheLoop(nestedRecord, loop);
+
+            // set the property of the outer record for this loop
+            x837Record.put( loopName, nestedRecord);
+
+            // TODO: investigate whether we need to make (and I think we do) subloops nullable in the schema
+        }
 
         throw new RuntimeException("Not yet implemented.");
     }

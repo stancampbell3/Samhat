@@ -1,12 +1,12 @@
 package net.explorys.samhat;
 
+import net.explorys.samhat.avro.Avro837Util;
 import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
@@ -20,31 +20,62 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    public enum AvroIdentifierType {
-        RECORD, FIELD
-    }
+    static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
 
     private ObjectMapper mapper;
     private CfSchemaParser parser;
+    private JsonNode segmentsFieldEntry;
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
         this.parser = new CfSchemaParser();
+        try {
+            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+        } catch (IOException e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+        }
     }
 
     public AvroSchemaGenerator(ObjectMapper mapper, CfSchemaParser parser) {
         this.mapper = mapper;
         this.parser = parser;
+        try {
+            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+        } catch (IOException e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+        }
     }
 
     public AvroSchemaGenerator(CfSchemaParser parser) {
         this.parser = parser;
         this.mapper = new ObjectMapper();
+        try {
+            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+        } catch (IOException e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+        }
     }
 
     public AvroSchemaGenerator(ObjectMapper mapper) {
         this.mapper = mapper;
         this.parser = new CfSchemaParser();
+        try {
+            segmentsFieldEntry = mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+        } catch (IOException e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+        }
     }
 
     List<ObjectNode> constructAvroJsonFromXmlSchema(List<ObjectNode> nodesList, Node elem) {
@@ -140,19 +171,6 @@ public class AvroSchemaGenerator {
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
     }
 
-    String makeAvroName(String rawName) {
-
-        // Avro doesn't like identifiers like "2003D" so just make them z2003D
-        String prefix = "z";
-
-        StringBuilder bld = new StringBuilder();
-        bld.append(prefix).append(rawName.substring(0, 1).toUpperCase());
-        if(rawName.length()>1) {
-            bld.append( rawName.substring(1).toUpperCase() );
-        }
-        return bld.toString();
-    }
-
     /**
      * Accept a record type definition as a Json object.  Return a wrapping Json object including namespace,
      * record type name, and field specifications.
@@ -161,31 +179,35 @@ public class AvroSchemaGenerator {
      * @param namespace
      * @return
      */
-    public ObjectNode annotateJsonRecordNode(ObjectNode jsonObject, String namespace) {
+    public ObjectNode annotateJsonRecordNode(ObjectNode jsonObject, String namespace) throws IOException {
 
         // Create the array node to hold the definition
         ObjectNode annotatedRecordNode = mapper.createObjectNode();
         annotatedRecordNode.put("type", "record");
         annotatedRecordNode.put("namespace", namespace);
-        annotatedRecordNode.put("name", makeAvroName(jsonObject.get("name").getTextValue()));
+        annotatedRecordNode.put("name", Avro837Util.makeAvroName(jsonObject.get("name").getTextValue()));
 
         // Add the fields definition
         ArrayNode fieldsNode = (ArrayNode)jsonObject.get("fields");
         ArrayNode schemaFieldsNode = mapper.createArrayNode();
         annotatedRecordNode.put("fields", schemaFieldsNode);
 
+        // Each loop may have zero or more segments which are not named
+        // The first field for each loop will be "segments" and is nullable
+        schemaFieldsNode.add(segmentsFieldEntry);
+
         Iterator<JsonNode> fieldsNodeElements = fieldsNode.getElements();
         while(fieldsNodeElements.hasNext()) {
             JsonNode fieldNode = fieldsNodeElements.next();
             ObjectNode fieldEntry = mapper.createObjectNode();
-            fieldEntry.put("name", makeAvroName(fieldNode.get("name").getTextValue()));
+            fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
 
             String type = fieldNode.get("type").getTextValue();
             // TODO: expand as we handle more Avro types, for now they're all schema defined record types
             if("string".equalsIgnoreCase(type)) {
                 fieldEntry.put("type", type);
             } else {
-                fieldEntry.put("type", makeAvroName(type));
+                fieldEntry.put("type", Avro837Util.makeAvroName(type));
             }
             schemaFieldsNode.add(fieldEntry);
         }
@@ -244,7 +266,7 @@ public class AvroSchemaGenerator {
     }
 
     /**
-     * Is this a primitive Avro type or a record type?
+     * Is this a primitive Avro type or a record type? (Including zSEGMENTS as a primitive as we don't turn it into a record)
      *
      * @param typeName
      * @return
@@ -254,9 +276,11 @@ public class AvroSchemaGenerator {
         // TODO: update when we handle more than string and record types
         if("string".equalsIgnoreCase(typeName)) {
             return true;
-        } else {
-            return false;
         }
+        if("zSEGMENTS".equalsIgnoreCase(typeName)) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -276,7 +300,7 @@ public class AvroSchemaGenerator {
             ObjectNode fieldNode = (ObjectNode)fieldsItr.next();
             String fieldType = fieldNode.get("type").getTextValue();
             if(!isPrimitiveAvroType(fieldType)) {
-                referredRecordTypesSet.add(makeAvroName(fieldType));
+                referredRecordTypesSet.add(Avro837Util.makeAvroName(fieldType));
             } else {
                 // NOP, don't add the type as a referred type
             }
@@ -305,14 +329,12 @@ public class AvroSchemaGenerator {
         HashMap<String, ObjectNode> labelToObjectNodeMap = new HashMap<>();
         for(ObjectNode recordTypeEntry : recordTypes) {
 
-            String recordTypeEntryName = makeAvroName(recordTypeEntry.get("name").getTextValue());
+            String recordTypeEntryName = Avro837Util.makeAvroName(recordTypeEntry.get("name").getTextValue());
             // Record the node by name (since our DependencyGraph only tracks the labels
             labelToObjectNodeMap.put( recordTypeEntryName, recordTypeEntry );
 
             // Get its dependencies: the record types to which this node refers in its fields array
             final Set<String> referredRecordTypes = getReferredRecordTypes(recordTypeEntry);
-
-            System.out.println(recordTypeEntryName+" refers to "+referredRecordTypes);
 
             // Record the dependencies
             dependencyGraph.addDependencyEntries(recordTypeEntryName, referredRecordTypes);
@@ -321,7 +343,6 @@ public class AvroSchemaGenerator {
         // Generate the schema defining record types in order
         System.out.println(dependencyGraph);
         List<String> dependenciesInOrder = dependencyGraph.getDependenciesInOrder();
-        System.out.println("Sanitized: "+dependenciesInOrder);
         for(String recordTypeEntryName : dependenciesInOrder) {
 
             ObjectNode schemaRecordType = annotateJsonRecordNode(labelToObjectNodeMap.get(recordTypeEntryName), namespace);

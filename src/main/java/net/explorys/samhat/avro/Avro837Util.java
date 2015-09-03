@@ -83,6 +83,19 @@ public class Avro837Util {
         return recordCount;
     }
 
+    public static String makeAvroName(String rawName) {
+
+        // Avro doesn't like identifiers like "2003D" so just make them z2003D
+        String prefix = "z";
+
+        StringBuilder bld = new StringBuilder();
+        bld.append(prefix).append(rawName.substring(0, 1).toUpperCase());
+        if(rawName.length()>1) {
+            bld.append( rawName.substring(1).toUpperCase() );
+        }
+        return bld.toString();
+    }
+
     /**
      * Given the organization and the ingestion timestamp, create a unique filename.  We use the UUID to ensure
      * that if we are writing to HDFS, no two instances will be writing to the same file.
@@ -91,7 +104,7 @@ public class Avro837Util {
      * @param timestamp
      * @return
      */
-    String makeFilename(String organization, long timestamp) {
+    public static String makeFilename(String organization, long timestamp) {
 
         return (new StringBuffer()).append("x837_flat_").
                 append("_").

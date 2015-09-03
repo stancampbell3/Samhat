@@ -8,6 +8,7 @@ import static org.junit.Assert.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 
@@ -21,13 +22,14 @@ public class Avro837FlatToExpandedConverterTest {
 
         try {
 
-            Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter();
+            InputStream schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            InputStream schem837ProAvro = getClass().getResourceAsStream("/x12_schema_837_professional_avro.json");
+
+            Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
 
             GenericRecord flatAvroRecord = createFlatTestRecordPro();
 
-            GenericRecord expandedAvroRecord = instance.expand837(flatAvroRecord,
-                    getClass().getResourceAsStream("/x12_schema_837_professional.xml"),
-                    getClass().getResourceAsStream("/x12_schema_837_professional_avro.json"));
+            GenericRecord expandedAvroRecord = instance.expand837(flatAvroRecord);
 
             assertNotNull(expandedAvroRecord);
 

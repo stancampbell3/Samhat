@@ -1,5 +1,6 @@
 package net.explorys.samhat;
 
+import net.explorys.samhat.avro.Avro837Util;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
@@ -7,6 +8,7 @@ import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -75,7 +77,10 @@ public class AvroSchemaGeneratorTest {
 
         try {
 
-            InputStream testSchema = getClass().getResourceAsStream("/x12_schema_837_professional_avro.json");
+            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            String jsonSchema = instance.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
+            ByteArrayInputStream testSchema = new ByteArrayInputStream(jsonSchema.getBytes());
+
             StringBuffer buf = new StringBuffer();
             BufferedReader rdr = new BufferedReader( new InputStreamReader(testSchema));
             String line;
@@ -125,7 +130,7 @@ public class AvroSchemaGeneratorTest {
 
         ObjectNode sampleNode = getTestNode();
 
-        String name = instance.makeAvroName(sampleNode.get("name").getTextValue());
+        String name = Avro837Util.makeAvroName(sampleNode.get("name").getTextValue());
 
         assertEquals("zX12", name);
     }
@@ -133,12 +138,18 @@ public class AvroSchemaGeneratorTest {
     @Test
     public void canAnnotateJsonRecordNode() {
 
-        ObjectNode sampleNode = getTestNode();
+        try {
+            ObjectNode sampleNode = getTestNode();
 
-        ObjectNode annotatedJsonRecordNode = instance.annotateJsonRecordNode(sampleNode, "net.explorys.samhat.z12.r837");
+            ObjectNode annotatedJsonRecordNode = instance.annotateJsonRecordNode(sampleNode, "net.explorys.samhat.z12.r837");
 
-        assertNotNull(annotatedJsonRecordNode);
+            assertNotNull(annotatedJsonRecordNode);
 
-        System.out.println("Annotated record: " + annotatedJsonRecordNode.toString());
+            System.out.println("Annotated record: " + annotatedJsonRecordNode.toString());
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            fail("Exception was thrown: "+e);
+        }
     }
 }

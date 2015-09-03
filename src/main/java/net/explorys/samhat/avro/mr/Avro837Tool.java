@@ -52,7 +52,7 @@ public class Avro837Tool extends Configured implements Tool {
 
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Schema inputSchema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
-        Schema outputSchema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
+        Schema outputSchema = new Schema.Parser().parse(new File(x837ExpandedSchemaPath));
 
         AvroJob.setMapperClass(conf, Avro837Mapper.class);
 

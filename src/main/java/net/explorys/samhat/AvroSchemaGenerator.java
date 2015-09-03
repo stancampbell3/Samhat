@@ -372,6 +372,9 @@ public class AvroSchemaGenerator {
         // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
 
         // Serialize to string
-        return schemaArrayOfDefs.toString();
+        String jsonSchema = schemaArrayOfDefs.toString();
+        System.out.println("JSON Avro Schema:"+jsonSchema);
+
+        return jsonSchema;
     }
 }

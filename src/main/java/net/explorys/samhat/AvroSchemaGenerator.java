@@ -21,8 +21,8 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : { \"type\" : \"array\", \"items\" : \"string\" } }";
-    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
+    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
+    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
     public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
 
     private ObjectMapper mapper;
@@ -138,7 +138,8 @@ public class AvroSchemaGenerator {
                     String fieldName = fieldAttributes.getNamedItem("name").getNodeValue();
                     ObjectNode fieldObject = mapper.createObjectNode();
                     fieldObject.put("name", fieldName);
-                    fieldObject.put("type", "string");  // TODO: get type from attributes
+                    // TODO: this will be sensitive as it's checked throughout the code, should handle other types based on attributes
+                    fieldObject.put("type", "string");
                     fields.add(fieldObject);
                 }
             }
@@ -227,7 +228,10 @@ public class AvroSchemaGenerator {
             } else {
                 ObjectNode fieldEntry = mapper.createObjectNode();
                 fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
-                fieldEntry.put("type", Avro837Util.makeAvroName(type));
+                ArrayNode nullableFieldEntryType = mapper.createArrayNode();
+                nullableFieldEntryType.add("null");
+                nullableFieldEntryType.add(Avro837Util.makeAvroName(type));
+                fieldEntry.put("type", nullableFieldEntryType);
                 schemaFieldsNode.add(fieldEntry);
             }
         }

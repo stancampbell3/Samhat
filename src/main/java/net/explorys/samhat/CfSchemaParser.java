@@ -154,7 +154,4 @@ public class CfSchemaParser {
         InputStream xmlStream = new FileInputStream(filename);
         return parseSchemaFromXml(xmlStream);
     }
-
-
-
 }

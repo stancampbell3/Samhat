@@ -16,14 +16,11 @@ import java.io.InputStream;
  */
 public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
 
-    private Schema outputSchema = null;
     private Avro837FlatToExpandedConverter converter = null;
 
     @Override
     public void configure(JobConf jobConf) {
         super.configure(jobConf);
-
-        outputSchema = AvroJob.getOutputSchema(jobConf);
 
         try {
             // TODO: figure out how we want to provide the needed schema files to the converter

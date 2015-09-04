@@ -26,9 +26,6 @@ import java.util.List;
  */
 public class Avro837FlatToExpandedConverter {
 
-    private InputStream cfSchemaXML;
-    private InputStream x837AvroSchemaStream;
-
     private CfSchemaParser cfSchemaParser;
     private Cf schema;
     private X12Parser x12Parser;
@@ -37,9 +34,6 @@ public class Avro837FlatToExpandedConverter {
     private Schema segmentsArraySchema;
 
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
-
-        this.cfSchemaXML = cfSchemaXML;
-        this.x837AvroSchemaStream = x837AvroSchemaStream;
 
         // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
         cfSchemaParser = new CfSchemaParser();

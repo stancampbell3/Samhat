@@ -1,16 +1,12 @@
 package net.explorys.samhat.avro.mr;
 
-import net.explorys.samhat.CfSchemaParsingException;
-import net.explorys.samhat.avro.SchemaNotFoundException;
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroMapper;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
-import org.pb.x12.FormatException;
 
 import java.io.IOException;
 import java.io.InputStream;

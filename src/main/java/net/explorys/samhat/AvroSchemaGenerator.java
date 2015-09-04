@@ -58,6 +58,12 @@ public class AvroSchemaGenerator {
         this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
+    /**
+     * Handy method for returning the Avro schema definition for a standard segments array type.
+     *
+     * @param parser
+     * @return
+     */
     public static Schema getSegmentsArraySchemaDefinition(Schema.Parser parser) {
         try {
             return parser.parse(SEGMENTS_ARRAY_SCHEMA_DEFINITION);
@@ -69,6 +75,13 @@ public class AvroSchemaGenerator {
         }
     }
 
+    /**
+     * Handy method for returning the JSON nodes necessary to specify the Avro for a standard Segments field for
+     * a loop.
+     *
+     * @param mapper
+     * @return
+     */
     public static JsonNode getSegmentsAvroTypeDefinition(ObjectMapper mapper) {
         try {
             return mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
@@ -80,6 +93,12 @@ public class AvroSchemaGenerator {
         }
     }
 
+    /**
+     * Handy method for returning the JSON nodes necessary to specify the Avro for a named type (a Record def).
+     *
+     * @param mapper
+     * @return
+     */
     public static JsonNode getSegmentsNamedAvroTypeDefinition(ObjectMapper mapper) {
         try {
             return mapper.readValue(SEGMENTS_NAMED_AVRO_TYPE_DEFINITION, JsonNode.class);
@@ -91,6 +110,15 @@ public class AvroSchemaGenerator {
         }
     }
 
+    /**
+     * Build our internal representation of an Avro schema from the specification residing in an XML DOM
+     * tree from the Node elem.  Recursively walk the schema and build the intermediate JSON tree which
+     * will be annotated to create a full Avro schema.
+     *
+     * @param nodesList
+     * @param elem
+     * @return
+     */
     List<ObjectNode> constructAvroJsonFromXmlSchema(List<ObjectNode> nodesList, Node elem) {
 
         // If nodesList is null, construct it
@@ -133,6 +161,7 @@ public class AvroSchemaGenerator {
                     // Process the child object
                     constructAvroJsonFromXmlSchema(nodesList, child);
                 } else {
+
                     // If a nested element has no children, it's a segment so create an field
                     NamedNodeMap fieldAttributes = child.getAttributes();
                     String fieldName = fieldAttributes.getNamedItem("name").getNodeValue();
@@ -180,6 +209,17 @@ public class AvroSchemaGenerator {
         return constructAvroJsonFromXmlSchema(xmlDoc);
     }
 
+    /**
+     * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
+     * representing the equivalent Avro schema record type.  The collection of JSON objects must be built into a
+     * complete AvroSchema before use by a serializer or deserializer.
+     *
+     * @param xmlFile
+     * @return
+     * @throws IOException
+     * @throws ParserConfigurationException
+     * @throws SAXException
+     */
     public List<ObjectNode> constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
 
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
@@ -226,6 +266,9 @@ public class AvroSchemaGenerator {
                 fieldEntry.put("type", segmentsTypeEntry);
                 schemaFieldsNode.add(fieldEntry);
             } else {
+
+                // for non-leaf nodes, make a nullable field of the given type
+
                 ObjectNode fieldEntry = mapper.createObjectNode();
                 fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
                 ArrayNode nullableFieldEntryType = mapper.createArrayNode();
@@ -237,56 +280,6 @@ public class AvroSchemaGenerator {
         }
 
         return annotatedRecordNode;
-    }
-
-    boolean isRecordTypeEntryEqual(ObjectNode rec1, ObjectNode rec2) {
-
-        if(rec1==rec2) {
-            return true;
-        } else {
-            if(null!=rec1 && null!=rec2) {
-
-                // Must be named the same
-                if(rec1.get("name").getTextValue().equalsIgnoreCase(rec2.get("name").getTextValue())) {
-
-                    ArrayNode rec1Fields = (ArrayNode)rec1.get("fields");
-                    ArrayNode rec2Fields = (ArrayNode)rec2.get("fields");
-
-                    // Must have same size fields list
-                    if(rec1Fields.size() != rec2Fields.size()) {
-                        return false;
-                    } else {
-
-                        // All fields must have the same name and type
-                        Iterator<JsonNode> rec1FieldsItr = rec1Fields.getElements();
-                        Iterator<JsonNode> rec2FieldsItr = rec2Fields.getElements();
-                        while(rec1FieldsItr.hasNext()) {
-
-                            ObjectNode rec1Node = (ObjectNode)rec1FieldsItr.next();
-                            ObjectNode rec2Node = (ObjectNode)rec2FieldsItr.next();
-
-                            String nameRec1Field = rec1Node.get("name").getTextValue();
-                            String nameRec2Field = rec2Node.get("name").getTextValue();
-
-                            String typeRec1Field = rec1Node.get("type").getTextValue();
-                            String typeRec2Field = rec2Node.get("type").getTextValue();
-
-                            if( !(nameRec1Field.equalsIgnoreCase( nameRec2Field ) &&
-                                    typeRec1Field.equalsIgnoreCase( typeRec2Field ))){
-                                return false;
-                            }
-                        }
-
-                        return true;  // all names and fields are equal
-                    }
-
-                } else {
-                    return false;
-                }
-            } else {
-                return false; // only one is non-null
-            }
-        }
     }
 
     /**

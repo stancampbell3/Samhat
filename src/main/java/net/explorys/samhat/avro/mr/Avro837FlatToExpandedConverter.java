@@ -4,7 +4,6 @@ import net.explorys.samhat.AvroSchemaGenerator;
 import net.explorys.samhat.CfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
 import net.explorys.samhat.avro.Avro837Util;
-import net.explorys.samhat.avro.SchemaNotFoundException;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
@@ -20,6 +19,10 @@ import java.util.List;
 
 /**
  * Created by stan.campbell on 9/3/15.
+ *
+ * Construct a class from a given Cf schema definition and an Avro schema definition capable of blowing our flat
+ * Avro record definition of an 837 instance into a fully nested Avro record.  For use in the MR Mapper.
+ *
  */
 public class Avro837FlatToExpandedConverter {
 
@@ -92,7 +95,7 @@ public class Avro837FlatToExpandedConverter {
      * @return
      */
     public GenericRecord expand837(GenericRecord flat837Record) throws
-            CfSchemaParsingException, IOException, FormatException, SchemaNotFoundException {
+            CfSchemaParsingException, IOException, FormatException {
 
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
@@ -107,7 +110,13 @@ public class Avro837FlatToExpandedConverter {
         return x837Record;
     }
 
-    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) throws SchemaNotFoundException {
+    /**
+     * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
+     * Sche
+     * @param x837Record
+     * @param currentLoop
+     */
+    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) {
 
         // An X12 is composed of loops and segments.
         // Segments contain data at this loop level.
@@ -117,9 +126,11 @@ public class Avro837FlatToExpandedConverter {
         // -- Construct an avro array object to hold the segment info
         GenericArray segmentsArray = new GenericData.Array<Utf8>(currentLoop.getSegments().size(), segmentsArraySchema);
         for(Segment segment : currentLoop.getSegments()) {
+
             // -- add the segment data into the array
             segmentsArray.add(new Utf8(segment.toString()));
         }
+
         // -- add the array object as a value of that field
         x837Record.put("zSEGMENTS", segmentsArray);
 
@@ -163,8 +174,6 @@ public class Avro837FlatToExpandedConverter {
                 // -- add the array object as a value of that field
                 x837Record.put(recordSchemaName, segmentsArray);
             }
-
-            // TODO: investigate whether we need to make (and I think we do) subloops nullable in the schema
         }
     }
 }

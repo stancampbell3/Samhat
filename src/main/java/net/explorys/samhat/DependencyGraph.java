@@ -49,7 +49,6 @@ public class DependencyGraph {
         TopologicalOrderIterator<String, DefaultEdge> itr = new TopologicalOrderIterator<>(graph);
         while(itr.hasNext()) {
             String v = itr.next();
-            System.out.println("\tVisiting "+v);
             result.add(0, v); // push onto the list
         }
 

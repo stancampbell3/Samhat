@@ -114,10 +114,14 @@ public class Avro837FlatToExpandedConverter {
         // Loops are nested collections of loops and segments.
 
         // Set data from segments
+        // -- Construct an avro array object to hold the segment info
+        GenericArray segmentsArray = new GenericData.Array<Utf8>(currentLoop.getSegments().size(), segmentsArraySchema);
         for(Segment segment : currentLoop.getSegments()) {
-            // TODO: add segment data to the "zSEGMENTS" array of strings field on the record
-            System.out.println("Segment: "+segment.toString());
+            // -- add the segment data into the array
+            segmentsArray.add(new Utf8(segment.toString()));
         }
+        // -- add the array object as a value of that field
+        x837Record.put("zSEGMENTS", segmentsArray);
 
         // For each loop in currentLoop
         for(Loop loop : currentLoop.getLoops()) {
@@ -148,7 +152,7 @@ public class Avro837FlatToExpandedConverter {
                 // Set the segment values of loop into the enclosing GenericRecord, x837Record
 
                 // -- Construct an avro array object to hold the segment info
-                GenericArray segmentsArray = new GenericData.Array<Utf8>(loop.getSegments().size(), segmentsArraySchema);
+                segmentsArray = new GenericData.Array<Utf8>(loop.getSegments().size(), segmentsArraySchema);
 
                 // -- Go through the segments and fill the array
                 for(Segment segment : loop.getSegments()) {

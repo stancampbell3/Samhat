@@ -1,531 +1,405 @@
 [
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2320",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2320",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330A",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330A",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330B",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330B",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330C",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330C",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330D",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330D",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330E",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330E",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330F",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330F",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330G",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330G",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330H",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330H",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2330I",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2330I",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2400",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2400",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2410",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2410",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2420A",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2420A",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2420B",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2420B",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2420C",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2420C",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2420D",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2420D",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2430",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2430",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2300",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2300",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310A",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310A",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310B",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310B",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310C",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310C",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310D",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310D",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310E",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310E",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2310F",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2310F",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2320",
-        "type":"z2320"
+        "name": "z2320",
+        "type": "z2320"
       },
       {
-        "name":"z2400",
-        "type":"z2400"
+        "name": "z2400",
+        "type": "z2400"
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2000A",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2000A",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010AA",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010AA",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010AB",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010AB",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010AC",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010AC",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2000C",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2000C",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010CA",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010CA",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2300",
-        "type":"z2300"
+        "name": "z2300",
+        "type": "z2300"
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"z2000B",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "z2000B",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010BA",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010BA",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2010BB",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z2010BB",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2300",
-        "type":"z2300"
+        "name": "z2300",
+        "type": "z2300"
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"zST",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "zST",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z1000A",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z1000A",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z1000B",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "z1000B",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"z2000A",
-        "type":"z2000A"
+        "name": "z2000A",
+        "type": "z2000A"
       },
       {
-        "name":"z2000B",
-        "type":"z2000B"
+        "name": "z2000B",
+        "type": "z2000B"
       },
       {
-        "name":"z2000C",
-        "type":"z2000C"
+        "name": "z2000C",
+        "type": "z2000C"
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"zGS",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "zGS",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"zST",
-        "type":"zST"
+        "name": "zST",
+        "type": "zST"
       },
       {
-        "name":"zSE",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSE",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"zISA",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "zISA",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"zGS",
-        "type":"zGS"
+        "name": "zGS",
+        "type": "zGS"
       },
       {
-        "name":"zGE",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zGE",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   },
   {
-    "type":"record",
-    "namespace":"net.explorys.samhat.z12.r837",
-    "name":"zX12",
-    "fields":[
+    "type": "record",
+    "namespace": "net.explorys.samhat.z12.r837",
+    "name": "zX12",
+    "fields": [
       {
-        "name":"zSEGMENTS",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zSEGMENTS",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       },
       {
-        "name":"zISA",
-        "type":"zISA"
+        "name": "zISA",
+        "type": "zISA"
       },
       {
-        "name":"zIEA",
-        "type":[
-          "null",
-          {
-            "type":"array",
-            "items":"string"
-          }
-        ]
+        "name": "zIEA",
+        "type": {
+          "type": "array",
+          "items": "string"
+        }
       }
     ]
   }

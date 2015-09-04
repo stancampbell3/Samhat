@@ -21,8 +21,8 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
-    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
+    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : { \"type\" : \"array\", \"items\" : \"string\" } }";
+    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
     public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
 
     private ObjectMapper mapper;

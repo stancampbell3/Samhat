@@ -34,7 +34,7 @@ public class Avro837Test {
         job.setConf(c);
         job.setX837FlatSchemaPath("src/test/resources/Flat837.avsc");
         job.setX837ExpandedSchemaPath("src/test/resources/x12_schema_837_professional_avro.json");
-        job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_e4b272a8-72fe-4093-8a5b-9606f02fc207.avro");
+        job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_professional.avro");
         job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
 
         job.run(null);
@@ -81,7 +81,7 @@ public class Avro837Test {
 
             final long NUM_RECS = 100;
             String flatDataSchemaPath = "src/test/resources/Flat837.avsc";
-            String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X223 Health Care Claim Institutional/X223-837-institutional-claim.edi";
+            String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
             String data = loadResourceDocument(x12837Path);
             byte[] bytes = data.getBytes("utf-8");
             ByteBuffer bytesBuffer = ByteBuffer.wrap(bytes);

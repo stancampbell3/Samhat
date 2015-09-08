@@ -24,6 +24,7 @@ public class AvroSchemaGenerator {
     public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
     public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
     public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
+    public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"X12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
 
     private ObjectMapper mapper;
     private CfSchemaParser parser;
@@ -90,6 +91,17 @@ public class AvroSchemaGenerator {
             // This should never occur because the field definition is static
             // However, if the definition is somehow changed and not tested (heaven forfend!)
             throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
+        }
+    }
+
+    public static ObjectNode getX12EnvelopeSchemaDefinition(ObjectMapper mapper) {
+        try {
+            return mapper.readValue(X12_ENVELOPE_SCHEMA_DEFINITION, ObjectNode.class);
+        } catch (IOException e){
+
+            // This should never occur because the field definition is static
+            // However, if the definition is somehow changed and not tested (heaven forfend!)
+            throw new RuntimeException("Definition of X12_ENVELOPE_SCHEMA_DEFINITION is faulty!", e);
         }
     }
 
@@ -367,6 +379,10 @@ public class AvroSchemaGenerator {
         }
 
         // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
+
+        // Add in envelope description
+        ObjectNode envelopeRecordEntry = getX12EnvelopeSchemaDefinition(mapper);
+        schemaArrayOfDefs.add(envelopeRecordEntry);
 
         // Serialize to string
         String jsonSchema = schemaArrayOfDefs.toString();

@@ -10,9 +10,9 @@ import java.util.*;
 /**
  * Created by stan.campbell on 9/2/15.
  */
-public class DependencyGraph {
+class DependencyGraph {
 
-    private DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<String, DefaultEdge>(DefaultEdge.class);
+    private DirectedGraph<String, DefaultEdge> graph = new DefaultDirectedGraph<>(DefaultEdge.class);
 
     public void addDependencyEntries(String label, Collection<String> refersTo) {
 

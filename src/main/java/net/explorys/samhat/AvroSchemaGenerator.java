@@ -135,7 +135,7 @@ public class AvroSchemaGenerator {
 
         // If nodesList is null, construct it
         if(null==nodesList) {
-            nodesList = new LinkedList<ObjectNode>();
+            nodesList = new LinkedList<>();
         }
 
         // Construct a new node
@@ -199,9 +199,7 @@ public class AvroSchemaGenerator {
     public List<ObjectNode> constructAvroJsonFromXmlSchema(Document xmlSchema) {
 
         Element doc = xmlSchema.getDocumentElement();
-        List<ObjectNode> jsonObj = constructAvroJsonFromXmlSchema(null, doc);
-
-        return jsonObj;
+        return constructAvroJsonFromXmlSchema(null, doc);
     }
 
     /**
@@ -303,13 +301,7 @@ public class AvroSchemaGenerator {
     boolean isPrimitiveAvroType(String typeName) {
 
         // TODO: update when we handle more than string and record types
-        if("string".equalsIgnoreCase(typeName)) {
-            return true;
-        }
-        if("zSEGMENTS".equalsIgnoreCase(typeName)) {
-            return true;
-        }
-        return false;
+        return "string".equalsIgnoreCase(typeName) || "zSEGMENTS".equalsIgnoreCase(typeName);
     }
 
     /**
@@ -330,9 +322,9 @@ public class AvroSchemaGenerator {
             String fieldType = fieldNode.get("type").getTextValue();
             if(!isPrimitiveAvroType(fieldType)) {
                 referredRecordTypesSet.add(Avro837Util.makeAvroName(fieldType));
-            } else {
-                // NOP, don't add the type as a referred type
             }
+            // Otherwise NOP, don't add the type as a referred type
+
         }
         return referredRecordTypesSet;
     }

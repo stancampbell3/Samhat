@@ -11,9 +11,6 @@ import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -86,7 +83,8 @@ public class AvroSchemaGeneratorTest {
             String line;
             do {
                 line = rdr.readLine();
-                buf.append(line+"\n");
+                buf.append(line);
+                buf.append("\n");
             } while(line!=null);
 
             String schema = buf.toString();

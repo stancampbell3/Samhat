@@ -20,9 +20,9 @@ public class DependencyGraphTest {
         DependencyGraph instance = new DependencyGraph();
         instance.addDependencyEntries("A", Arrays.asList("B"));
         instance.addDependencyEntries("B", Arrays.asList("C", "D"));
-        instance.addDependencyEntries("C", new ArrayList<String>());
+        instance.addDependencyEntries("C", new ArrayList<>());
         instance.addDependencyEntries("D", Arrays.asList("E"));
-        instance.addDependencyEntries("E", new ArrayList<String>());
+        instance.addDependencyEntries("E", new ArrayList<>());
     }
 
     @Test
@@ -31,9 +31,9 @@ public class DependencyGraphTest {
         DependencyGraph instance = new DependencyGraph();
         instance.addDependencyEntries("A", Arrays.asList("B"));
         instance.addDependencyEntries("B", Arrays.asList("C", "D"));
-        instance.addDependencyEntries("C", new ArrayList<String>());
+        instance.addDependencyEntries("C", new ArrayList<>());
         instance.addDependencyEntries("D", Arrays.asList("E"));
-        instance.addDependencyEntries("E", new ArrayList<String>());
+        instance.addDependencyEntries("E", new ArrayList<>());
 
         List<String> labelsInOrder = instance.getDependenciesInOrder();
         HashMap<String, Integer> labelToOrderMap = new HashMap<>();

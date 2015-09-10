@@ -26,24 +26,21 @@ import java.util.List;
  */
 public class Avro837FlatToExpandedConverter {
 
-    private CfSchemaParser cfSchemaParser;
-    private Cf schema;
     private X12Parser x12Parser;
-    private Schema.Parser avroParser;
     private Schema x837AvroSchema;
     private Schema segmentsArraySchema;
 
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
 
         // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
-        cfSchemaParser = new CfSchemaParser();
-        schema = cfSchemaParser.parseSchemaFromXml(cfSchemaXML);
+        CfSchemaParser cfSchemaParser = new CfSchemaParser();
+        Cf schema = cfSchemaParser.parseSchemaFromXml(cfSchemaXML);
 
         // Instantiate our x12Parser for the given cfSchema
         x12Parser = new X12Parser(schema);
 
         // Instantiate our Avro schemas.  This is expected to be a Union schema defining all of our record types.
-        avroParser = (new Schema.Parser());
+        Schema.Parser avroParser = (new Schema.Parser());
         x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
         segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
     }
@@ -129,7 +126,7 @@ public class Avro837FlatToExpandedConverter {
 
         // Set data from segments
         // -- Construct an avro array object to hold the segment info
-        GenericArray segmentsArray = new GenericData.Array<Utf8>(currentLoop.getSegments().size(), segmentsArraySchema);
+        GenericArray<Utf8> segmentsArray = new GenericData.Array<>(currentLoop.getSegments().size(), segmentsArraySchema);
         for(Segment segment : currentLoop.getSegments()) {
 
             // -- add the segment data into the array
@@ -168,7 +165,7 @@ public class Avro837FlatToExpandedConverter {
                 // Set the segment values of loop into the enclosing GenericRecord, x837Record
 
                 // -- Construct an avro array object to hold the segment info
-                segmentsArray = new GenericData.Array<Utf8>(loop.getSegments().size(), segmentsArraySchema);
+                segmentsArray = new GenericData.Array<>(loop.getSegments().size(), segmentsArraySchema);
 
                 // -- Go through the segments and fill the array
                 for(Segment segment : loop.getSegments()) {

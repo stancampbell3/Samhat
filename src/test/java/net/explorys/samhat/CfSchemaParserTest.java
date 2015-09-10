@@ -2,7 +2,6 @@ package net.explorys.samhat;
 
 import static org.junit.Assert.*;
 
-import org.codehaus.jackson.node.ObjectNode;
 import org.junit.Test;
 import org.pb.x12.Cf;
 import org.pb.x12.X12;
@@ -11,7 +10,6 @@ import org.w3c.dom.Element;
 import scala.Option;
 
 import java.io.*;
-import java.util.List;
 
 /**
  * CfSchemaParserTest

@@ -4,16 +4,11 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.node.ArrayNode;
-import org.codehaus.jackson.node.ObjectNode;
 import org.pb.x12.Cf;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import java.io.*;
-import java.util.LinkedList;
-import java.util.List;
 
 /**
  * CfSchemaParser
@@ -36,7 +31,7 @@ public class CfSchemaParser {
      * @return
      * @throws CfSchemaParsingException
      */
-    Cf processSchema(Cf schema, Node current) throws CfSchemaParsingException {
+    private Cf processSchema(Cf schema, Node current) throws CfSchemaParsingException {
 
         if(null==schema) {
             schema = new Cf("X12"); // top level
@@ -122,7 +117,7 @@ public class CfSchemaParser {
      * @return
      * @throws CfSchemaParsingException
      */
-    public Cf parseSchemaFromXml(Document doc) throws CfSchemaParsingException {
+    private Cf parseSchemaFromXml(Document doc) throws CfSchemaParsingException {
 
         try {
             // First element should be "X12"

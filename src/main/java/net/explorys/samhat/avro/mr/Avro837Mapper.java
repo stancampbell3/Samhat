@@ -1,9 +1,7 @@
 package net.explorys.samhat.avro.mr;
 
-import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.mapred.AvroCollector;
-import org.apache.avro.mapred.AvroJob;
 import org.apache.avro.mapred.AvroMapper;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
@@ -37,8 +35,7 @@ public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
 
         try {
 
-            GenericRecord outRecord = null;
-            outRecord = converter.expand837(inRecord);
+            GenericRecord outRecord = converter.expand837(inRecord);
             collector.collect(outRecord);
         } catch (Exception e) {
             throw new RuntimeException("Error in mapping: "+e,e);

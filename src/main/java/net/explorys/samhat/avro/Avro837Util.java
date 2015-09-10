@@ -13,7 +13,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.file.*;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.UUID;
 
@@ -104,7 +103,7 @@ public class Avro837Util {
      * @param timestamp
      * @return
      */
-    public static String makeFilename(String organization, long timestamp) {
+    static String makeFilename(String organization, long timestamp) {
 
         return (new StringBuffer()).append("x837_flat_").
                 append("_").

@@ -1,273 +1,273 @@
 [
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2320",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2320",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330A",
-        "type": [
+        "name":"z2330A",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330B",
-        "type": [
+        "name":"z2330B",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330C",
-        "type": [
+        "name":"z2330C",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330D",
-        "type": [
+        "name":"z2330D",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330E",
-        "type": [
+        "name":"z2330E",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330F",
-        "type": [
+        "name":"z2330F",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330G",
-        "type": [
+        "name":"z2330G",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330H",
-        "type": [
+        "name":"z2330H",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2330I",
-        "type": [
+        "name":"z2330I",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       }
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2400",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2400",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2410",
-        "type": [
+        "name":"z2410",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2420A",
-        "type": [
+        "name":"z2420A",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2420B",
-        "type": [
+        "name":"z2420B",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2420C",
-        "type": [
+        "name":"z2420C",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2420D",
-        "type": [
+        "name":"z2420D",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2430",
-        "type": [
+        "name":"z2430",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       }
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2300",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2300",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310A",
-        "type": [
+        "name":"z2310A",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310B",
-        "type": [
+        "name":"z2310B",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310C",
-        "type": [
+        "name":"z2310C",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310D",
-        "type": [
+        "name":"z2310D",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310E",
-        "type": [
+        "name":"z2310E",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2310F",
-        "type": [
+        "name":"z2310F",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2320",
-        "type": [
+        "name":"z2320",
+        "type":[
           "null",
           "z2320"
         ]
       },
       {
-        "name": "z2400",
-        "type": [
+        "name":"z2400",
+        "type":[
           "null",
           "z2400"
         ]
@@ -275,80 +275,80 @@
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2000A",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2000A",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010AA",
-        "type": [
+        "name":"z2010AA",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010AB",
-        "type": [
+        "name":"z2010AB",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010AC",
-        "type": [
+        "name":"z2010AC",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       }
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2000C",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2000C",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010CA",
-        "type": [
+        "name":"z2010CA",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2300",
-        "type": [
+        "name":"z2300",
+        "type":[
           "null",
           "z2300"
         ]
@@ -356,43 +356,43 @@
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "z2000B",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"z2000B",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010BA",
-        "type": [
+        "name":"z2010BA",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2010BB",
-        "type": [
+        "name":"z2010BB",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2300",
-        "type": [
+        "name":"z2300",
+        "type":[
           "null",
           "z2300"
         ]
@@ -400,57 +400,57 @@
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "zST",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"zST",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z1000A",
-        "type": [
+        "name":"z1000A",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z1000B",
-        "type": [
+        "name":"z1000B",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "z2000A",
-        "type": [
+        "name":"z2000A",
+        "type":[
           "null",
           "z2000A"
         ]
       },
       {
-        "name": "z2000B",
-        "type": [
+        "name":"z2000B",
+        "type":[
           "null",
           "z2000B"
         ]
       },
       {
-        "name": "z2000C",
-        "type": [
+        "name":"z2000C",
+        "type":[
           "null",
           "z2000C"
         ]
@@ -458,104 +458,127 @@
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "zGS",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"zGS",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "zST",
-        "type": [
+        "name":"zST",
+        "type":[
           "null",
           "zST"
         ]
       },
       {
-        "name": "zSE",
-        "type": [
+        "name":"zSE",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       }
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "zISA",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"zISA",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "zGS",
-        "type": [
+        "name":"zGS",
+        "type":[
           "null",
           "zGS"
         ]
       },
       {
-        "name": "zGE",
-        "type": [
+        "name":"zGE",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       }
     ]
   },
   {
-    "type": "record",
-    "namespace": "net.explorys.samhat.z12.r837",
-    "name": "zX12",
-    "fields": [
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"zX12",
+    "fields":[
       {
-        "name": "zSEGMENTS",
-        "type": [
+        "name":"zSEGMENTS",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
       },
       {
-        "name": "zISA",
-        "type": [
+        "name":"zISA",
+        "type":[
           "null",
           "zISA"
         ]
       },
       {
-        "name": "zIEA",
-        "type": [
+        "name":"zIEA",
+        "type":[
           "null",
           {
-            "type": "array",
-            "items": "string"
+            "type":"array",
+            "items":"string"
           }
         ]
+      }
+    ]
+  },
+  {
+    "type":"record",
+    "namespace":"net.explorys.samhat.z12.r837",
+    "name":"zX12Envelope",
+    "fields":[
+      {
+        "name":"source_filename",
+        "type":"string"
+      },
+      {
+        "name":"ingested_timestamp",
+        "type":"long"
+      },
+      {
+        "name":"organization",
+        "type":"string"
+      },
+      {
+        "name":"data",
+        "type":"zX12"
       }
     ]
   }

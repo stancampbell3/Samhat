@@ -24,7 +24,7 @@ public class AvroSchemaGenerator {
     public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
     public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
     public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
-    public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"X12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
+    public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"zX12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
 
     private ObjectMapper mapper;
     private CfSchemaParser parser;

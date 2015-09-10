@@ -94,11 +94,22 @@ public class Avro837FlatToExpandedConverter {
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
 
-        // TODO: expand our generated schema to include the sourceFile, ingestionTimestamp, etc. as well as the expanded x12/837 data
+        // Build the envelope and copy over the source_file, ingestion timestamp, etc.
+        Schema envSchema = findRecordSchema(Avro837Util.makeAvroName("X12Envelope"));
+        GenericRecord envRecord = new GenericData.Record(envSchema);
+
+        envRecord.put("source_filename", flat837Record.get("source_filename"));
+        envRecord.put("ingested_timestamp", flat837Record.get("ingested_timestamp"));
+        envRecord.put("organization", flat837Record.get("organization"));
 
         // Build the GenericRecord by walking the parsed X12 instance
         Schema x12Schema = findRecordSchema(Avro837Util.makeAvroName("X12"));
         GenericRecord x837Record = new GenericData.Record(x12Schema);
+
+        // Stick it in the envelope
+        envRecord.put("data", x837Record);
+
+        // Build the rest of the nested records
         walkTheLoop(x837Record, x837);
 
         return x837Record;

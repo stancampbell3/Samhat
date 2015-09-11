@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 import java.io.*;
 
 /**
- * CfSchemaParser
+ * XmlBasedCfSchemaParser
  *
  * The parser will load a Cf schema definition from the provided InputStream.
  * The schema definition is given in XML and consists of a starting and ending x12_schema tag,
@@ -20,7 +20,7 @@ import java.io.*;
  * elements.  Single <segment../> elements will be treated
  * as fields/segments in the X12 schema.
  */
-public class CfSchemaParser {
+public class XmlBasedCfSchemaParser implements ICfSchemaParser {
 
     /**
      * Internally, processSchema walks the XML document whose head is current and returns
@@ -75,7 +75,7 @@ public class CfSchemaParser {
      * @throws IOException
      * @throws SAXException
      */
-    public Document loadXmlSchema(InputStream xmlStream) throws ParserConfigurationException, IOException, SAXException {
+    protected Document loadXmlSchema(InputStream xmlStream) throws ParserConfigurationException, IOException, SAXException {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -89,20 +89,21 @@ public class CfSchemaParser {
     }
 
     /**
-     * parseSchemaFromXml loads the Cf schema definition from the xml input stream and yields an equivalent
+     * parseSchema loads the Cf schema definition from the xml input stream and yields an equivalent
      * X12 Cf instance.
      *
      * @param schemaStream
      * @return
      * @throws CfSchemaParsingException
      */
-    public Cf parseSchemaFromXml(InputStream schemaStream) throws CfSchemaParsingException {
+    @Override
+    public Cf parseSchema(InputStream schemaStream) throws CfSchemaParsingException {
 
         try {
 
             Document doc = loadXmlSchema(schemaStream);
 
-            return parseSchemaFromXml(doc);
+            return parseSchema(doc);
 
         } catch (Exception e) {
             throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
@@ -110,14 +111,14 @@ public class CfSchemaParser {
     }
 
     /**
-     * parseSchemaFromXml loads the Cf schema definition from the xml document and yields an equivalent
+     * parseSchema loads the Cf schema definition from the xml document and yields an equivalent
      * X12 Cf instance.
      *
      * @param doc
      * @return
      * @throws CfSchemaParsingException
      */
-    private Cf parseSchemaFromXml(Document doc) throws CfSchemaParsingException {
+    public Cf parseSchema(Document doc) throws CfSchemaParsingException {
 
         try {
             // First element should be "X12"
@@ -136,7 +137,7 @@ public class CfSchemaParser {
     }
 
     /**
-     * parseSchemaFromXml loads the Cf schema definition from the file and yields an equivalent
+     * parseSchema loads the Cf schema definition from the file and yields an equivalent
      * X12 Cf instance.
      *
      * @param filename
@@ -144,9 +145,10 @@ public class CfSchemaParser {
      * @throws CfSchemaParsingException
      * @throws FileNotFoundException
      */
-    public Cf parseSchemaFromXml(String filename) throws CfSchemaParsingException, FileNotFoundException {
+    @Override
+    public Cf parseSchema(String filename) throws CfSchemaParsingException, FileNotFoundException {
 
         InputStream xmlStream = new FileInputStream(filename);
-        return parseSchemaFromXml(xmlStream);
+        return parseSchema(xmlStream);
     }
 }

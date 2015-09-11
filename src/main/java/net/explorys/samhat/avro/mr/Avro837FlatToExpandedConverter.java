@@ -1,8 +1,9 @@
 package net.explorys.samhat.avro.mr;
 
 import net.explorys.samhat.AvroSchemaGenerator;
-import net.explorys.samhat.CfSchemaParser;
+import net.explorys.samhat.XmlBasedCfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
+import net.explorys.samhat.ICfSchemaParser;
 import net.explorys.samhat.avro.Avro837Util;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
@@ -33,8 +34,8 @@ public class Avro837FlatToExpandedConverter {
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
 
         // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
-        CfSchemaParser cfSchemaParser = new CfSchemaParser();
-        Cf schema = cfSchemaParser.parseSchemaFromXml(cfSchemaXML);
+        ICfSchemaParser ICfSchemaParser = new XmlBasedCfSchemaParser();
+        Cf schema = ICfSchemaParser.parseSchema(cfSchemaXML);
 
         // Instantiate our x12Parser for the given cfSchema
         x12Parser = new X12Parser(schema);

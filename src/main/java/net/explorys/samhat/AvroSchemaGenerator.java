@@ -27,25 +27,25 @@ public class AvroSchemaGenerator {
     public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"zX12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
 
     private ObjectMapper mapper;
-    private CfSchemaParser parser;
+    private XmlBasedCfSchemaParser parser;
     private JsonNode segmentsFieldEntry;  // Inserted into the fields list
     private JsonNode segmentsTypeEntry;   // Inserted as the type of a leaf field like "1000A"
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
-        this.parser = new CfSchemaParser();
+        this.parser = new XmlBasedCfSchemaParser();
         this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
         this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
-    public AvroSchemaGenerator(ObjectMapper mapper, CfSchemaParser parser) {
+    public AvroSchemaGenerator(ObjectMapper mapper, XmlBasedCfSchemaParser parser) {
         this.mapper = mapper;
         this.parser = parser;
         this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
         this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
-    public AvroSchemaGenerator(CfSchemaParser parser) {
+    public AvroSchemaGenerator(XmlBasedCfSchemaParser parser) {
         this.parser = parser;
         this.mapper = new ObjectMapper();
         this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
@@ -54,7 +54,7 @@ public class AvroSchemaGenerator {
 
     public AvroSchemaGenerator(ObjectMapper mapper) {
         this.mapper = mapper;
-        this.parser = new CfSchemaParser();
+        this.parser = new XmlBasedCfSchemaParser();
         this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
         this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }

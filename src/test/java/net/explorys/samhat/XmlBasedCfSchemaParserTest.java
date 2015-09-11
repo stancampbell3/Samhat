@@ -12,21 +12,21 @@ import scala.Option;
 import java.io.*;
 
 /**
- * CfSchemaParserTest
+ * XmlBasedCfSchemaParserTest
  *
  * Ensure that we can load a Cf schema definition from XML, create a Cf from it, and that it behaves
  * the same as the original Institutional schema from X12ParserConfigurations.getInstitutionalCf()
  */
-public class CfSchemaParserTest {
+public class XmlBasedCfSchemaParserTest {
 
-    final CfSchemaParser instance = new CfSchemaParser();
+    final XmlBasedCfSchemaParser instance = new XmlBasedCfSchemaParser();
     final X12toAvroUtil parser = new X12toAvroUtil();
 
     @Test
     public void canParseStream() {
 
         try {
-            Cf schema = instance.parseSchemaFromXml(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
+            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
 
             assertNotNull(schema);
 
@@ -41,7 +41,7 @@ public class CfSchemaParserTest {
     {
 
         try {
-            Cf schema = instance.parseSchemaFromXml("./src/test/resources/x12_schema_837_professional.xml");
+            Cf schema = instance.parseSchema("./src/test/resources/x12_schema_837_professional.xml");
 
             assertNotNull(schema);
 
@@ -58,7 +58,7 @@ public class CfSchemaParserTest {
             String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X223 Health Care Claim Institutional/X223-837-institutional-claim.edi";
 
             // Parse our schema from XML
-            Cf schema = instance.parseSchemaFromXml(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
+            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
 
             // Load our source 837 in X12 EDI format
             String x12Data1 = loadResourceDocument(x12837Path);

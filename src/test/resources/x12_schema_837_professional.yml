@@ -11,10 +11,12 @@ X12:
          _segment: NM1
          _segmentQual: 41
          _segmentQualPos: 1
+
        1000B:
          _segment: NM1
          _segmentQual: 40
          _segmentQualPos: 1
+
        2000A:
          _segment: HL
          _segmentQual: 20
@@ -44,6 +46,7 @@ X12:
            _segment: NM1
            _segmentQual: PR
            _segmentQualPos: 1
+
        2000C:
           _segment: HL
           _segmentQual: 23

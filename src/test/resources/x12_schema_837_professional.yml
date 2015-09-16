@@ -1,156 +1,258 @@
 X12:
- ISA:
-  _segment: ISA
-  GS:
-     _segment: GS
-     ST:
-       _segment: ST
-       _segmentQual: 837
-       _segmentQualPos: 1
-       1000A:
-         _segment: NM1
-         _segmentQual: 41
-         _segmentQualPos: 1
+  - ISA:
+    - _segment: ISA
+    - GS:
+      - _segment: GS
+      - ST:
+        - _segment: ST
+        - _segmentQual: 837
+        - _segmentQualPos: 1
+        - 1000A:
+          - _segment: NM1
+          - _segmentQual: 41
+          - _segmentQualPos: 1
 
-       1000B:
-         _segment: NM1
-         _segmentQual: 40
-         _segmentQualPos: 1
+        - 1000B:
+          - _segment: NM1
+          - _segmentQual: 40
+          - _segmentQualPos: 1
 
-       2000A:
-         _segment: HL
-         _segmentQual: 20
-         _segmentQualPos: 3
-         2010AA:
-           _segment: NM1
-           _segmentQual: 85
-           _segmentQualPos: 1
-         2010AB:
-           _segment: NM1
-           _segmentQual: 87
-           _segmentQualPos: 1
-         2010AC:
-           _segment: NM1
-           _segmentQual: PE
-           _segmentQualPos: 1
+        - 2000A:
+          - _segment: HL
+          - _segmentQual: 20
+          - _segmentQualPos: 3
+          - 2010AA:
+            - _segment: NM1
+            - _segmentQual: 85
+            - _segmentQualPos: 1
+          - 2010AB:
+            - _segment: NM1
+            - _segmentQual: 87
+            - _segmentQualPos: 1
+          - 2010AC:
+            - _segment: NM1
+            - _segmentQual: PE
+            - _segmentQualPos: 1
 
-       2000B:
-        _segment: HL
-        _segmentQual: 22
-        _segmentQualPos: 3
-        2010BA:
-           _segment: NM1
-           _segmentQual: IL
-           _segmentQualPos: 1
-        2010BB:
-           _segment: NM1
-           _segmentQual: PR
-           _segmentQualPos: 1
+        - 2000B:
+          - _segment: HL
+          - _segmentQual: 22
+          - _segmentQualPos: 3
+          - 2010BA:
+              - _segment: NM1
+              - _segmentQual: IL
+              - _segmentQualPos: 1
+          - 2010BB:
+              - _segment: NM1
+              - _segmentQual: PR
+              - _segmentQualPos: 1
+          - 2300:
+              - _segment: CLM
+              - 2310A:
+                - _segment: NM1
+                _ _segmentQual: DN,P3
+                _ _segmentQualPos: 1
+              - 2310B:
+                - _segment: NM1
+                _ _segmentQual: 82
+                _ _segmentQualPos: 1
+              - 2310C:
+                - _segment: NM1
+                _ _segmentQual: 77,FA,LA,TL
+                _ _segmentQualPos: 1
+              - 2310D:
+                - _segment: NM1
+                _ _segmentQual: DQ
+                _ _segmentQualPos: 1
+              - 2310E:
+                - _segment: NM1
+                _ _segmentQual: PW
+                _ _segmentQualPos: 1
+              - 2310F:
+                - _segment: NM1
+                _ _segmentQual: 45
+                _ _segmentQualPos: 1
+              - 2320:
+                - _segment: SBR
+                - 2330A:
+                  - _segment: NM1
+                  - _segmentQual: IL
+                  _ _segmentQualPos: 1
+                - 2330B:
+                  - _segment: NM1
+                  - _segmentQual: PR
+                  _ _segmentQualPos: 1
+                - 2330C:
+                  - _segment: NM1
+                  - _segmentQual: DN,P3
+                  _ _segmentQualPos: 1
+                - 2330D:
+                  - _segment: NM1
+                  - _segmentQual: 82
+                  _ _segmentQualPos: 1
+                - 2330E:
+                  - _segment: NM1
+                  - _segmentQual: 77,FA,LA,TL
+                  _ _segmentQualPos: 1
+                - 2330F:
+                  - _segment: NM1
+                  - _segmentQual: DQ
+                  _ _segmentQualPos: 1
+                - 2330G:
+                  - _segment: NM1
+                  - _segmentQual: 85
+                  _ _segmentQualPos: 1
+              - 2400:
+                - _segment: LX
+                - 2410:
+                  - _segment: LIN
+                - 2420A:
+                  - _segment: NM1
+                  - _segmentQual: 82
+                  _ _segmentQualPos: 1
+                - 2420B:
+                  - _segment: NM1
+                  - _segmentQual: QB
+                  _ _segmentQualPos: 1
+                - 2420C:
+                  - _segment: NM1
+                  - _segmentQual: 77,FA,LA,TL
+                  _ _segmentQualPos: 1
+                - 2420D:
+                  - _segment: NM1
+                  - _segmentQual: DQ
+                  _ _segmentQualPos: 1
+                - 2420E:
+                  - _segment: NM1
+                  - _segmentQual: DK
+                  _ _segmentQualPos: 1
+                - 2420F:
+                  - _segment: NM1
+                  - _segmentQual: DN,P3
+                  _ _segmentQualPos: 1
+                - 2420G:
+                  - _segment: NM1
+                  - _segmentQual: PW
+                  _ _segmentQualPos: 1
+                - 2420H:
+                  - _segment: NM1
+                  - _segmentQual: 45
+                  _ _segmentQualPos: 1
+                - 2430:
+                  - _segment: SVD
+                - 2440:
+                  - _segment: LQ
 
-       2000C:
-          _segment: HL
-          _segmentQual: 23
-          _segmentQualPos: 1
-          2010CA:
-           _segment: NM1
-           _segmentQual: QC
-           _segmentQualPos: 1
+        - 2000C:
+          - _segment: HL
+          - _segmentQual: 23
+          - _segmentQualPos: 3
+          - 2010CA:
+            - _segment: NM1
+            - _segmentQual: QC
+            - _segmentQualPos: 1
 
-          2300:
-            _segment: CLM
-            2310A:
-             _segment: NM1
-             _segmentQual: 71
-             _segmentQualPos: 1
-            2310B:
-             _segment: NM1
-             _segmentQual: 72
-             _segmentQualPos: 1
-            2310C:
-             _segment: NM1
-             _segmentQual: ZZ
-             _segmentQualPos: 1
-            2310D:
-             _segment: NM1
-             _segmentQual: 82
-             _segmentQualPos: 1
-            2310E:
-             _segment: NM1
-             _segmentQual: 77
-             _segmentQualPos: 1
-            2310F:
-             _segment: NM1
-             _segmentQual: DN
-             _segmentQualPos: 1
-            2320:
-              _segment: SBR
-              2330A:
-                _segment: NM1
-                _segmentQual: IL
-                _segmentQualPos: 1
-              2330B:
-                 _segment: NM1
-                 _segmentQual: PR
-                 _segmentQualPos: 1
-              2330C:
-                 _segment: NM1
-                 _segmentQual: 71
-                 _segmentQualPos: 1
-              2330D:
-                 _segment: NM1
-                 _segmentQual: 72
-                 _segmentQualPos: 1
-              2330E:
-                 _segment: NM1
-                 _segmentQual: ZZ
-                 _segmentQualPos: 1
-              2330F:
-                 _segment: NM1
-                 _segmentQual: 77
-                 _segmentQualPos: 1
-              2330G:
-                 _segment: NM1
-                 _segmentQual: 82
-                 _segmentQualPos: 1
-              2330H:
-                   _segment: NM1
-                   _segmentQual: DN
-                   _segmentQualPos: 1
-              2330I:
-                   _segment: NM1
-                   _segmentQual: 85
-                   _segmentQualPos: 1
+          - 2300:
+            - _segment: CLM
+            - 2310A:
+              - _segment: NM1
+              - _segmentQual: DN,P3
+              - _segmentQualPos: 1
+            - 2310B:
+              - _segment: NM1
+              - _segmentQual: 82
+              - _segmentQualPos: 1
+            - 2310C:
+              - _segment: NM1
+              - _segmentQual: 77,FA,LA,TL
+              - _segmentQualPos: 1
+            - 2310D:
+              - _segment: NM1
+              - _segmentQual: DQ
+              - _segmentQualPos: 1
+            - 2310E:
+              - _segment: NM1
+              - _segmentQual: PW
+              - _segmentQualPos: 1
+            - 2310F:
+              - _segment: NM1
+              - _segmentQual: 45
+              - _segmentQualPos: 1
+            - 2320:
+              - _segment: SBR
+              - 2330A:
+                - _segment: NM1
+                - _segmentQual: IL
+                - _segmentQualPos: 1
+              - 2330B:
+                  - _segment: NM1
+                  - _segmentQual: PR
+                  - _segmentQualPos: 1
+              - 2330C:
+                  - _segment: NM1
+                  - _segmentQual: DN,P3
+                  - _segmentQualPos: 1
+              - 2330D:
+                  - _segment: NM1
+                  - _segmentQual: 82
+                  - _segmentQualPos: 1
+              - 2330E:
+                  - _segment: NM1
+                  - _segmentQual: 77,FA,LA,TL
+                  - _segmentQualPos: 1
+              - 2330F:
+                  - _segment: NM1
+                  - _segmentQual: DQ
+                  - _segmentQualPos: 1
+              - 2330G:
+                  - _segment: NM1
+                  - _segmentQual: 85
+                  - _segmentQualPos: 1
 
+            - 2400:
+              - _segment: LX
+              - 2410:
+                - _segment: LIN
+              - 2420A:
+                - _segment: NM1
+                - _segmentQual: 82
+                - _segmentQualPos: 1
+              - 2420B:
+                  - _segment: NM1
+                  - _segmentQual: QB
+                  - _segmentQualPos: 1
+              - 2420C:
+                  - _segment: NM1
+                  - _segmentQual: 77,FA,LA,TL
+                  - _segmentQualPos: 1
+              - 2420D:
+                  - _segment: NM1
+                  - _segmentQual: DQ
+                  - _segmentQualPos: 1
+              - 2420E:
+                  - _segment: NM1
+                  - _segmentQual: DK
+                  - _segmentQualPos: 1
+              - 2420F:
+                  - _segment: NM1
+                  - _segmentQual: DN,P3
+                  - _segmentQualPos: 1
+              - 2420G:
+                  - _segment: NM1
+                  - _segmentQual: PW
+                  - _segmentQualPos: 1
+              - 2420H:
+                  - _segment: NM1
+                  - _segmentQual: 45
+                  - _segmentQualPos: 1
+              - 2430:
+                  - _segment: SVD
+              - 2440:
+                  - _segment: LQ
 
-
-            2400:
-              _segment: LX
-              _segmentQual: LIN
-              _segmentQualPos: 1
-              2410:
-                _segment: LIN
-              2420A:
-                _segment: NM1
-                _segmentQual: 72
-                _segmentQualPos: 1
-              2420B:
-                  _segment: NM1
-                  _segmentQual: 72
-                  _segmentQualPos: 1
-              2420C:
-                  _segment: NM1
-                  _segmentQual: 72
-                  _segmentQualPos: 1
-              2420D:
-                  _segment: NM1
-                  _segmentQual: 72
-                  _segmentQualPos: 1
-              2430:
-                  _segment: SVD
-
-     SE:
-       _segment: SE
-  GE:
-    _segment: GE
- IEA:
-  _segment: IEA
+      - SE:
+        - _segment: SE
+    - GE:
+    - _segment: GE
+  - IEA:
+    - _segment: IEA

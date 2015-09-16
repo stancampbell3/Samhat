@@ -8,7 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by stan.campbell on 9/10/15.
@@ -21,9 +21,10 @@ public class YamlBasedCfSchemaParser implements ICfSchemaParser {
         try {
 
             Object doc = loadYamlSchema(schemaStream);
-            return processSchema(null, doc);
+            return processSchema(null, doc, null);
 
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CfSchemaParsingException("Couldn't parse Cf from the spec:" + e);
         }
     }
@@ -42,52 +43,100 @@ public class YamlBasedCfSchemaParser implements ICfSchemaParser {
     public Cf parseSchema(Object doc) throws CfSchemaParsingException {
 
         try {
-            // Should contain one field labelled X12
-            Map<String, Object> node = (Map<String, Object>) doc;
 
-            return processSchema(null, doc);
+            // Should contain one field labelled X12
+            return processSchema(null, doc, null);
         } catch (Exception e) {
             throw new CfSchemaParsingException("Couldn't parse Cf from the spec:" + e);
         }
     }
 
-    private Cf processSchema(Cf schema, Object current) throws CfSchemaParsingException {
+    private String getFieldValue(ArrayList<Map<String,Object>> fields, String fieldName) {
+
+        if(null==fieldName || null==fields) {
+            return null;
+        }
+
+        for(Map<String,Object> field : fields) {
+            if(field.containsKey(fieldName)) {
+                return field.get(fieldName).toString();
+            }
+        }
+
+        return null;
+    }
+
+    private Cf processSchema(Cf schema, Object current, String currentName) throws CfSchemaParsingException {
 
         try {
 
+            System.out.println("Processing node: "+currentName);
+
             if (null == schema) {
+                // Start the root of the tree
                 schema = new Cf("X12");
             }
-            Map<String, Object> nodes = (Map<String, Object>) current;
-            for (String childNodeName : nodes.keySet()) {
 
-                System.out.println("Processing: "+childNodeName);
+            System.out.println("Class is: "+current.getClass());
+            if(current instanceof Map) {
+                System.out.println("IT'S A MAP!");
+                Map<String, Object> fieldMap = (Map<String, Object>)current;
 
-                // Ignore the built-ins
-                // TODO: make the built-ins an enumeration or something
-                if (!isBuiltIn(childNodeName)) {
-                    // Represents a nested data type
-                    Map<String, Object> childNode = (Map<String, Object>) nodes.get(childNodeName);
-                    Object segmentName = childNode.get("_segment");
-                    Cf childSchema;
-                    if (!(null==segmentName)) {
-                        if (!childNode.containsKey("segmentQual")) {
-                            childSchema = schema.addChild(childNodeName, segmentName.toString());
-                        } else {
-                            String segmentQual = childNode.get("_segmentQual").toString();
-                            int segmentQualPos = Integer.parseInt(childNode.get("_segmentQualPos").toString());
-                            childSchema = schema.addChild(childNodeName, segmentName.toString(), segmentQual, segmentQualPos);
-                        }
-                        if (null == childSchema) {
-                            // failed to construct the child, throw an error
-                            throw new CfSchemaParsingException("Error in parsing on child node: " + childNodeName);
-                        }
-                    } else {
-                        // TODO: log this, it's just the beginning of the schema processing
-                        childSchema = schema;
-                    }
-                    processSchema(childSchema, childNode);
+                // For each of it's fields wich are not primitive, process those schemas
+                for(String fieldName : fieldMap.keySet()) {
+                    System.out.println("Process schema for field: "+fieldName);
+                    processSchema(schema, fieldMap.get(fieldName), fieldName);
                 }
+            }
+            if(current instanceof List) {
+                System.out.println("IT'S A LIST!");
+                ArrayList<Map<String, Object>> fieldList = (ArrayList<Map<String, Object>>)current;
+
+                // Add a new node for this record to the schema
+                Cf childSchema;
+
+                // Don't double create X12
+                if(!"X12".equalsIgnoreCase(currentName)) {
+                    // -- determine the segment, and if present the segmentQual and segmentQualPos
+                    String segment = getFieldValue(fieldList, "_segment");
+                    if (null == segment) {
+                        throw new CfSchemaParsingException("No _segment specification for: " + currentName);
+                    }
+                    String segmentQual = getFieldValue(fieldList, "_segmentQual");
+                    if (null == segmentQual) {
+
+                        // Add a node to the schema for this record type and segment
+                        childSchema = schema.addChild(currentName, segment);
+
+                    } else {
+                        String segmentQualPos = getFieldValue(fieldList, "_segmentQualPos");
+                        if (null == segmentQualPos) {
+                            throw new CfSchemaParsingException("No _segmentQualPos specification for: " + currentName);
+                        }
+
+                        // Add a node to the schema for this record type, segment, with qualifier at position
+                        childSchema = schema.addChild(currentName, segment, segmentQual, new Integer(segmentQualPos));
+                    }
+                } else {
+                    childSchema = schema;
+                }
+
+                // For each field
+                for(Map<String, Object> field : fieldList) {
+
+                    // TODO: fix this.. the algorithm is not at all pretty
+                    // only one record should be in the map
+                    String fieldName = field.keySet().iterator().next();
+                    if(!isBuiltIn(fieldName)) {
+
+                        // process this field
+                        processSchema(childSchema, field.get(fieldName), fieldName);
+                    }
+                }
+            }
+            if(current instanceof String) {
+
+                System.out.println("IT'S A STRING!");
             }
 
             return schema;

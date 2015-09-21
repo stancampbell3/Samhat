@@ -6,6 +6,8 @@ import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
@@ -70,8 +72,13 @@ public class Avro837Tool extends Configured implements Tool {
         conf.setNumReduceTasks(0);
 
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
-        Schema inputSchema = new Schema.Parser().parse(new File(x837FlatSchemaPath));
-        Schema outputSchema = new Schema.Parser().parse(new File(x837ExpandedSchemaPath));
+        Path path = new Path(x837FlatSchemaPath);
+        FileSystem fs = FileSystem.get(conf);
+        FSDataInputStream fsDataInputStream = fs.open(path);
+        Schema inputSchema = new Schema.Parser().parse(fsDataInputStream);
+        path = new Path(x837ExpandedSchemaPath);
+        fsDataInputStream = fs.open(path);
+        Schema outputSchema = new Schema.Parser().parse(fsDataInputStream);
 
         AvroJob.setMapperClass(conf, Avro837Mapper.class);
 
@@ -96,12 +103,12 @@ public class Avro837Tool extends Configured implements Tool {
             } else {
 
                 Avro837Tool tool = new Avro837Tool();
-                tool.setX837FlatDataPath(args[0]);
-                tool.setOutputPath(args[1]);
-                tool.setX837FlatSchemaPath(args[2]);
-                tool.setX837ExpandedSchemaPath(args[3]);
+                tool.setX837FlatDataPath(args[2]);
+                tool.setOutputPath(args[3]);
+                tool.setX837FlatSchemaPath(args[4]);
+                tool.setX837ExpandedSchemaPath(args[5]);
 
-                int res = ToolRunner.run(new Configuration(), tool, args);
+                int res = ToolRunner.run(tool.getConf(), tool, args);
                 System.exit(res);
             }
 

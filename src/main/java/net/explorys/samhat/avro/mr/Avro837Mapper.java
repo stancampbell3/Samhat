@@ -3,6 +3,9 @@ package net.explorys.samhat.avro.mr;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroMapper;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.Reporter;
 
@@ -22,8 +25,11 @@ public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
 
         try {
             // TODO: figure out how we want to provide the needed schema files to the converter
-            InputStream cfSchemaXml = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            InputStream avroSchema = getClass().getResourceAsStream("/x12_schema_837_professional_avro.json");
+            Path path = new Path("x12_schema_837_professional.xml");
+            FileSystem fileSystem = FileSystem.get(jobConf);
+            InputStream cfSchemaXml = fileSystem.open(path);
+            path = new Path("x12_schema_837_professional_avro.json");
+            InputStream avroSchema = fileSystem.open(path);
 
             converter = new Avro837FlatToExpandedConverter(cfSchemaXml, avroSchema);
         } catch (Exception e) {

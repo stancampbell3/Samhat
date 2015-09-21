@@ -4,6 +4,7 @@ import java.io.File;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroJob;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.FileInputFormat;
@@ -12,6 +13,7 @@ import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
 import org.apache.hadoop.util.Tool;
+import org.apache.hadoop.util.ToolRunner;
 
 /**
  * Derives from SourceDataStaging's test, so totally lifted from doug miel's code
@@ -23,16 +25,32 @@ public class Avro837Tool extends Configured implements Tool {
     private String x837FlatSchemaPath = null;
     private String x837ExpandedSchemaPath = null;
 
-    public void setX837FlatDataPath(String path) {
-        x837FlatDataPath = path;
+    public String getX837FlatDataPath() {
+        return x837FlatDataPath;
     }
 
-    public void setOutputPath(String path) {
-        outputPath = path;
+    public void setX837FlatDataPath(String x837FlatDataPath) {
+        this.x837FlatDataPath = x837FlatDataPath;
     }
 
-    public void setX837FlatSchemaPath(String path) {
-        x837FlatSchemaPath = path;
+    public String getOutputPath() {
+        return outputPath;
+    }
+
+    public void setOutputPath(String outputPath) {
+        this.outputPath = outputPath;
+    }
+
+    public String getX837FlatSchemaPath() {
+        return x837FlatSchemaPath;
+    }
+
+    public void setX837FlatSchemaPath(String x837FlatSchemaPath) {
+        this.x837FlatSchemaPath = x837FlatSchemaPath;
+    }
+
+    public String getX837ExpandedSchemaPath() {
+        return x837ExpandedSchemaPath;
     }
 
     public void setX837ExpandedSchemaPath(String x837ExpandedSchemaPath) {
@@ -42,7 +60,8 @@ public class Avro837Tool extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
 
-        JobConf conf = new JobConf(getConf(), Avro837Tool.class);
+        Configuration baseConf = getConf();
+        JobConf conf = new JobConf(baseConf, Avro837Tool.class);
         conf.setJobName("Avro837Tool");
 
         FileInputFormat.setInputPaths(conf, new Path(x837FlatDataPath));
@@ -65,5 +84,30 @@ public class Avro837Tool extends Configured implements Tool {
         }
 
         return 0;
+    }
+
+    public static void main(String[] args) {
+
+        try {
+
+            if(args.length<4) {
+
+                System.out.println("Usage: java -jar Samhat net.explorys.samhat.avro.mr.Avro837Tool <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
+            } else {
+
+                Avro837Tool tool = new Avro837Tool();
+                tool.setX837FlatDataPath(args[0]);
+                tool.setOutputPath(args[1]);
+                tool.setX837FlatSchemaPath(args[2]);
+                tool.setX837ExpandedSchemaPath(args[3]);
+
+                int res = ToolRunner.run(new Configuration(), tool, args);
+                System.exit(res);
+            }
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

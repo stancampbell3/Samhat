@@ -66,13 +66,12 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         Job job = new Job(conf, "Avro837FlatTool");
 
-        AvroJob.setOutputKeySchema(job,
-                Pair.getPairSchema(Schema.create(Schema.Type.LONG),
-                        flatSchema));
+        AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.LONG));
 
         job.setInputFormatClass(TextInputFormat.class);
+        job.setMapperClass(Avro837FlatMapper.class);
 
-        AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.LONG));
+        AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.STRING));
         AvroJob.setMapOutputValueSchema(job, flatSchema);
 
         FileInputFormat.setInputPaths(job, new Path(getX837EDIDataPath()));

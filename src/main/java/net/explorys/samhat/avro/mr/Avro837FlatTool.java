@@ -1,14 +1,17 @@
 package net.explorys.samhat.avro.mr;
 
 import org.apache.avro.Schema;
-import org.apache.avro.mapred.AvroJob;
+import org.apache.avro.generic.GenericData;
+import org.apache.avro.mapred.AvroValue;
+import org.apache.avro.mapred.Pair;
+import org.apache.avro.mapreduce.AvroJob;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapred.FileInputFormat;
-import org.apache.hadoop.mapred.FileOutputFormat;
-import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
+import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
@@ -52,12 +55,7 @@ public class Avro837FlatTool extends Configured implements Tool {
     @Override
     public int run(String[] args) throws Exception {
 
-        Configuration baseConf = getConf();
-        JobConf conf = new JobConf(baseConf, Avro837FlatTool.class);
-        conf.setJobName("Avro837FlatTool");
-
-        FileInputFormat.setInputPaths(conf, new Path(getX837EDIDataPath()));
-        FileOutputFormat.setOutputPath(conf, new Path(getOutputPath()));
+        Configuration conf = getConf();
 
         Path path = new Path(getX837FlatSchemaPath());
         FileSystem fileSystem = FileSystem.get(conf);
@@ -66,14 +64,19 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         conf.set("output.schema", getX837FlatSchemaPath());
 
-        conf.setNumReduceTasks(0);
-
         Job job = new Job(conf, "Avro837FlatTool");
 
-        AvroJob.setMapperClass(conf, Avro837FlatMapper.class);
-        AvroJob.setOutputSchema(conf, flatSchema);
+        AvroJob.setOutputKeySchema(job,
+                Pair.getPairSchema(Schema.create(Schema.Type.LONG),
+                        flatSchema));
 
         job.setInputFormatClass(TextInputFormat.class);
+
+        AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.LONG));
+        AvroJob.setMapOutputValueSchema(job, flatSchema);
+
+        FileInputFormat.setInputPaths(job, new Path(getX837EDIDataPath()));
+        FileOutputFormat.setOutputPath(job, new Path(getOutputPath()));
 
         job.waitForCompletion(true);
 

@@ -3,6 +3,7 @@ package net.explorys.samhat.avro.mr;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroKey;
 import org.apache.avro.mapred.AvroMapper;
 import org.apache.avro.mapred.AvroValue;
@@ -55,6 +56,11 @@ public class Avro837FlatMapper extends AvroMapper implements Mapper<LongWritable
         }
 
         return flatSchema;
+    }
+
+    @Override
+    public void map(Object datum, AvroCollector collector, Reporter reporter) throws IOException {
+        super.map(datum, collector, reporter);
     }
 
     @Override

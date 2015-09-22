@@ -4,10 +4,13 @@ import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroJob;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapred.*;
+import org.apache.hadoop.mapred.FileInputFormat;
+import org.apache.hadoop.mapred.FileOutputFormat;
+import org.apache.hadoop.mapred.JobConf;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
+import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -63,14 +66,14 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         conf.setNumReduceTasks(0);
 
-        AvroJob.setMapperClass(conf, Avro837FlatMapper.class);
+        Job job = new Job(conf, "Avro837FlatTool");
 
+        AvroJob.setMapperClass(conf, Avro837FlatMapper.class);
         AvroJob.setOutputSchema(conf, flatSchema);
 
-        RunningJob rj = JobClient.runJob(conf);
-        if (!rj.isSuccessful()) {
-            throw new Exception("Job Failed!");
-        }
+        job.setInputFormatClass(TextInputFormat.class);
+
+        job.waitForCompletion(true);
 
         return 0;
     }

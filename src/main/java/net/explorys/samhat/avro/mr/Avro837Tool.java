@@ -1,6 +1,7 @@
 package net.explorys.samhat.avro.mr;
 
 import java.io.File;
+import java.io.InputStream;
 
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroJob;
@@ -66,15 +67,15 @@ public class Avro837Tool extends Configured implements Tool {
         JobConf conf = new JobConf(baseConf, Avro837Tool.class);
         conf.setJobName("Avro837Tool");
 
-        FileInputFormat.setInputPaths(conf, new Path(x837FlatDataPath));
-        FileOutputFormat.setOutputPath(conf, new Path(outputPath));
+        FileInputFormat.setInputPaths(conf, new Path(getX837FlatDataPath()));
+        FileOutputFormat.setOutputPath(conf, new Path(getOutputPath()));
 
         conf.setNumReduceTasks(0);
 
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Path path = new Path(x837FlatSchemaPath);
         FileSystem fs = FileSystem.get(conf);
-        FSDataInputStream fsDataInputStream = fs.open(path);
+        InputStream fsDataInputStream = fs.open(path);
         Schema inputSchema = new Schema.Parser().parse(fsDataInputStream);
         path = new Path(x837ExpandedSchemaPath);
         fsDataInputStream = fs.open(path);
@@ -97,9 +98,9 @@ public class Avro837Tool extends Configured implements Tool {
 
         try {
 
-            if(args.length<4) {
+            if(args.length<6) {
 
-                System.out.println("Usage: java -jar Samhat net.explorys.samhat.avro.mr.Avro837Tool <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
+                System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool -libjars $LIBJARS <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
             } else {
 
                 Avro837Tool tool = new Avro837Tool();

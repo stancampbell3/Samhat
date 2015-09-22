@@ -64,6 +64,8 @@ public class Avro837FlatTool extends Configured implements Tool {
         InputStream fsDataInputStream = fileSystem.open(path);
         Schema flatSchema = new Schema.Parser().parse(fsDataInputStream);
 
+        conf.set("output.schema", getX837FlatSchemaPath());
+
         conf.setNumReduceTasks(0);
 
         Job job = new Job(conf, "Avro837FlatTool");

@@ -1,15 +1,12 @@
 package net.explorys.samhat.avro.mr;
 
 import org.apache.avro.Schema;
-import org.apache.avro.generic.GenericData;
-import org.apache.avro.mapred.AvroValue;
-import org.apache.avro.mapred.Pair;
 import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
@@ -66,13 +63,15 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         Job job = new Job(conf, "Avro837FlatTool");
 
-        AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.LONG));
-
         job.setInputFormatClass(TextInputFormat.class);
+        // job.setOutputFormatClass(AvroKeyValueOutputFormat.class);
         job.setMapperClass(Avro837FlatMapper.class);
+        job.setReducerClass(Avro837FlatReducer.class);
 
         AvroJob.setMapOutputKeySchema(job, Schema.create(Schema.Type.STRING));
         AvroJob.setMapOutputValueSchema(job, flatSchema);
+        AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.STRING));
+        AvroJob.setOutputValueSchema(job, flatSchema);
 
         FileInputFormat.setInputPaths(job, new Path(getX837EDIDataPath()));
         FileOutputFormat.setOutputPath(job, new Path(getOutputPath()));

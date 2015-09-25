@@ -3,10 +3,7 @@ package net.explorys.samhat.avro.mr;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
-import org.apache.avro.mapred.AvroCollector;
-import org.apache.avro.mapred.AvroKey;
-import org.apache.avro.mapred.AvroMapper;
-import org.apache.avro.mapred.AvroValue;
+import org.apache.avro.mapred.*;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
@@ -88,6 +85,8 @@ public class Avro837FlatMapper extends Mapper<LongWritable, Text, AvroKey<String
         GenericRecord record = wrapData(value, "sourcefile", 0L, "org");
 
         // TODO: create a better key
-        context.write( new AvroKey<String>("BOGUS"), new AvroValue<GenericRecord>(record));
+        AvroKey<String> avroKey = new AvroKey(key.toString());
+        AvroValue<GenericRecord> avroValue = new AvroValue(record);
+        context.write( avroKey, avroValue);
     }
 }

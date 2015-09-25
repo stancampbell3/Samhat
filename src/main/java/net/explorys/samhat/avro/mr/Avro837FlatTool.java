@@ -3,6 +3,8 @@ package net.explorys.samhat.avro.mr;
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.mapreduce.AvroJob;
+import org.apache.avro.mapreduce.AvroKeyOutputFormat;
+import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -66,13 +68,12 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Avro837FlatMapper.class);
-        // job.setReducerClass(Avro837FlatReducer.class);
 
         job.setMapOutputKeyClass(Text.class);
         job.setMapOutputValueClass(Flat837.class);
 
         AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.STRING));
-        AvroJob.setOutputValueSchema(job, flatSchema);
+        AvroJob.setOutputValueSchema(job, Flat837.getClassSchema());
 
         FileInputFormat.setInputPaths(job, new Path(getX837EDIDataPath()));
         FileOutputFormat.setOutputPath(job, new Path(getOutputPath()));

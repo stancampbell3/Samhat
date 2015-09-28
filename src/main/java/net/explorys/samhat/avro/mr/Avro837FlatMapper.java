@@ -2,6 +2,8 @@ package net.explorys.samhat.avro.mr;
 
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
+import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapred.AvroValue;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.LongWritable;
@@ -16,7 +18,7 @@ import java.nio.ByteBuffer;
 /**
  * Created by stan.campbell on 9/21/15.
  */
-public class Avro837FlatMapper extends Mapper<LongWritable, Text, Text, Flat837> {
+public class Avro837FlatMapper extends Mapper<LongWritable, Text, AvroKey<String>, AvroValue<Flat837>> {
 
     static final String FLAT_SCHEMA = "{\n" +
             "   \"namespace\":\"net.explorys.samhat.z12.r837\",\n" +
@@ -81,6 +83,6 @@ public class Avro837FlatMapper extends Mapper<LongWritable, Text, Text, Flat837>
         Flat837 record = wrapData(value, "sourcefile", 0L, "org");
 
         // TODO: make a better key
-        context.write(new Text(keyStr), record);
+        context.write(new AvroKey<String>(keyStr), new AvroValue<Flat837>(record));
     }
 }

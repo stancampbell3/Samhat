@@ -2,6 +2,8 @@ package net.explorys.samhat.avro.mr;
 
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
+import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapred.AvroValue;
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.avro.mapreduce.AvroKeyOutputFormat;
 import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
@@ -69,7 +71,7 @@ public class Avro837FlatTool extends Configured implements Tool {
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Avro837FlatMapper.class);
 
-        job.setMapOutputKeyClass(Text.class);
+        job.setMapOutputKeyClass(String.class);
         job.setMapOutputValueClass(Flat837.class);
 
         AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.STRING));

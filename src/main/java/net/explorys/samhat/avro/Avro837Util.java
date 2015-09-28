@@ -7,9 +7,7 @@ import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.io.DatumWriter;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URI;
 import java.nio.ByteBuffer;
 import java.nio.file.*;
@@ -82,6 +80,50 @@ public class Avro837Util {
         return recordCount;
     }
 
+    public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
+                                 String organization, ByteBuffer data,
+                                 URI fileSystemURI, String outputPath) throws IOException {
+
+        FileSystem fileSystem = FileSystems.getFileSystem(fileSystemURI);
+        Path filePath = fileSystem.getPath(outputPath, makeFilename(organization, ingestionTimestamp));
+        File outputFile = filePath.toFile();
+
+        DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
+        DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        dataFileWriter.create(x12FlatDataSchema, outputFile);
+
+        GenericRecord x837 = new GenericData.Record(x12FlatDataSchema);
+        x837.put("source_filename", sourceFile);
+        x837.put("ingested_timestamp", ingestionTimestamp);
+        x837.put("organization", organization);
+        x837.put("data", data);
+
+        dataFileWriter.append(x837);
+        dataFileWriter.close();
+        return 1L;
+    }
+
+    public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
+                                 String organization, ByteBuffer data,
+                                 String outputFilename) throws IOException {
+
+        File outputFile = new File(outputFilename);
+
+        DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
+        DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        dataFileWriter.create(x12FlatDataSchema, outputFile);
+
+        GenericRecord x837 = new GenericData.Record(x12FlatDataSchema);
+        x837.put("source_filename", sourceFile);
+        x837.put("ingested_timestamp", ingestionTimestamp);
+        x837.put("organization", organization);
+        x837.put("data", data);
+
+        dataFileWriter.append(x837);
+        dataFileWriter.close();
+        return 1L;
+    }
+
     public static String makeAvroName(String rawName) {
 
         // Avro doesn't like identifiers like "2003D" so just make them z2003D
@@ -113,5 +155,57 @@ public class Avro837Util {
                 append("_").
                 append((UUID.randomUUID()).toString()).
                 append(".avro").toString();
+    }
+
+    /**
+     * Utility.  Read the file at path, yielding a String with its contents.
+     *
+     * @param path
+     * @return
+     * @throws IOException
+     */
+    static String loadResourceDocument(String path) throws IOException {
+
+        StringBuilder bld = new StringBuilder();
+        BufferedReader rdr = new BufferedReader(new FileReader(path));
+        String line;
+        do {
+            line = rdr.readLine();
+            bld.append(line);
+            bld.append("\n");
+        } while(line!=null);
+        return bld.toString();
+    }
+
+    public static void main(String[] args) {
+
+        try {
+
+            if(args.length<6) {
+
+                System.out.println("Usage: java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath");
+            } else {
+                String flatDataSchemaPath = args[0]; // "src/test/resources/Flat837.avsc";
+                String x12837Path = args[1]; // "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
+                String orgName = args[2]; // "BigHospital_Subsystem"
+                String orgId = args[3]; // "80"
+                String ediPath = args[4]; // file:///... or hdfs:///...
+                String outputPath = args[5];
+
+
+                long timeStamp = System.currentTimeMillis();
+
+                String dataDoc = loadResourceDocument(x12837Path);
+                byte[] bytes = dataDoc.getBytes("utf-8");
+                ByteBuffer data = ByteBuffer.wrap(bytes);
+
+                Avro837Util util = new Avro837Util(flatDataSchemaPath);
+
+                util.writeX12FlatData(ediPath, System.currentTimeMillis(), orgName, data, outputPath);
+            }
+        } catch(Exception e) {
+
+            e.printStackTrace();
+        }
     }
 }

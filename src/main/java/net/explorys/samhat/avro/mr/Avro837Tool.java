@@ -74,10 +74,13 @@ public class Avro837Tool extends Configured implements Tool {
 
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Path path = new Path(x837FlatSchemaPath);
+        // DEBUG
+        System.out.println("x837FlatSchemaPath: "+path);
         FileSystem fs = FileSystem.get(conf);
         InputStream fsDataInputStream = fs.open(path);
         Schema inputSchema = new Schema.Parser().parse(fsDataInputStream);
         path = new Path(x837ExpandedSchemaPath);
+        System.out.println("x837ExpandedSchemaPath: "+path);
         fsDataInputStream = fs.open(path);
         Schema outputSchema = new Schema.Parser().parse(fsDataInputStream);
 
@@ -98,16 +101,20 @@ public class Avro837Tool extends Configured implements Tool {
 
         try {
 
-            if(args.length<6) {
+            if(args.length<7) {
 
                 System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool -libjars $LIBJARS <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
             } else {
 
+                // DEBUG
+                for(int i=0;i<args.length;i++) {
+                    System.out.println("ARG"+i+": "+args[i]);
+                }
                 Avro837Tool tool = new Avro837Tool();
-                tool.setX837FlatDataPath(args[2]);
-                tool.setOutputPath(args[3]);
-                tool.setX837FlatSchemaPath(args[4]);
-                tool.setX837ExpandedSchemaPath(args[5]);
+                tool.setX837FlatDataPath(args[3]);
+                tool.setOutputPath(args[4]);
+                tool.setX837FlatSchemaPath(args[5]);
+                tool.setX837ExpandedSchemaPath(args[6]);
 
                 int res = ToolRunner.run(tool.getConf(), tool, args);
                 System.exit(res);

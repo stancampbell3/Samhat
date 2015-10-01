@@ -1,11 +1,16 @@
 package net.explorys.samhat.avro;
 
+import net.explorys.samhat.avro.mr.Avro837FlatToExpandedConverter;
+import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
+import org.apache.avro.file.DataFileReader;
 import org.apache.avro.file.DataFileWriter;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericDatumWriter;
 import org.apache.avro.generic.GenericRecord;
+import org.apache.avro.io.DatumReader;
 import org.apache.avro.io.DatumWriter;
+import org.apache.avro.specific.SpecificDatumReader;
 
 import java.io.*;
 import java.net.URI;
@@ -181,33 +186,59 @@ public class Avro837Util {
 
         try {
 
-            if(args.length<7) {
+            // TODO: better args parsing
+            if(args.length<5) {
 
-                System.out.println("Usage: java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util [flat|expand] <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath");
+                System.out.println("Usage: \n");
+                System.out.println("java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util flat <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath>");
+                System.out.println("OR");
+                System.out.println("java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util expand <avroExpandedSchemaPath> <xmlSchemaPath> <inputPath> <outputPath>");
             } else {
                 if("flat".equalsIgnoreCase(args[0])) {
 
                     String flatDataSchemaPath = args[1]; // "src/test/resources/Flat837.avsc";
-                    String x12837Path = args[2]; // "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
+                    String ediPath = args[2]; // "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
                     String orgName = args[3]; // "BigHospital_Subsystem"
+
+                    // TODO: why is orgId fixed
                     String orgId = args[4]; // "80"
-                    String ediPath = args[5]; // file:///... or hdfs:///...
+                    String sourceFilename = args[5]; // SomeRemoteFilename
                     String outputPath = args[6];
 
-
-                    long timeStamp = System.currentTimeMillis();
-
-                    String dataDoc = loadResourceDocument(x12837Path);
+                    String dataDoc = loadResourceDocument(ediPath);
                     byte[] bytes = dataDoc.getBytes("utf-8");
                     ByteBuffer data = ByteBuffer.wrap(bytes);
 
                     Avro837Util util = new Avro837Util(flatDataSchemaPath);
 
-                    util.writeX12FlatData(ediPath, System.currentTimeMillis(), orgName, data, outputPath);
+                    util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, data, outputPath);
                 } else {
 
-                    String avroSchemaPath = args[1];
-                    String xmlchemaPath = args[2];
+                    String avroExpandedSchemaPath = args[1];
+                    String xmlSchemaPath = args[2];
+                    String inputPath = args[3];
+                    String outputPath = args[4];
+
+                    // Deserialize the Flat837
+                    DatumReader<Flat837> flat837DatumReader = new SpecificDatumReader<Flat837>(Flat837.class);
+                    DataFileReader<Flat837> dataFileReader = new DataFileReader<Flat837>(new File(inputPath), flat837DatumReader);
+
+                    // TODO: handle no "next"
+                    Flat837 flat837 = dataFileReader.next();
+
+                    InputStream avroExpandedSchemaStr = new FileInputStream(avroExpandedSchemaPath);
+                    InputStream xmlSchemaStr = new FileInputStream(xmlSchemaPath);
+
+                    Avro837FlatToExpandedConverter converter = new Avro837FlatToExpandedConverter(xmlSchemaStr, avroExpandedSchemaStr);
+
+                    GenericRecord expanded837 = converter.expand837(flat837);
+
+                    // Write the expanded837 to outputPath
+                    DatumWriter<GenericRecord> expandedDatumWriter = new GenericDatumWriter<GenericRecord>(converter.getX837AvroSchema());
+                    DataFileWriter<GenericRecord> expandedDataFileWriter = new DataFileWriter<GenericRecord>(expandedDatumWriter);
+                    expandedDataFileWriter.create(converter.getX837AvroSchema(), new File(outputPath));
+                    expandedDataFileWriter.append(expanded837);
+                    expandedDataFileWriter.close();
 
                 }
             }

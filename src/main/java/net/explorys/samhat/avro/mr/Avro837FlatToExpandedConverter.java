@@ -5,6 +5,7 @@ import net.explorys.samhat.XmlBasedCfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
 import net.explorys.samhat.ICfSchemaParser;
 import net.explorys.samhat.avro.Avro837Util;
+import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
@@ -86,7 +87,7 @@ public class Avro837FlatToExpandedConverter {
      * @param flat837Record
      * @return
      */
-    public GenericRecord expand837(GenericRecord flat837Record) throws
+    public GenericRecord expand837(Flat837 flat837Record) throws
             CfSchemaParsingException, IOException, FormatException {
 
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
@@ -96,9 +97,14 @@ public class Avro837FlatToExpandedConverter {
         Schema envSchema = findRecordSchema(Avro837Util.makeAvroName("X12Envelope"));
         GenericRecord envRecord = new GenericData.Record(envSchema);
 
-        envRecord.put("source_filename", flat837Record.get("source_filename"));
-        envRecord.put("ingested_timestamp", flat837Record.get("ingested_timestamp"));
-        envRecord.put("organization", flat837Record.get("organization"));
+        // TODO: use the proper accessors
+        String sourceFilename = flat837Record.getSourceFilename().toString();
+        Long ingestedTimestamp = flat837Record.getIngestedTimestamp();
+        String organization = flat837Record.getOrganization().toString();
+
+        envRecord.put("source_filename", sourceFilename);
+        envRecord.put("ingested_timestamp", ingestedTimestamp);
+        envRecord.put("organization", organization);
 
         // Build the GenericRecord by walking the parsed X12 instance
         Schema x12Schema = findRecordSchema(Avro837Util.makeAvroName("X12"));
@@ -178,5 +184,17 @@ public class Avro837FlatToExpandedConverter {
                 x837Record.put(recordSchemaName, segmentsArray);
             }
         }
+    }
+
+    public X12Parser getX12Parser() {
+        return x12Parser;
+    }
+
+    public Schema getX837AvroSchema() {
+        return x837AvroSchema;
+    }
+
+    public Schema getSegmentsArraySchema() {
+        return segmentsArraySchema;
     }
 }

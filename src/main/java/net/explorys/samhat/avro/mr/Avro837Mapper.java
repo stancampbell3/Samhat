@@ -1,5 +1,6 @@
 package net.explorys.samhat.avro.mr;
 
+import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroMapper;
@@ -15,7 +16,7 @@ import java.io.InputStream;
 /**
  * Derives from SourceDataStaging's test, so absolutely lifted from d miel's code
  */
-public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
+public class Avro837Mapper extends AvroMapper<Flat837, GenericRecord> {
 
     private Avro837FlatToExpandedConverter converter = null;
 
@@ -37,7 +38,7 @@ public class Avro837Mapper extends AvroMapper<GenericRecord, GenericRecord> {
         }
     }
 
-    public void map(GenericRecord inRecord, AvroCollector<GenericRecord> collector, Reporter reporter) throws IOException {
+    public void map(Flat837 inRecord, AvroCollector<GenericRecord> collector, Reporter reporter) throws IOException {
 
         try {
 

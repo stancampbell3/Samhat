@@ -181,27 +181,35 @@ public class Avro837Util {
 
         try {
 
-            if(args.length<6) {
+            if(args.length<7) {
 
-                System.out.println("Usage: java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath");
+                System.out.println("Usage: java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util [flat|expand] <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath");
             } else {
-                String flatDataSchemaPath = args[0]; // "src/test/resources/Flat837.avsc";
-                String x12837Path = args[1]; // "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
-                String orgName = args[2]; // "BigHospital_Subsystem"
-                String orgId = args[3]; // "80"
-                String ediPath = args[4]; // file:///... or hdfs:///...
-                String outputPath = args[5];
+                if("flat".equalsIgnoreCase(args[0])) {
+
+                    String flatDataSchemaPath = args[1]; // "src/test/resources/Flat837.avsc";
+                    String x12837Path = args[2]; // "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
+                    String orgName = args[3]; // "BigHospital_Subsystem"
+                    String orgId = args[4]; // "80"
+                    String ediPath = args[5]; // file:///... or hdfs:///...
+                    String outputPath = args[6];
 
 
-                long timeStamp = System.currentTimeMillis();
+                    long timeStamp = System.currentTimeMillis();
 
-                String dataDoc = loadResourceDocument(x12837Path);
-                byte[] bytes = dataDoc.getBytes("utf-8");
-                ByteBuffer data = ByteBuffer.wrap(bytes);
+                    String dataDoc = loadResourceDocument(x12837Path);
+                    byte[] bytes = dataDoc.getBytes("utf-8");
+                    ByteBuffer data = ByteBuffer.wrap(bytes);
 
-                Avro837Util util = new Avro837Util(flatDataSchemaPath);
+                    Avro837Util util = new Avro837Util(flatDataSchemaPath);
 
-                util.writeX12FlatData(ediPath, System.currentTimeMillis(), orgName, data, outputPath);
+                    util.writeX12FlatData(ediPath, System.currentTimeMillis(), orgName, data, outputPath);
+                } else {
+
+                    String avroSchemaPath = args[1];
+                    String xmlchemaPath = args[2];
+
+                }
             }
         } catch(Exception e) {
 

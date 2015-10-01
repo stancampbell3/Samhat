@@ -15,6 +15,7 @@ import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
 import org.apache.hadoop.mapred.RunningJob;
+import org.apache.hadoop.util.GenericOptionsParser;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -106,17 +107,22 @@ public class Avro837Tool extends Configured implements Tool {
                 System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool -libjars $LIBJARS <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
             } else {
 
-                // DEBUG
-                for(int i=0;i<args.length;i++) {
-                    System.out.println("ARG"+i+": "+args[i]);
-                }
                 Avro837Tool tool = new Avro837Tool();
-                tool.setX837FlatDataPath(args[3]);
-                tool.setOutputPath(args[4]);
-                tool.setX837FlatSchemaPath(args[5]);
-                tool.setX837ExpandedSchemaPath(args[6]);
+                Configuration conf = tool.getConf();
+                if(null==conf) {
+                    conf = new Configuration();
+                }
+                String[] otherArgs=new GenericOptionsParser(conf,args).getRemainingArgs();
+                // DEBUG
+                for(int i=0;i<otherArgs.length;i++) {
+                    System.out.println("OtherARG"+i+": "+otherArgs[i]);
+                }
+                tool.setX837FlatDataPath(otherArgs[3]);
+                tool.setOutputPath(otherArgs[4]);
+                tool.setX837FlatSchemaPath(otherArgs[5]);
+                tool.setX837ExpandedSchemaPath(otherArgs[6]);
 
-                int res = ToolRunner.run(tool.getConf(), tool, args);
+                int res = ToolRunner.run(conf, tool, args);
                 System.exit(res);
             }
 

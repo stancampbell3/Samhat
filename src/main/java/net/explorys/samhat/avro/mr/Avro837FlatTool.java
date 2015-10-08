@@ -3,7 +3,9 @@ package net.explorys.samhat.avro.mr;
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.mapred.AvroKey;
+import org.apache.avro.mapred.AvroKeyComparator;
 import org.apache.avro.mapred.AvroValue;
+import org.apache.avro.mapred.Pair;
 import org.apache.avro.mapreduce.AvroJob;
 import org.apache.avro.mapreduce.AvroKeyOutputFormat;
 import org.apache.avro.mapreduce.AvroKeyValueOutputFormat;
@@ -64,9 +66,18 @@ public class Avro837FlatTool extends Configured implements Tool {
         InputStream fsDataInputStream = fileSystem.open(path);
         Schema flatSchema = new Schema.Parser().parse(fsDataInputStream);
 
-        conf.set("output.schema", getX837FlatSchemaPath());
+        // DEBUG
+        System.out.println("avro.output.schema:" + getX837FlatSchemaPath());
+
+        Schema outputSchema = Pair.getPairSchema(Schema.create(Schema.Type.STRING), Flat837.SCHEMA$);
+        conf.set("avro.output.schema", outputSchema.toString());
 
         Job job = new Job(conf, "Avro837FlatTool");
+        job.setJarByClass(Avro837FlatTool.class);
+
+        job.setMapOutputKeyClass(AvroKey.class);
+        job.setGroupingComparatorClass(AvroKeyComparator.class);
+        job.setSortComparatorClass(AvroKeyComparator.class);
 
         job.setInputFormatClass(TextInputFormat.class);
         job.setMapperClass(Avro837FlatMapper.class);
@@ -89,25 +100,41 @@ public class Avro837FlatTool extends Configured implements Tool {
 
         try {
 
-            if(args.length<7) {
+            if(args.length<5) {
 
                 System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837FlatTool -libjars $LIBJARS <flatSchemaPath> <ediDataPath> <outputPath> <sourceFile> <org>");
             } else {
 
                 Avro837FlatTool tool = new Avro837FlatTool();
 
-                tool.setX837FlatSchemaPath(args[2]);
-                tool.setX837EDIDataPath(args[3]);
-                tool.setOutputPath(args[4]);
+                String flatSchemaPath = args[0];
+                String ediDataPath = args[1];
+                String outputPath = args[2];
+                String sourceFilename = args[3];
+                String orgName = args[4];
+                String ingestionTimestamp = ""+System.currentTimeMillis();
+
+                // DEBUG
+                StringBuffer sbuf = new StringBuffer();
+                sbuf.append("flatSchemaPath:").append(flatSchemaPath).append("\n");
+                sbuf.append("ediDataPath:").append(ediDataPath).append("\n");
+                sbuf.append("outputPath:").append(outputPath).append("\n");
+                sbuf.append("sourceFilename:").append(sourceFilename).append("\n");
+                sbuf.append("orgName:").append(orgName).append("\n");
+                sbuf.append("ingestionTimestamp:").append(ingestionTimestamp).append("\n");
+                System.out.println(sbuf.toString());
+
+                tool.setX837FlatSchemaPath(flatSchemaPath);
+                tool.setX837EDIDataPath(ediDataPath);
+                tool.setOutputPath(outputPath);
 
                 Configuration config = new Configuration();
 
                 // TODO: figure out the best way to include the source file without passing it as a command line argument
 
-                config.set("source.file", args[5]);
-                config.set("organization.name", args[6]);
-                Long timestamp = System.currentTimeMillis();
-                config.set("ingestion.timestamp", timestamp.toString());
+                config.set("source.file", sourceFilename);
+                config.set("organization.name", orgName);
+                config.set("ingestion.timestamp", ingestionTimestamp);
 
                 int res = ToolRunner.run(config, tool, args);
                 System.exit(res);

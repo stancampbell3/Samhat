@@ -21,9 +21,6 @@ import java.util.NoSuchElementException;
  */
 public class Avro837Test {
 
-    /**
-     * This test needs fixing to actually exercise the flat 837 schema
-     */
     @Test
     public void testIt() throws Exception {
 

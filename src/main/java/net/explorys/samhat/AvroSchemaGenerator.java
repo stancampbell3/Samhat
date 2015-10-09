@@ -122,6 +122,17 @@ public class AvroSchemaGenerator {
         }
     }
 
+    boolean isChildElement(Node node) {
+        String nodeName = node.getNodeName();
+        if("child".equalsIgnoreCase(nodeName) ||
+            "segment".equalsIgnoreCase(nodeName) ||
+            "loop".equalsIgnoreCase(nodeName)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * Build our internal representation of an Avro schema from the specification residing in an XML DOM
      * tree from the Node elem.  Recursively walk the schema and build the intermediate JSON tree which
@@ -155,7 +166,7 @@ public class AvroSchemaGenerator {
             Node child = children.item(i);
 
             // Ignore any non-child elements (text, etc.)
-            if("child".equalsIgnoreCase(child.getNodeName())) {
+            if(isChildElement(child)) {
 
                 NodeList grandkids = child.getChildNodes();
 

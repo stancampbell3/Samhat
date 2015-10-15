@@ -200,35 +200,73 @@ public class AvroSchemaGenerator {
         return nodesList;
     }
 
-    /**
-     * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
-     * representing the equivalent Avro schema.
-     *
-     * @param xmlSchema
-     * @return
-     */
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(Document xmlSchema) {
+    ObjectNode constructAvroJsonFromXmlSchema(Node elem, Map<String,Integer>symbolCounts) {
+
+        // symbolCounts can start null
+        if(null==symbolCounts) {
+            symbolCounts = new HashMap<>();
+        }
+
+        // Construct a new node
+        ObjectNode objectNode = mapper.createObjectNode();
+        objectNode.put("type", "record");
+        objectNode.put("namespace", "net.explorys.samhat.z12.r837");
+
+        NamedNodeMap attributes = elem.getAttributes();
+
+        String rawName = attributes.getNamedItem("name").getTextContent();
+        objectNode.put("name", Avro837Util.makeAvroName(rawName, symbolCounts));
+
+        ArrayNode fields = mapper.createArrayNode();
+        objectNode.put("fields", fields);
+
+        // Time to gather the fields array from each of the subelements of elem...
+        NodeList children = elem.getChildNodes();
+        for(int i=0;i<children.getLength();i++) {
+
+            Node child = children.item(i);
+
+            // Ignore any non-child elements (text, etc.)
+            if(isChildElement(child)) {
+
+                NodeList grandkids = child.getChildNodes();
+
+                if (grandkids.getLength() != 0) {
+                    // If a nested element has children, it's a loop and we need to dive into it
+
+                    // Put a field of this type in our fields array
+                    NamedNodeMap fieldAttributes = child.getAttributes();
+                    rawName = fieldAttributes.getNamedItem("name").getNodeValue();
+                    ObjectNode fieldObject = mapper.createObjectNode();
+                    fieldObject.put("name", Avro837Util.makeAvroName(rawName, symbolCounts));
+                    // Process the child object
+                    ObjectNode fieldObjectNode = constructAvroJsonFromXmlSchema(child, symbolCounts);
+                    fieldObject.put("type", fieldObjectNode);
+                    fields.add(fieldObject);
+                } else {
+
+                    // If a nested element has no children, it's a segment so create an field
+                    NamedNodeMap fieldAttributes = child.getAttributes();
+                    rawName = fieldAttributes.getNamedItem("name").getNodeValue();
+                    ObjectNode fieldObject = mapper.createObjectNode();
+                    // Primitive fields don't have to be distinguished only record types above
+                    fieldObject.put("name", Avro837Util.makeAvroName(rawName));
+                    // TODO: this will be sensitive as it's checked throughout the code, should handle other types based on attributes
+                    fieldObject.put("type", "string");
+                    fields.add(fieldObject);
+                }
+            }
+        }
+
+        return objectNode;
+    }
+
+    public ObjectNode constructAvroJsonFromXmlSchema(Document xmlSchema) {
 
         Element doc = xmlSchema.getDocumentElement();
-        return constructAvroJsonFromXmlSchema(null, doc);
+        return constructAvroJsonFromXmlSchema(doc, null);
     }
 
-    /**
-     * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
-     * representing the equivalent Avro schema record type.  The collection of JSON objects must be built into a
-     * complete AvroSchema before use by a serializer or deserializer.
-     *
-     * @param xmlStream
-     * @return
-     * @throws IOException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(InputStream xmlStream) throws IOException, SAXException, ParserConfigurationException {
-
-        Document xmlDoc = parser.loadXmlSchema(xmlStream);
-        return constructAvroJsonFromXmlSchema(xmlDoc);
-    }
 
     /**
      * constructAvroJsonFromXmlSchema takes an Cf X12 schema in XML format and constructs a JSON Object
@@ -241,66 +279,15 @@ public class AvroSchemaGenerator {
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    public List<ObjectNode> constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
+    public ObjectNode constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
 
         return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
     }
 
-    /**
-     * Accept a record type definition as a Json object.  Return a wrapping Json object including namespace,
-     * record type name, and field specifications.
-     *
-     * @param jsonObject
-     * @param namespace
-     * @return
-     */
-    public ObjectNode annotateJsonRecordNode(ObjectNode jsonObject, String namespace) throws IOException {
+    public ObjectNode constructAvroJsonFromXmlSchema(InputStream inputStream) throws IOException, SAXException, ParserConfigurationException {
 
-        // Create the array node to hold the definition
-        ObjectNode annotatedRecordNode = mapper.createObjectNode();
-        annotatedRecordNode.put("type", "record");
-        annotatedRecordNode.put("namespace", namespace);
-        annotatedRecordNode.put("name", Avro837Util.makeAvroName(jsonObject.get("name").getTextValue()));
-
-        // Add the fields definition
-        ArrayNode fieldsNode = (ArrayNode)jsonObject.get("fields");
-        ArrayNode schemaFieldsNode = mapper.createArrayNode();
-        annotatedRecordNode.put("fields", schemaFieldsNode);
-
-        // Each loop may have zero or more segments which are not named
-        // The first field for each loop will be "segments" and is nullable
-        schemaFieldsNode.add(segmentsFieldEntry);
-
-        Iterator<JsonNode> fieldsNodeElements = fieldsNode.getElements();
-        while(fieldsNodeElements.hasNext()) {
-            JsonNode fieldNode = fieldsNodeElements.next();
-            String type = fieldNode.get("type").getTextValue();
-            // TODO: expand as we handle more Avro types, for now they're all schema defined record types
-
-            if("string".equalsIgnoreCase(type)) {
-
-                // for leaf nodes, we actually need to generate record types holding only an array field.
-                // fieldEntry.put("type", type);
-
-                ObjectNode fieldEntry = mapper.createObjectNode();
-                fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
-                fieldEntry.put("type", segmentsTypeEntry);
-                schemaFieldsNode.add(fieldEntry);
-            } else {
-
-                // for non-leaf nodes, make a nullable field of the given type
-
-                ObjectNode fieldEntry = mapper.createObjectNode();
-                fieldEntry.put("name", Avro837Util.makeAvroName(fieldNode.get("name").getTextValue()));
-                ArrayNode nullableFieldEntryType = mapper.createArrayNode();
-                nullableFieldEntryType.add("null");
-                nullableFieldEntryType.add(Avro837Util.makeAvroName(type));
-                fieldEntry.put("type", nullableFieldEntryType);
-                schemaFieldsNode.add(fieldEntry);
-            }
-        }
-
-        return annotatedRecordNode;
+        final Document document = parser.loadXmlSchema(inputStream);
+        return constructAvroJsonFromXmlSchema(document);
     }
 
     /**
@@ -351,44 +338,42 @@ public class AvroSchemaGenerator {
 
         // Parse the xml definition and create the record type JSON objects
         final Document document = parser.loadXmlSchema(xmlInputStream);
-        List<ObjectNode> recordTypes = constructAvroJsonFromXmlSchema(document);
-
-        // This will be an array of record type definitions
-        ArrayNode schemaArrayOfDefs = mapper.createArrayNode();
-
-        // Create our dependency graph, collapsing any identical record definitions (removing duplicates) and recording dependencies
-        DependencyGraph dependencyGraph = new DependencyGraph();
-        HashMap<String, ObjectNode> labelToObjectNodeMap = new HashMap<>();
-        for(ObjectNode recordTypeEntry : recordTypes) {
-
-            String recordTypeEntryName = Avro837Util.makeAvroName(recordTypeEntry.get("name").getTextValue());
-            // Record the node by name (since our DependencyGraph only tracks the labels
-            labelToObjectNodeMap.put( recordTypeEntryName, recordTypeEntry );
-
-            // Get its dependencies: the record types to which this node refers in its fields array
-            final Set<String> referredRecordTypes = getReferredRecordTypes(recordTypeEntry);
-
-            // Record the dependencies
-            dependencyGraph.addDependencyEntries(recordTypeEntryName, referredRecordTypes);
-        }
-
-        // Generate the schema defining record types in order
-        System.out.println(dependencyGraph);
-        List<String> dependenciesInOrder = dependencyGraph.getDependenciesInOrder();
-        for(String recordTypeEntryName : dependenciesInOrder) {
-
-            ObjectNode schemaRecordType = annotateJsonRecordNode(labelToObjectNodeMap.get(recordTypeEntryName), namespace);
-            schemaArrayOfDefs.add(schemaRecordType);
-        }
+        ObjectNode schemaDef = constructAvroJsonFromXmlSchema(document);
 
         // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
 
         // Add in envelope description
-        ObjectNode envelopeRecordEntry = getX12EnvelopeSchemaDefinition(mapper);
-        schemaArrayOfDefs.add(envelopeRecordEntry);
+        ObjectNode envelopeRecord = mapper.createObjectNode();
+        envelopeRecord.put("type", "record");
+        envelopeRecord.put("namespace", namespace);
+        envelopeRecord.put("name", "zX12Envelope");
+        ArrayNode fieldsArray = mapper.createArrayNode();
+        envelopeRecord.put("fields", fieldsArray);
+        ObjectNode field = mapper.createObjectNode();
+        field.put("name", "source_filename");
+        field.put("type", "string");
+        fieldsArray.add(field);
+        field = mapper.createObjectNode();
+        field.put("name", "ingested_timestamp");
+        field.put("type", "long");
+        fieldsArray.add(field);
+        field = mapper.createObjectNode();
+        field.put("name", "organization");
+        field.put("type", "string");
+        fieldsArray.add(field);
+        field = mapper.createObjectNode();
+        field.put("name", "data");
+
+        // Subobjects are nullable
+        ArrayNode nullableSubobjectNode = mapper.createArrayNode();
+        nullableSubobjectNode.add("null");
+        nullableSubobjectNode.add(schemaDef);
+
+        field.put("type", nullableSubobjectNode);
+        fieldsArray.add(field);
 
         // Serialize to string
-        String jsonSchema = schemaArrayOfDefs.toString();
+        String jsonSchema = envelopeRecord.toString();
         System.out.println("JSON Avro Schema:"+jsonSchema);
 
         return jsonSchema;

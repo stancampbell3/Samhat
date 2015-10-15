@@ -28,11 +28,11 @@ public class AvroSchemaGeneratorTest {
         try {
 
             InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            List<ObjectNode> jsonObjects = instance.constructAvroJsonFromXmlSchema(schemaDefinition);
+            ObjectNode avroSchemaDef = instance.constructAvroJsonFromXmlSchema(schemaDefinition);
 
-            assertNotNull(jsonObjects);
+            assertNotNull(avroSchemaDef);
 
-            System.out.println("JSON Schema:" + jsonObjects.toString());
+            System.out.println("JSON Schema:" + avroSchemaDef.toString());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -131,23 +131,5 @@ public class AvroSchemaGeneratorTest {
         String name = Avro837Util.makeAvroName(sampleNode.get("name").getTextValue());
 
         assertEquals("zX12", name);
-    }
-
-    @Test
-    public void canAnnotateJsonRecordNode() {
-
-        try {
-            ObjectNode sampleNode = getTestNode();
-
-            ObjectNode annotatedJsonRecordNode = instance.annotateJsonRecordNode(sampleNode, "net.explorys.samhat.z12.r837");
-
-            assertNotNull(annotatedJsonRecordNode);
-
-            System.out.println("Annotated record: " + annotatedJsonRecordNode.toString());
-        } catch (Exception e) {
-
-            e.printStackTrace();
-            fail("Exception was thrown: "+e);
-        }
     }
 }

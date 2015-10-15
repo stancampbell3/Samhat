@@ -200,7 +200,7 @@ public class AvroSchemaGenerator {
         return nodesList;
     }
 
-    ObjectNode constructAvroJsonFromXmlSchema(Node elem, Map<String,Integer>symbolCounts) {
+    ObjectNode constructAvroJsonFromXmlSchema(String namespace, Node elem, Map<String,Integer>symbolCounts) {
 
         // symbolCounts can start null
         if(null==symbolCounts) {
@@ -210,7 +210,7 @@ public class AvroSchemaGenerator {
         // Construct a new node
         ObjectNode objectNode = mapper.createObjectNode();
         objectNode.put("type", "record");
-        objectNode.put("namespace", "net.explorys.samhat.z12.r837");
+        objectNode.put("namespace", namespace);
 
         NamedNodeMap attributes = elem.getAttributes();
 
@@ -240,7 +240,7 @@ public class AvroSchemaGenerator {
                     ObjectNode fieldObject = mapper.createObjectNode();
                     fieldObject.put("name", Avro837Util.makeAvroName(rawName, symbolCounts));
                     // Process the child object
-                    ObjectNode fieldObjectNode = constructAvroJsonFromXmlSchema(child, symbolCounts);
+                    ObjectNode fieldObjectNode = constructAvroJsonFromXmlSchema(namespace, child, symbolCounts);
                     fieldObject.put("type", fieldObjectNode);
                     fields.add(fieldObject);
                 } else {
@@ -261,10 +261,10 @@ public class AvroSchemaGenerator {
         return objectNode;
     }
 
-    public ObjectNode constructAvroJsonFromXmlSchema(Document xmlSchema) {
+    public ObjectNode constructAvroJsonFromXmlSchema(String namespace, Document xmlSchema) {
 
         Element doc = xmlSchema.getDocumentElement();
-        return constructAvroJsonFromXmlSchema(doc, null);
+        return constructAvroJsonFromXmlSchema(namespace, doc, null);
     }
 
 
@@ -279,15 +279,15 @@ public class AvroSchemaGenerator {
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    public ObjectNode constructAvroJsonFromXmlSchema(File xmlFile) throws IOException, ParserConfigurationException, SAXException {
+    public ObjectNode constructAvroJsonFromXmlSchema(String namespace, File xmlFile) throws IOException, ParserConfigurationException, SAXException {
 
-        return constructAvroJsonFromXmlSchema(new FileInputStream(xmlFile));
+        return constructAvroJsonFromXmlSchema(namespace, new FileInputStream(xmlFile));
     }
 
-    public ObjectNode constructAvroJsonFromXmlSchema(InputStream inputStream) throws IOException, SAXException, ParserConfigurationException {
+    public ObjectNode constructAvroJsonFromXmlSchema(String namespace, InputStream inputStream) throws IOException, SAXException, ParserConfigurationException {
 
         final Document document = parser.loadXmlSchema(inputStream);
-        return constructAvroJsonFromXmlSchema(document);
+        return constructAvroJsonFromXmlSchema(namespace, document);
     }
 
     /**
@@ -338,7 +338,7 @@ public class AvroSchemaGenerator {
 
         // Parse the xml definition and create the record type JSON objects
         final Document document = parser.loadXmlSchema(xmlInputStream);
-        ObjectNode schemaDef = constructAvroJsonFromXmlSchema(document);
+        ObjectNode schemaDef = constructAvroJsonFromXmlSchema(namespace, document);
 
         // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
 

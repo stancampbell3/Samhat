@@ -43,7 +43,7 @@ public class Avro837FlatToExpandedConverter {
         // Instantiate our x12Parser for the given cfSchema
         x12Parser = new X12Parser(schema);
 
-        // Instantiate our Avro schemas.  This is expected to be a Union schema defining all of our record types.
+        // Instantiate our Avro schemas.
         Schema.Parser avroParser = (new Schema.Parser());
         x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
         segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
@@ -132,7 +132,9 @@ public class Avro837FlatToExpandedConverter {
         }
 
         // -- add the array object as a value of that field
-        x837Record.put("zSEGMENTS", segmentsArray);
+        if(segmentsArray.size()>0) {
+            x837Record.put("zSEGMENTS", segmentsArray);
+        }
 
         // For each loop in currentLoop
         for(Loop loop : currentLoop.getLoops()) {

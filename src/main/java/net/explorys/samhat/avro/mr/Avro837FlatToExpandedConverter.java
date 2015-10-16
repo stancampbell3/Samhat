@@ -51,7 +51,7 @@ public class Avro837FlatToExpandedConverter {
 
     /**
      * Take an instance of an Avro record in flat format, parse it using the appropriate X12/837 Cf schema and
-     * return an expanded GenericRecord containing the same data as the original.
+     * return an expanded GenericRecord containing the same data as the original wrapped in an envelope.
      *
      * We expect the GenericRecord to contain the following fields in flat format:
      *
@@ -106,7 +106,7 @@ public class Avro837FlatToExpandedConverter {
         // Build the rest of the nested records
         walkTheLoop(getX837AvroSchema(), x837Record, x837);
 
-        return x837Record;
+        return envRecord;
     }
 
     /**

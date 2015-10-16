@@ -1,5 +1,6 @@
 package net.explorys.samhat.avro.mr;
 
+import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
@@ -17,8 +18,7 @@ import java.nio.ByteBuffer;
  */
 public class Avro837FlatToExpandedConverterTest {
 
-    // TODO: fix this test
-    /*@Test
+    @Test
     public void canConvertFlatToExpanded() {
 
         try {
@@ -28,7 +28,7 @@ public class Avro837FlatToExpandedConverterTest {
 
             Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
 
-            GenericRecord flatAvroRecord = createFlatTestRecordPro();
+            Flat837 flatAvroRecord = createFlatTestRecordPro();
 
             GenericRecord expandedAvroRecord = instance.expand837(flatAvroRecord);
 
@@ -41,24 +41,26 @@ public class Avro837FlatToExpandedConverterTest {
             e.printStackTrace();
             fail("Exception: "+e);
         }
-    }*/
+    }
 
     /**
      * Create a flat GenericRecord (Avro) for testing.
      *
      * @return
      */
-    GenericRecord createFlatTestRecordPro() throws IOException {
+    Flat837 createFlatTestRecordPro() throws IOException {
 
         Schema avroSchemaFlat = (new Schema.Parser()).parse(getClass().getResourceAsStream("/Flat837.avsc"));
 
-        GenericRecord outRecord = new GenericData.Record(avroSchemaFlat);
-        outRecord.put("source_filename", "BigHospital_Subsystem_1441214822957.edi");
-        outRecord.put("ingested_timestamp", 1441229222420L);
-        outRecord.put("organization", "80");
         String data = loadResourceDocument("/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-commercial-health-insurance.edi");
         ByteBuffer dataAsBytes = ByteBuffer.wrap(data.getBytes());
-        outRecord.put("data", dataAsBytes);
+
+        Flat837 outRecord = Flat837.newBuilder().
+                setSourceFilename("BigHospital_Subsystem_1441214822957.edi").
+                setOrganization("80").
+                setIngestedTimestamp(1441229222420L).
+                setData(dataAsBytes).
+                build();
 
         return outRecord;
     }

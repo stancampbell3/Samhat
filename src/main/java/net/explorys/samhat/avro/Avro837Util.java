@@ -130,33 +130,27 @@ public class Avro837Util {
         return 1L;
     }
 
+    public static String makeAvroName(String rawName) {
+
+        return makeAvroName(rawName, null);
+    }
+
     public static String makeAvroName(String rawName, Map<String,Integer> symbolCounts) {
         // TODO: investigate detecting identical record definitions and substituting a reference in the type
         // Distinguish record types by making each unique
         String cookedName;
         StringBuffer buf = new StringBuffer("z").append(rawName);
-        if(symbolCounts.containsKey(rawName)) {
-            int count = symbolCounts.get(rawName)+1;
-            buf.append("_").append(count);
-            symbolCounts.put(rawName, count);
-        } else {
-            symbolCounts.put(rawName, 0); // Raw, Raw_1, Raw_2, etc.
+        if(null!=symbolCounts) {
+            if (symbolCounts.containsKey(rawName)) {
+                int count = symbolCounts.get(rawName) + 1;
+                buf.append("_").append(count);
+                symbolCounts.put(rawName, count);
+            } else {
+                symbolCounts.put(rawName, 0); // Raw, Raw_1, Raw_2, etc.
+            }
         }
         cookedName = buf.toString();
         return cookedName;
-    }
-
-    public static String makeAvroName(String rawName) {
-
-        // Avro doesn't like identifiers like "2003D" so just make them z2003D
-        String prefix = "z";
-
-        StringBuffer buf = new StringBuffer();
-        buf.append(prefix).append(rawName.substring(0, 1).toUpperCase());
-        if(rawName.length()>1) {
-            buf.append(rawName.substring(1).toUpperCase());
-        }
-        return buf.toString();
     }
 
     /**

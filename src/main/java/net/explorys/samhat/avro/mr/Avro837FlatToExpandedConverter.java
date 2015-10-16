@@ -4,6 +4,7 @@ import net.explorys.samhat.AvroSchemaGenerator;
 import net.explorys.samhat.XmlBasedCfSchemaParser;
 import net.explorys.samhat.CfSchemaParsingException;
 import net.explorys.samhat.ICfSchemaParser;
+import net.explorys.samhat.avro.Avro837FlatToExpandedException;
 import net.explorys.samhat.avro.Avro837Util;
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
@@ -17,6 +18,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -48,32 +50,6 @@ public class Avro837FlatToExpandedConverter {
     }
 
     /**
-     * Our schema defines all of the loop and segment names we expect in an X12.
-     * However, it's implemented as a Union Schema and so we need to retrieve the "X12" portion
-     * so that the parser knows which record to expect when de/serializing.
-     *
-     * We return null in the case where we don't find a matching schema.
-     *
-     * @param schemaName
-     * @return
-     */
-    Schema findRecordSchema(String schemaName) {
-
-        if(null==schemaName) {
-            throw new IllegalArgumentException("schemaName must not be null");
-        }
-
-        List<Schema> schemaList = x837AvroSchema.getTypes();
-        for(Schema schema : schemaList) {
-            if(schemaName.equalsIgnoreCase(schema.getName())) {
-                return schema;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Take an instance of an Avro record in flat format, parse it using the appropriate X12/837 Cf schema and
      * return an expanded GenericRecord containing the same data as the original.
      *
@@ -88,13 +64,13 @@ public class Avro837FlatToExpandedConverter {
      * @return
      */
     public GenericRecord expand837(Flat837 flat837Record) throws
-            CfSchemaParsingException, IOException, FormatException {
+            CfSchemaParsingException, IOException, FormatException, Avro837FlatToExpandedException {
 
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
 
         // Build the envelope and copy over the source_file, ingestion timestamp, etc.
-        Schema envSchema = findRecordSchema(Avro837Util.makeAvroName("X12Envelope"));
+        Schema envSchema = x837AvroSchema;
         GenericRecord envRecord = new GenericData.Record(envSchema);
 
         // TODO: use the proper accessors
@@ -107,25 +83,40 @@ public class Avro837FlatToExpandedConverter {
         envRecord.put("organization", organization);
 
         // Build the GenericRecord by walking the parsed X12 instance
-        Schema x12Schema = findRecordSchema(Avro837Util.makeAvroName("X12"));
-        GenericRecord x837Record = new GenericData.Record(x12Schema);
+
+        // Create the envelope record
+        Schema.Field dataField = getX837AvroSchema().getField("data");
+        // -- schema has this field nullable so it's a union of "null" and a record type
+        // -- take the second element in the array's schema
+        Iterator<Schema> typeSchemaItr = dataField.schema().getTypes().iterator();
+        if(!typeSchemaItr.hasNext()) {
+            throw new Avro837FlatToExpandedException("Expected a nullable field definition.");
+        }
+        // -- Discard the "null"
+        typeSchemaItr.next();
+        if(!typeSchemaItr.hasNext()) {
+            throw new Avro837FlatToExpandedException("Expected a nullable field definition.");
+        }
+        Schema recordSchema = typeSchemaItr.next();
+        GenericRecord x837Record = new GenericData.Record(recordSchema);
 
         // Stick it in the envelope
         envRecord.put("data", x837Record);
 
         // Build the rest of the nested records
-        walkTheLoop(x837Record, x837);
+        walkTheLoop(getX837AvroSchema(), x837Record, x837);
 
         return x837Record;
     }
 
     /**
      * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
-     * Sche
+     *
+     * @param currentSchema
      * @param x837Record
      * @param currentLoop
      */
-    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) {
+    void walkTheLoop(Schema currentSchema, GenericRecord x837Record, Loop currentLoop) throws Avro837FlatToExpandedException {
 
         // An X12 is composed of loops and segments.
         // Segments contain data at this loop level.
@@ -149,16 +140,20 @@ public class Avro837FlatToExpandedConverter {
             // Select the proper schema for the next loop
             String loopName = loop.getName();
             String recordSchemaName = Avro837Util.makeAvroName(loopName);
-            Schema recordSchema;
+            Schema.Field field = x837Record.getSchema().getField(recordSchemaName);
+            if(null==field) {
+                throw new Avro837FlatToExpandedException("Couldn't locate a field for: "+recordSchemaName);
+            }
+            Schema recordSchema = field.schema();
 
-            recordSchema = findRecordSchema(recordSchemaName); // eg. "zX12"
-            if(null!=recordSchema) {
+            // TODO: potentially recognize different types of specified schemas
+            if(recordSchema.getType()==Schema.Type.RECORD) {
 
                 // Create the nested record representing the loop
                 GenericRecord nestedRecord = new GenericData.Record(recordSchema);
 
                 // walkThe nested loop
-                walkTheLoop(nestedRecord, loop);
+                walkTheLoop(recordSchema, nestedRecord, loop);
 
                 // set the property of the outer record for this loop
                 x837Record.put(recordSchemaName, nestedRecord);

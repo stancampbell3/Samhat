@@ -28,7 +28,7 @@ public class AvroSchemaGenerator {
 
     private ObjectMapper mapper;
     private XmlBasedCfSchemaParser parser;
-    private JsonNode segmentsFieldEntry;  // Inserted into the fields list
+    private ObjectNode segmentsFieldEntry;  // Inserted into the fields list
     private JsonNode segmentsTypeEntry;   // Inserted as the type of a leaf field like "1000A"
 
     public AvroSchemaGenerator() {
@@ -83,9 +83,9 @@ public class AvroSchemaGenerator {
      * @param mapper
      * @return
      */
-    public static JsonNode getSegmentsAvroTypeDefinition(ObjectMapper mapper) {
+    public static ObjectNode getSegmentsAvroTypeDefinition(ObjectMapper mapper) {
         try {
-            return mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, JsonNode.class);
+            return mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, ObjectNode.class);
         } catch (IOException e){
 
             // This should never occur because the field definition is static
@@ -159,6 +159,9 @@ public class AvroSchemaGenerator {
         ArrayNode fields = mapper.createArrayNode();
         objectNode.put("fields", fields);
 
+        // Add in the zSEGMENTS field to hold unparsed data
+        fields.add(segmentsFieldEntry);
+
         // Time to gather the fields array from each of the subelements of elem...
         NodeList children = elem.getChildNodes();
         for(int i=0;i<children.getLength();i++) {
@@ -220,6 +223,9 @@ public class AvroSchemaGenerator {
         ArrayNode fields = mapper.createArrayNode();
         objectNode.put("fields", fields);
 
+        // Add in the zSEGMENTS field to hold unparsed data
+        fields.add(segmentsFieldEntry);
+
         // Time to gather the fields array from each of the subelements of elem...
         NodeList children = elem.getChildNodes();
         for(int i=0;i<children.getLength();i++) {
@@ -238,7 +244,7 @@ public class AvroSchemaGenerator {
                     NamedNodeMap fieldAttributes = child.getAttributes();
                     rawName = fieldAttributes.getNamedItem("name").getNodeValue();
                     ObjectNode fieldObject = mapper.createObjectNode();
-                    fieldObject.put("name", Avro837Util.makeAvroName(rawName, symbolCounts));
+                    fieldObject.put("name", Avro837Util.makeAvroName(rawName));
                     // Process the child object
                     ObjectNode fieldObjectNode = constructAvroJsonFromXmlSchema(namespace, child, symbolCounts);
                     fieldObject.put("type", fieldObjectNode);

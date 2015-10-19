@@ -35,7 +35,18 @@ public class Avro837FlatToExpandedConverterTest {
             assertNotNull(expandedAvroRecord);
 
             // TODO: check contents
+            // -- should be an envelope
+            String data = (String)expandedAvroRecord.get("source_filename");
+            assertNotNull(data);
+            assertEquals(data, "BigHospital_Subsystem_1441214822957.edi");
 
+            Long longData = (Long)expandedAvroRecord.get("ingested_timestamp");
+            assertNotNull(data);
+            assertEquals(data, 1441229222420L);
+
+            data = (String)expandedAvroRecord.get("organization");
+            assertNotNull(data);
+            assertEquals(data, "80");
         } catch (Exception e) {
 
             e.printStackTrace();

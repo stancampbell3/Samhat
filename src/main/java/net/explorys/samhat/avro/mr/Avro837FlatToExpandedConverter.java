@@ -12,14 +12,15 @@ import org.apache.avro.generic.GenericArray;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.util.Utf8;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.node.ArrayNode;
 import org.pb.x12.*;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by stan.campbell on 9/3/15.
@@ -33,6 +34,7 @@ public class Avro837FlatToExpandedConverter {
     private X12Parser x12Parser;
     private Schema x837AvroSchema;
     private Schema segmentsArraySchema;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
 
@@ -68,6 +70,9 @@ public class Avro837FlatToExpandedConverter {
 
         ByteBuffer data = (ByteBuffer)flat837Record.get("data");
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
+
+        // DEBUG
+        System.out.println("x837: " + x837.toXML());
 
         // Build the envelope and copy over the source_file, ingestion timestamp, etc.
         Schema envSchema = x837AvroSchema;
@@ -131,6 +136,14 @@ public class Avro837FlatToExpandedConverter {
             segmentsArray.add(new Utf8(segment.toString()));
         }
 
+        // For any fields which don't get set, we want to null them in the generic record.
+        Set<String> schemaFieldsSet = new HashSet<>();
+        for (Schema.Field field : x837Record.getSchema().getFields()) {
+
+            schemaFieldsSet.add(field.name());
+        }
+        schemaFieldsSet.remove("zSEGMENTS"); // this one is optional
+
         // -- add the array object as a value of that field
         if(segmentsArray.size()>0) {
             x837Record.put("zSEGMENTS", segmentsArray);
@@ -159,7 +172,7 @@ public class Avro837FlatToExpandedConverter {
 
                 // set the property of the outer record for this loop
                 x837Record.put(recordSchemaName, nestedRecord);
-
+                schemaFieldsSet.remove(recordSchemaName);
             } else {
 
                 // The segment data for this loop (it's a leaf) rolls up into the value of a property
@@ -168,17 +181,27 @@ public class Avro837FlatToExpandedConverter {
 
                 // Set the segment values of loop into the enclosing GenericRecord, x837Record
 
-                // -- Construct an avro array object to hold the segment info
-                segmentsArray = new GenericData.Array<>(loop.getSegments().size(), segmentsArraySchema);
+                // -- Construct an avro string object to hold the segment info
+                ArrayNode segmentsFieldValueJson = mapper.createArrayNode();
 
                 // -- Go through the segments and fill the array
                 for(Segment segment : loop.getSegments()) {
-                    segmentsArray.add(new Utf8(segment.toString()));
+                    segmentsFieldValueJson.add(segment.toString());
                 }
 
                 // -- the field of the enclosing x837Record is named the same as the recordSchema
                 // -- add the array object as a value of that field
-                x837Record.put(recordSchemaName, segmentsArray);
+                x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
+                schemaFieldsSet.remove(recordSchemaName);
+            }
+        } // loop processing
+
+        // Check for missing fields
+        if(!schemaFieldsSet.isEmpty()) {
+
+            for (String fieldName : schemaFieldsSet) {
+
+                x837Record.put(fieldName, "");
             }
         }
     }

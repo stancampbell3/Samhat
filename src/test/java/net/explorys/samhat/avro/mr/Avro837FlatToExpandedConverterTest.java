@@ -41,12 +41,17 @@ public class Avro837FlatToExpandedConverterTest {
             assertEquals(data, "BigHospital_Subsystem_1441214822957.edi");
 
             Long longData = (Long)expandedAvroRecord.get("ingested_timestamp");
-            assertNotNull(data);
-            assertEquals(data, 1441229222420L);
+            assertNotNull(longData);
+            assertEquals(longData.longValue(), 1441229222420L);
 
             data = (String)expandedAvroRecord.get("organization");
             assertNotNull(data);
             assertEquals(data, "80");
+
+            // -- subrecord
+            GenericData.Record x12 = (GenericData.Record)expandedAvroRecord.get("data");
+            assertNotNull(x12);
+
         } catch (Exception e) {
 
             e.printStackTrace();
@@ -60,8 +65,6 @@ public class Avro837FlatToExpandedConverterTest {
      * @return
      */
     Flat837 createFlatTestRecordPro() throws IOException {
-
-        Schema avroSchemaFlat = (new Schema.Parser()).parse(getClass().getResourceAsStream("/Flat837.avsc"));
 
         String data = loadResourceDocument("/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-commercial-health-insurance.edi");
         ByteBuffer dataAsBytes = ByteBuffer.wrap(data.getBytes());

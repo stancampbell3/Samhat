@@ -193,8 +193,8 @@
                                           },
                                           {
                                             "name": "z2320",
-                                            "type": {
-                                              "type": "record",
+                                            "type": [ "null",
+                                              {"type": "record",
                                               "namespace": "net.explorys.samhat.z12.r837",
                                               "name": "z2320",
                                               "fields": [
@@ -244,8 +244,8 @@
                                                   "name": "z2330I",
                                                   "type": "string"
                                                 }
-                                              ]
-                                            }
+                                              ]}
+                                            ]
                                           },
                                           {
                                             "name": "z2400",
@@ -361,7 +361,7 @@
                                           },
                                           {
                                             "name": "z2320",
-                                            "type": {
+                                            "type": [ "null", {
                                               "type": "record",
                                               "namespace": "net.explorys.samhat.z12.r837",
                                               "name": "z2320_1",
@@ -413,7 +413,7 @@
                                                   "type": "string"
                                                 }
                                               ]
-                                            }
+                                            }]
                                           },
                                           {
                                             "name": "z2400",

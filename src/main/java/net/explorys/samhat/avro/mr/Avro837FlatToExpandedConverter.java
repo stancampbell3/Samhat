@@ -109,7 +109,7 @@ public class Avro837FlatToExpandedConverter {
         envRecord.put("data", x837Record);
 
         // Build the rest of the nested records
-        walkTheLoop(getX837AvroSchema(), x837Record, x837);
+        walkTheLoop(x837Record, x837);
 
         return envRecord;
     }
@@ -117,11 +117,10 @@ public class Avro837FlatToExpandedConverter {
     /**
      * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
      *
-     * @param currentSchema
      * @param x837Record
      * @param currentLoop
      */
-    void walkTheLoop(Schema currentSchema, GenericRecord x837Record, Loop currentLoop) throws Avro837FlatToExpandedException {
+    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) throws Avro837FlatToExpandedException {
 
         // An X12 is composed of loops and segments.
         // Segments contain data at this loop level.
@@ -168,7 +167,9 @@ public class Avro837FlatToExpandedConverter {
                 GenericRecord nestedRecord = new GenericData.Record(recordSchema);
 
                 // walkThe nested loop
-                walkTheLoop(recordSchema, nestedRecord, loop);
+                // DEBUG
+                System.out.println("walkTheLoop for "+recordSchemaName);
+                walkTheLoop(nestedRecord, loop);
 
                 // set the property of the outer record for this loop
                 x837Record.put(recordSchemaName, nestedRecord);
@@ -191,6 +192,8 @@ public class Avro837FlatToExpandedConverter {
 
                 // -- the field of the enclosing x837Record is named the same as the recordSchema
                 // -- add the array object as a value of that field
+                // DEBUG
+                System.out.println("set value for "+recordSchemaName);
                 x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
                 schemaFieldsSet.remove(recordSchemaName);
             }
@@ -201,7 +204,9 @@ public class Avro837FlatToExpandedConverter {
 
             for (String fieldName : schemaFieldsSet) {
 
-                x837Record.put(fieldName, "");
+                // DEBUG
+                System.out.println("Setting "+fieldName+" to empty.");
+                x837Record.put(fieldName, null);
             }
         }
     }

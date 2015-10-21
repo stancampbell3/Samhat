@@ -247,7 +247,12 @@ public class AvroSchemaGenerator {
                     fieldObject.put("name", Avro837Util.makeAvroName(rawName));
                     // Process the child object
                     ObjectNode fieldObjectNode = constructAvroJsonFromXmlSchema(namespace, child, symbolCounts);
-                    fieldObject.put("type", fieldObjectNode);
+
+                    // Make sure subrecords are nullable
+                    ArrayNode nullableField = mapper.createArrayNode();
+                    nullableField.add("null");
+                    nullableField.add(fieldObjectNode);
+                    fieldObject.put("type", nullableField);
                     fields.add(fieldObject);
                 } else {
 
@@ -258,7 +263,13 @@ public class AvroSchemaGenerator {
                     // Primitive fields don't have to be distinguished only record types above
                     fieldObject.put("name", Avro837Util.makeAvroName(rawName));
                     // TODO: this will be sensitive as it's checked throughout the code, should handle other types based on attributes
-                    fieldObject.put("type", "string");
+
+                    // Leaf fields must be nullable as well
+                    ArrayNode nullableField = mapper.createArrayNode();
+                    nullableField.add("null");
+                    nullableField.add("string");
+                    fieldObject.put("type", nullableField);
+
                     fields.add(fieldObject);
                 }
             }

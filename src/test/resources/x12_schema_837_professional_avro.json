@@ -36,455 +36,650 @@
             },
             {
               "name": "zISA",
-              "type": {
-                "type": "record",
-                "namespace": "net.explorys.samhat.z12.r837",
-                "name": "zISA",
-                "fields": [
-                  {
-                    "name": "zSEGMENTS",
-                    "type": [
-                      "null",
-                      {
-                        "type": "array",
-                        "items": "string"
-                      }
-                    ]
-                  },
-                  {
-                    "name": "zGS",
-                    "type": {
-                      "type": "record",
-                      "namespace": "net.explorys.samhat.z12.r837",
-                      "name": "zGS",
-                      "fields": [
+              "type": [
+                "null",
+                {
+                  "type": "record",
+                  "namespace": "net.explorys.samhat.z12.r837",
+                  "name": "zISA",
+                  "fields": [
+                    {
+                      "name": "zSEGMENTS",
+                      "type": [
+                        "null",
                         {
-                          "name": "zSEGMENTS",
-                          "type": [
-                            "null",
-                            {
-                              "type": "array",
-                              "items": "string"
-                            }
-                          ]
-                        },
-                        {
-                          "name": "zST",
-                          "type": {
-                            "type": "record",
-                            "namespace": "net.explorys.samhat.z12.r837",
-                            "name": "zST",
-                            "fields": [
-                              {
-                                "name": "zSEGMENTS",
-                                "type": [
-                                  "null",
-                                  {
-                                    "type": "array",
-                                    "items": "string"
-                                  }
-                                ]
-                              },
-                              {
-                                "name": "z1000A",
-                                "type": "string"
-                              },
-                              {
-                                "name": "z1000B",
-                                "type": "string"
-                              },
-                              {
-                                "name": "z2000A",
-                                "type": {
-                                  "type": "record",
-                                  "namespace": "net.explorys.samhat.z12.r837",
-                                  "name": "z2000A",
-                                  "fields": [
-                                    {
-                                      "name": "zSEGMENTS",
-                                      "type": [
-                                        "null",
-                                        {
-                                          "type": "array",
-                                          "items": "string"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "z2010AA",
-                                      "type": "string"
-                                    },
-                                    {
-                                      "name": "z2010AB",
-                                      "type": "string"
-                                    },
-                                    {
-                                      "name": "z2010AC",
-                                      "type": "string"
-                                    }
-                                  ]
-                                }
-                              },
-                              {
-                                "name": "z2000B",
-                                "type": {
-                                  "type": "record",
-                                  "namespace": "net.explorys.samhat.z12.r837",
-                                  "name": "z2000B",
-                                  "fields": [
-                                    {
-                                      "name": "zSEGMENTS",
-                                      "type": [
-                                        "null",
-                                        {
-                                          "type": "array",
-                                          "items": "string"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "z2010BA",
-                                      "type": "string"
-                                    },
-                                    {
-                                      "name": "z2010BB",
-                                      "type": "string"
-                                    },
-                                    {
-                                      "name": "z2300",
-                                      "type": {
-                                        "type": "record",
-                                        "namespace": "net.explorys.samhat.z12.r837",
-                                        "name": "z2300",
-                                        "fields": [
-                                          {
-                                            "name": "zSEGMENTS",
-                                            "type": [
-                                              "null",
-                                              {
-                                                "type": "array",
-                                                "items": "string"
-                                              }
-                                            ]
-                                          },
-                                          {
-                                            "name": "z2310A",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310B",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310C",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310D",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310E",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310F",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2320",
-                                            "type": [ "null",
-                                              {"type": "record",
-                                              "namespace": "net.explorys.samhat.z12.r837",
-                                              "name": "z2320",
-                                              "fields": [
-                                                {
-                                                  "name": "zSEGMENTS",
-                                                  "type": [
-                                                    "null",
-                                                    {
-                                                      "type": "array",
-                                                      "items": "string"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "name": "z2330A",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330B",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330C",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330D",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330E",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330F",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330G",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330H",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330I",
-                                                  "type": "string"
-                                                }
-                                              ]}
-                                            ]
-                                          },
-                                          {
-                                            "name": "z2400",
-                                            "type": {
-                                              "type": "record",
-                                              "namespace": "net.explorys.samhat.z12.r837",
-                                              "name": "z2400",
-                                              "fields": [
-                                                {
-                                                  "name": "zSEGMENTS",
-                                                  "type": [
-                                                    "null",
-                                                    {
-                                                      "type": "array",
-                                                      "items": "string"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "name": "z2410",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420A",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420B",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420C",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420D",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2430",
-                                                  "type": "string"
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  ]
-                                }
-                              },
-                              {
-                                "name": "z2000C",
-                                "type": {
-                                  "type": "record",
-                                  "namespace": "net.explorys.samhat.z12.r837",
-                                  "name": "z2000C",
-                                  "fields": [
-                                    {
-                                      "name": "zSEGMENTS",
-                                      "type": [
-                                        "null",
-                                        {
-                                          "type": "array",
-                                          "items": "string"
-                                        }
-                                      ]
-                                    },
-                                    {
-                                      "name": "z2010CA",
-                                      "type": "string"
-                                    },
-                                    {
-                                      "name": "z2300",
-                                      "type": {
-                                        "type": "record",
-                                        "namespace": "net.explorys.samhat.z12.r837",
-                                        "name": "z2300_1",
-                                        "fields": [
-                                          {
-                                            "name": "zSEGMENTS",
-                                            "type": [
-                                              "null",
-                                              {
-                                                "type": "array",
-                                                "items": "string"
-                                              }
-                                            ]
-                                          },
-                                          {
-                                            "name": "z2310A",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310B",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310C",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310D",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310E",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2310F",
-                                            "type": "string"
-                                          },
-                                          {
-                                            "name": "z2320",
-                                            "type": [ "null", {
-                                              "type": "record",
-                                              "namespace": "net.explorys.samhat.z12.r837",
-                                              "name": "z2320_1",
-                                              "fields": [
-                                                {
-                                                  "name": "zSEGMENTS",
-                                                  "type": [
-                                                    "null",
-                                                    {
-                                                      "type": "array",
-                                                      "items": "string"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "name": "z2330A",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330B",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330C",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330D",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330E",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330F",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330G",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330H",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2330I",
-                                                  "type": "string"
-                                                }
-                                              ]
-                                            }]
-                                          },
-                                          {
-                                            "name": "z2400",
-                                            "type": {
-                                              "type": "record",
-                                              "namespace": "net.explorys.samhat.z12.r837",
-                                              "name": "z2400_1",
-                                              "fields": [
-                                                {
-                                                  "name": "zSEGMENTS",
-                                                  "type": [
-                                                    "null",
-                                                    {
-                                                      "type": "array",
-                                                      "items": "string"
-                                                    }
-                                                  ]
-                                                },
-                                                {
-                                                  "name": "z2410",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420A",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420B",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420C",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2420D",
-                                                  "type": "string"
-                                                },
-                                                {
-                                                  "name": "z2430",
-                                                  "type": "string"
-                                                }
-                                              ]
-                                            }
-                                          }
-                                        ]
-                                      }
-                                    }
-                                  ]
-                                }
-                              }
-                            ]
-                          }
-                        },
-                        {
-                          "name": "zSE",
-                          "type": "string"
+                          "type": "array",
+                          "items": "string"
                         }
                       ]
+                    },
+                    {
+                      "name": "zGS",
+                      "type": [
+                        "null",
+                        {
+                          "type": "record",
+                          "namespace": "net.explorys.samhat.z12.r837",
+                          "name": "zGS",
+                          "fields": [
+                            {
+                              "name": "zSEGMENTS",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": "string"
+                                }
+                              ]
+                            },
+                            {
+                              "name": "zST",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "record",
+                                  "namespace": "net.explorys.samhat.z12.r837",
+                                  "name": "zST",
+                                  "fields": [
+                                    {
+                                      "name": "zSEGMENTS",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "array",
+                                          "items": "string"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "name": "z1000A",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ]
+                                    },
+                                    {
+                                      "name": "z1000B",
+                                      "type": [
+                                        "null",
+                                        "string"
+                                      ]
+                                    },
+                                    {
+                                      "name": "z2000A",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "record",
+                                          "namespace": "net.explorys.samhat.z12.r837",
+                                          "name": "z2000A",
+                                          "fields": [
+                                            {
+                                              "name": "zSEGMENTS",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010AA",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010AB",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010AC",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "name": "z2000B",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "record",
+                                          "namespace": "net.explorys.samhat.z12.r837",
+                                          "name": "z2000B",
+                                          "fields": [
+                                            {
+                                              "name": "zSEGMENTS",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010BA",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010BB",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2300",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2300",
+                                                  "fields": [
+                                                    {
+                                                      "name": "zSEGMENTS",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310A",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310B",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310C",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310D",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310E",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310F",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2320",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2320",
+                                                          "fields": [
+                                                            {
+                                                              "name": "zSEGMENTS",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330A",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330B",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330C",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330D",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330E",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330F",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330G",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330H",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330I",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2400",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2400",
+                                                          "fields": [
+                                                            {
+                                                              "name": "zSEGMENTS",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2410",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420A",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420B",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420C",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420D",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2430",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "name": "z2000C",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "record",
+                                          "namespace": "net.explorys.samhat.z12.r837",
+                                          "name": "z2000C",
+                                          "fields": [
+                                            {
+                                              "name": "zSEGMENTS",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010CA",
+                                              "type": [
+                                                "null",
+                                                "string"
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2300",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2300_1",
+                                                  "fields": [
+                                                    {
+                                                      "name": "zSEGMENTS",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310A",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310B",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310C",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310D",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310E",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310F",
+                                                      "type": [
+                                                        "null",
+                                                        "string"
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2320",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2320_1",
+                                                          "fields": [
+                                                            {
+                                                              "name": "zSEGMENTS",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330A",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330B",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330C",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330D",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330E",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330F",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330G",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330H",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330I",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2400",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2400_1",
+                                                          "fields": [
+                                                            {
+                                                              "name": "zSEGMENTS",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2410",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420A",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420B",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420C",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2420D",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2430",
+                                                              "type": [
+                                                                "null",
+                                                                "string"
+                                                              ]
+                                                            }
+                                                          ]
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
+                                                }
+                                              ]
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "name": "zSE",
+                              "type": [
+                                "null",
+                                "string"
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "name": "zGE",
+                      "type": [
+                        "null",
+                        "string"
+                      ]
                     }
-                  },
-                  {
-                    "name": "zGE",
-                    "type": "string"
-                  }
-                ]
-              }
+                  ]
+                }
+              ]
             },
             {
               "name": "zIEA",
-              "type": "string"
+              "type": [
+                "null",
+                "string"
+              ]
             }
           ]
         }

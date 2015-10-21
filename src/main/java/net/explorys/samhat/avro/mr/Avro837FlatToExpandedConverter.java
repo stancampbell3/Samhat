@@ -143,10 +143,11 @@ public class Avro837FlatToExpandedConverter {
         }
         schemaFieldsSet.remove("zSEGMENTS"); // this one is optional
 
-        // -- add the array object as a value of that field
+        // DEBUG -- try leaving out segments
+        /*// -- add the array object as a value of that field
         if(segmentsArray.size()>0) {
             x837Record.put("zSEGMENTS", segmentsArray);
-        }
+        }*/
 
         // For each loop in currentLoop
         for(Loop loop : currentLoop.getLoops()) {
@@ -158,7 +159,8 @@ public class Avro837FlatToExpandedConverter {
             if(null==field) {
                 throw new Avro837FlatToExpandedException("Couldn't locate a field for: "+recordSchemaName);
             }
-            Schema recordSchema = field.schema();
+            // For Union types (nullable fields), we'll take the second type in the array
+            Schema recordSchema = field.schema().getType() == Schema.Type.UNION ? field.schema().getTypes().get(1) : field.schema();
 
             // TODO: potentially recognize different types of specified schemas
             if(recordSchema.getType()==Schema.Type.RECORD) {
@@ -172,6 +174,8 @@ public class Avro837FlatToExpandedConverter {
                 walkTheLoop(nestedRecord, loop);
 
                 // set the property of the outer record for this loop
+                // DEBUG
+                System.out.println("set value for "+recordSchemaName);
                 x837Record.put(recordSchemaName, nestedRecord);
                 schemaFieldsSet.remove(recordSchemaName);
             } else {

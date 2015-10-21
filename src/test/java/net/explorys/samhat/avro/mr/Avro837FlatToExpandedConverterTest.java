@@ -1,5 +1,6 @@
 package net.explorys.samhat.avro.mr;
 
+import net.explorys.samhat.AvroSchemaGenerator;
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
@@ -7,10 +8,7 @@ import org.apache.avro.generic.GenericRecord;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.nio.ByteBuffer;
 
 /**
@@ -24,8 +22,12 @@ public class Avro837FlatToExpandedConverterTest {
         try {
 
             InputStream schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            InputStream schem837ProAvro = getClass().getResourceAsStream("/x12_schema_837_professional_avro.json");
 
+            AvroSchemaGenerator schemaGenerator = new AvroSchemaGenerator();
+            String jsonSchema = schemaGenerator.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schema837Pro);
+            InputStream schem837ProAvro = new ByteArrayInputStream(jsonSchema.getBytes());
+
+            schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
             Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
 
             Flat837 flatAvroRecord = createFlatTestRecordPro();

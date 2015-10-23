@@ -21,42 +21,31 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    public static final String SEGMENTS_AVRO_TYPE_DEFINITION = "{ \"name\" : \"zSEGMENTS\", \"type\" : [ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ] }";
     public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
     public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
     public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"zX12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
 
     private ObjectMapper mapper;
     private XmlBasedCfSchemaParser parser;
-    private ObjectNode segmentsFieldEntry;  // Inserted into the fields list
-    private JsonNode segmentsTypeEntry;   // Inserted as the type of a leaf field like "1000A"
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
         this.parser = new XmlBasedCfSchemaParser();
-        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
-        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     public AvroSchemaGenerator(ObjectMapper mapper, XmlBasedCfSchemaParser parser) {
         this.mapper = mapper;
         this.parser = parser;
-        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
-        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     public AvroSchemaGenerator(XmlBasedCfSchemaParser parser) {
         this.parser = parser;
         this.mapper = new ObjectMapper();
-        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
-        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     public AvroSchemaGenerator(ObjectMapper mapper) {
         this.mapper = mapper;
         this.parser = new XmlBasedCfSchemaParser();
-        this.segmentsFieldEntry = getSegmentsAvroTypeDefinition(mapper);
-        this.segmentsTypeEntry = getSegmentsNamedAvroTypeDefinition(mapper);
     }
 
     /**
@@ -76,23 +65,7 @@ public class AvroSchemaGenerator {
         }
     }
 
-    /**
-     * Handy method for returning the JSON nodes necessary to specify the Avro for a standard Segments field for
-     * a loop.
-     *
-     * @param mapper
-     * @return
-     */
-    public static ObjectNode getSegmentsAvroTypeDefinition(ObjectMapper mapper) {
-        try {
-            return mapper.readValue(SEGMENTS_AVRO_TYPE_DEFINITION, ObjectNode.class);
-        } catch (IOException e){
 
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_AVRO_TYPE_DEFINITION is faulty!", e);
-        }
-    }
 
     public static ObjectNode getX12EnvelopeSchemaDefinition(ObjectMapper mapper) {
         try {
@@ -159,9 +132,6 @@ public class AvroSchemaGenerator {
         ArrayNode fields = mapper.createArrayNode();
         objectNode.put("fields", fields);
 
-        // Add in the zSEGMENTS field to hold unparsed data
-        fields.add(segmentsFieldEntry);
-
         // Time to gather the fields array from each of the subelements of elem...
         NodeList children = elem.getChildNodes();
         for(int i=0;i<children.getLength();i++) {
@@ -222,9 +192,6 @@ public class AvroSchemaGenerator {
 
         ArrayNode fields = mapper.createArrayNode();
         objectNode.put("fields", fields);
-
-        // Add in the zSEGMENTS field to hold unparsed data
-        fields.add(segmentsFieldEntry);
 
         // Time to gather the fields array from each of the subelements of elem...
         NodeList children = elem.getChildNodes();
@@ -308,7 +275,7 @@ public class AvroSchemaGenerator {
     }
 
     /**
-     * Is this a primitive Avro type or a record type? (Including zSEGMENTS as a primitive as we don't turn it into a record)
+     * Is this a primitive Avro type or a record type?
      *
      * @param typeName
      * @return

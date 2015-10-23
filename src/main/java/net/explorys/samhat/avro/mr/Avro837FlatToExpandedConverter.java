@@ -143,12 +143,6 @@ public class Avro837FlatToExpandedConverter {
         }
         schemaFieldsSet.remove("zSEGMENTS"); // this one is optional
 
-        // DEBUG -- try leaving out segments
-        /*// -- add the array object as a value of that field
-        if(segmentsArray.size()>0) {
-            x837Record.put("zSEGMENTS", segmentsArray);
-        }*/
-
         // For each loop in currentLoop
         for(Loop loop : currentLoop.getLoops()) {
 

@@ -25,16 +25,6 @@
           "name": "zX12",
           "fields": [
             {
-              "name": "zSEGMENTS",
-              "type": [
-                "null",
-                {
-                  "type": "array",
-                  "items": "string"
-                }
-              ]
-            },
-            {
               "name": "zISA",
               "type": [
                 "null",
@@ -43,16 +33,6 @@
                   "namespace": "net.explorys.samhat.z12.r837",
                   "name": "zISA",
                   "fields": [
-                    {
-                      "name": "zSEGMENTS",
-                      "type": [
-                        "null",
-                        {
-                          "type": "array",
-                          "items": "string"
-                        }
-                      ]
-                    },
                     {
                       "name": "zGS",
                       "type": [
@@ -63,16 +43,6 @@
                           "name": "zGS",
                           "fields": [
                             {
-                              "name": "zSEGMENTS",
-                              "type": [
-                                "null",
-                                {
-                                  "type": "array",
-                                  "items": "string"
-                                }
-                              ]
-                            },
-                            {
                               "name": "zST",
                               "type": [
                                 "null",
@@ -81,16 +51,6 @@
                                   "namespace": "net.explorys.samhat.z12.r837",
                                   "name": "zST",
                                   "fields": [
-                                    {
-                                      "name": "zSEGMENTS",
-                                      "type": [
-                                        "null",
-                                        {
-                                          "type": "array",
-                                          "items": "string"
-                                        }
-                                      ]
-                                    },
                                     {
                                       "name": "z1000A",
                                       "type": [
@@ -114,16 +74,6 @@
                                           "namespace": "net.explorys.samhat.z12.r837",
                                           "name": "z2000A",
                                           "fields": [
-                                            {
-                                              "name": "zSEGMENTS",
-                                              "type": [
-                                                "null",
-                                                {
-                                                  "type": "array",
-                                                  "items": "string"
-                                                }
-                                              ]
-                                            },
                                             {
                                               "name": "z2010AA",
                                               "type": [
@@ -159,16 +109,6 @@
                                           "name": "z2000B",
                                           "fields": [
                                             {
-                                              "name": "zSEGMENTS",
-                                              "type": [
-                                                "null",
-                                                {
-                                                  "type": "array",
-                                                  "items": "string"
-                                                }
-                                              ]
-                                            },
-                                            {
                                               "name": "z2010BA",
                                               "type": [
                                                 "null",
@@ -191,16 +131,6 @@
                                                   "namespace": "net.explorys.samhat.z12.r837",
                                                   "name": "z2300",
                                                   "fields": [
-                                                    {
-                                                      "name": "zSEGMENTS",
-                                                      "type": [
-                                                        "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": "string"
-                                                        }
-                                                      ]
-                                                    },
                                                     {
                                                       "name": "z2310A",
                                                       "type": [
@@ -252,16 +182,6 @@
                                                           "namespace": "net.explorys.samhat.z12.r837",
                                                           "name": "z2320",
                                                           "fields": [
-                                                            {
-                                                              "name": "zSEGMENTS",
-                                                              "type": [
-                                                                "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": "string"
-                                                                }
-                                                              ]
-                                                            },
                                                             {
                                                               "name": "z2330A",
                                                               "type": [
@@ -339,16 +259,6 @@
                                                           "name": "z2400",
                                                           "fields": [
                                                             {
-                                                              "name": "zSEGMENTS",
-                                                              "type": [
-                                                                "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": "string"
-                                                                }
-                                                              ]
-                                                            },
-                                                            {
                                                               "name": "z2410",
                                                               "type": [
                                                                 "null",
@@ -412,16 +322,6 @@
                                           "name": "z2000C",
                                           "fields": [
                                             {
-                                              "name": "zSEGMENTS",
-                                              "type": [
-                                                "null",
-                                                {
-                                                  "type": "array",
-                                                  "items": "string"
-                                                }
-                                              ]
-                                            },
-                                            {
                                               "name": "z2010CA",
                                               "type": [
                                                 "null",
@@ -437,16 +337,6 @@
                                                   "namespace": "net.explorys.samhat.z12.r837",
                                                   "name": "z2300_1",
                                                   "fields": [
-                                                    {
-                                                      "name": "zSEGMENTS",
-                                                      "type": [
-                                                        "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": "string"
-                                                        }
-                                                      ]
-                                                    },
                                                     {
                                                       "name": "z2310A",
                                                       "type": [
@@ -498,16 +388,6 @@
                                                           "namespace": "net.explorys.samhat.z12.r837",
                                                           "name": "z2320_1",
                                                           "fields": [
-                                                            {
-                                                              "name": "zSEGMENTS",
-                                                              "type": [
-                                                                "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": "string"
-                                                                }
-                                                              ]
-                                                            },
                                                             {
                                                               "name": "z2330A",
                                                               "type": [
@@ -584,16 +464,6 @@
                                                           "namespace": "net.explorys.samhat.z12.r837",
                                                           "name": "z2400_1",
                                                           "fields": [
-                                                            {
-                                                              "name": "zSEGMENTS",
-                                                              "type": [
-                                                                "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": "string"
-                                                                }
-                                                              ]
-                                                            },
                                                             {
                                                               "name": "z2410",
                                                               "type": [

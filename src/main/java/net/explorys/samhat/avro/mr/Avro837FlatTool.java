@@ -67,7 +67,7 @@ public class Avro837FlatTool extends Configured implements Tool {
         Schema flatSchema = new Schema.Parser().parse(fsDataInputStream);
 
         // DEBUG
-        System.out.println("avro.output.schema:" + getX837FlatSchemaPath());
+        // System.out.println("avro.output.schema:" + getX837FlatSchemaPath());
 
         Schema outputSchema = Pair.getPairSchema(Schema.create(Schema.Type.STRING), Flat837.SCHEMA$);
         conf.set("avro.output.schema", outputSchema.toString());
@@ -122,7 +122,7 @@ public class Avro837FlatTool extends Configured implements Tool {
                 sbuf.append("sourceFilename:").append(sourceFilename).append("\n");
                 sbuf.append("orgName:").append(orgName).append("\n");
                 sbuf.append("ingestionTimestamp:").append(ingestionTimestamp).append("\n");
-                System.out.println(sbuf.toString());
+                // System.out.println(sbuf.toString());
 
                 tool.setX837FlatSchemaPath(flatSchemaPath);
                 tool.setX837EDIDataPath(ediDataPath);

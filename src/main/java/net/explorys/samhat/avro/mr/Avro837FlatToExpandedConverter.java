@@ -72,7 +72,7 @@ public class Avro837FlatToExpandedConverter {
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
 
         // DEBUG
-        System.out.println("x837: " + x837.toXML());
+        // System.out.println("x837: " + x837.toXML());
 
         // Build the envelope and copy over the source_file, ingestion timestamp, etc.
         Schema envSchema = x837AvroSchema;
@@ -170,12 +170,12 @@ public class Avro837FlatToExpandedConverter {
 
                 // walkThe nested loop
                 // DEBUG
-                System.out.println("walkTheLoop for "+recordSchemaName);
+                // System.out.println("walkTheLoop for "+recordSchemaName);
                 walkTheLoop(nestedRecord, loop);
 
                 // set the property of the outer record for this loop
                 // DEBUG
-                System.out.println("set value for "+recordSchemaName);
+                // System.out.println("set value for "+recordSchemaName);
                 x837Record.put(recordSchemaName, nestedRecord);
                 schemaFieldsSet.remove(recordSchemaName);
             } else {
@@ -197,7 +197,7 @@ public class Avro837FlatToExpandedConverter {
                 // -- the field of the enclosing x837Record is named the same as the recordSchema
                 // -- add the array object as a value of that field
                 // DEBUG
-                System.out.println("set value for "+recordSchemaName);
+                // System.out.println("set value for "+recordSchemaName);
                 x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
                 schemaFieldsSet.remove(recordSchemaName);
             }
@@ -209,7 +209,7 @@ public class Avro837FlatToExpandedConverter {
             for (String fieldName : schemaFieldsSet) {
 
                 // DEBUG
-                System.out.println("Setting "+fieldName+" to empty.");
+                // System.out.println("Setting "+fieldName+" to empty.");
                 x837Record.put(fieldName, null);
             }
         }

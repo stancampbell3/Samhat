@@ -76,12 +76,12 @@ public class Avro837Tool extends Configured implements Tool {
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Path path = new Path(x837FlatSchemaPath);
         // DEBUG
-        System.out.println("x837FlatSchemaPath: "+path);
+        // System.out.println("x837FlatSchemaPath: "+path);
         FileSystem fs = FileSystem.get(conf);
         InputStream fsDataInputStream = fs.open(path);
         Schema inputSchema = new Schema.Parser().parse(fsDataInputStream);
         path = new Path(x837ExpandedSchemaPath);
-        System.out.println("x837ExpandedSchemaPath: "+path);
+        // System.out.println("x837ExpandedSchemaPath: "+path);
         fsDataInputStream = fs.open(path);
         Schema outputSchema = new Schema.Parser().parse(fsDataInputStream);
 
@@ -114,9 +114,9 @@ public class Avro837Tool extends Configured implements Tool {
                 }
                 String[] otherArgs=new GenericOptionsParser(conf,args).getRemainingArgs();
                 // DEBUG
-                for(int i=0;i<otherArgs.length;i++) {
+                /*for(int i=0;i<otherArgs.length;i++) {
                     System.out.println("OtherARG"+i+": "+otherArgs[i]);
-                }
+                }*/
                 tool.setX837FlatDataPath(otherArgs[3]);
                 tool.setOutputPath(otherArgs[4]);
                 tool.setX837FlatSchemaPath(otherArgs[5]);

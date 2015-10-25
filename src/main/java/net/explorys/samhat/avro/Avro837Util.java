@@ -38,7 +38,7 @@ public class Avro837Util implements Serializable {
         return x12FlatDataSchemaPath;
     }
 
-    private Schema getX12FlatDataSchema() throws IOException {
+    public Schema getX12FlatDataSchema() throws IOException {
         return (new Schema.Parser()).parse(new File(x12FlatDataSchemaPath));
     }
 

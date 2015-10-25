@@ -26,20 +26,21 @@ import java.util.UUID;
  * This utility allows us to read and write 837 records to Avro.
  * It's primarily used for testing purposes to generate and validate test data for the MR jobs.
  */
-public class Avro837Util {
+public class Avro837Util implements Serializable {
 
-    private Schema x12FlatDataSchema;
+    String x12FlatDataSchemaPath;
 
-    public Avro837Util(String x12FlatDataSchemaPath) throws IOException {
-
-        x12FlatDataSchema = (new Schema.Parser()).parse(new File(x12FlatDataSchemaPath));
+    public Avro837Util(String x12FlatDataSchemaPath) {
+        this.x12FlatDataSchemaPath = x12FlatDataSchemaPath;
     }
 
-    public Avro837Util(InputStream x12FlatDataSchemaStream) throws IOException {
-
-        x12FlatDataSchema = (new Schema.Parser()).parse(x12FlatDataSchemaStream);
+    public String getX12FlatDataSchemaPath() {
+        return x12FlatDataSchemaPath;
     }
 
+    private Schema getX12FlatDataSchema() throws IOException {
+        return (new Schema.Parser()).parse(new File(x12FlatDataSchemaPath));
+    }
 
     /**
      * Iterate over the x12837Data, saving each Collection of Byte as a record in the Avro formatted file.
@@ -64,14 +65,14 @@ public class Avro837Util {
 
         DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
         DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
-        dataFileWriter.create(x12FlatDataSchema, outputFile);
+        dataFileWriter.create(getX12FlatDataSchema(), outputFile);
 
         long recordCount = 0L;
 
         while(x12837DataItr.hasNext()) {
             ByteBuffer data = x12837DataItr.next();
 
-            GenericRecord x837 = new GenericData.Record(x12FlatDataSchema);
+            GenericRecord x837 = new GenericData.Record(getX12FlatDataSchema());
             x837.put("source_filename", sourceFile);
             x837.put("ingested_timestamp", ingestionTimestamp);
             x837.put("organization", organization);
@@ -96,6 +97,7 @@ public class Avro837Util {
 
         DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
         DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        Schema x12FlatDataSchema = getX12FlatDataSchema();
         dataFileWriter.create(x12FlatDataSchema, outputFile);
 
         GenericRecord x837 = new GenericData.Record(x12FlatDataSchema);
@@ -117,6 +119,7 @@ public class Avro837Util {
 
         DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
         DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        Schema x12FlatDataSchema = getX12FlatDataSchema();
         dataFileWriter.create(x12FlatDataSchema, outputFile);
 
         GenericRecord x837 = new GenericData.Record(x12FlatDataSchema);

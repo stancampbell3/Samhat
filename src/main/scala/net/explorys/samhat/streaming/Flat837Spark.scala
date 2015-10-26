@@ -1,7 +1,5 @@
 package net.explorys.samhat.streaming
 
-import java.io.File
-
 import org.apache.avro.Schema
 import org.apache.avro.file.DataFileWriter
 import org.apache.avro.generic.{GenericData, GenericDatumWriter, GenericRecord}
@@ -31,12 +29,8 @@ class Flat837Job(flatDataSchemaPath:String, sourceFilename:String, orgName:Strin
     // Process documents
     lines.foreachRDD( x837RDD => {
 
-      x837RDD.foreach ( data => {
-        // util.writeX12FlatData(sourceFilename, System.currentTimeMillis, orgName, data, outputPath)
-        val x837:GenericRecord = wrap837Data(sourceFilename, System.currentTimeMillis().toString,
-          orgName, data, util.getX12FlatDataSchema)
-        val fileSystem = FileSystem.get(ssc.sparkContext.hadoopConfiguration)
-        writeFlat837Data( fileSystem, util.getX12FlatDataSchema, x837, outputPath)
+      x837RDD.foreach( x837 => {
+         util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, ByteBuffer.wrap(x837.getBytes()), outputPath)
       })
     })
 

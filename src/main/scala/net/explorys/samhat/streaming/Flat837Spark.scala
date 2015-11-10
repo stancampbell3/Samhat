@@ -1,5 +1,7 @@
 package net.explorys.samhat.streaming
 
+import java.util.UUID
+
 import org.apache.avro.Schema
 import org.apache.avro.file.DataFileWriter
 import org.apache.avro.generic.{GenericData, GenericDatumWriter, GenericRecord}
@@ -30,7 +32,9 @@ class Flat837Job(flatDataSchemaPath:String, sourceFilename:String, orgName:Strin
     lines.foreachRDD( x837RDD => {
 
       x837RDD.foreach( x837 => {
-         util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, ByteBuffer.wrap(x837.getBytes()), outputPath)
+        val uuid = UUID.randomUUID().toString
+        val filename = s"$outputPath.$uuid.avro"
+        util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, ByteBuffer.wrap(x837.getBytes()), filename)
       })
     })
 

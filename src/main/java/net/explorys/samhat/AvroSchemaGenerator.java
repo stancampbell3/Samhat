@@ -173,6 +173,14 @@ public class AvroSchemaGenerator {
         return nodesList;
     }
 
+    /**
+     * Recursively walk the XML DOM, creating the Avro schema from the XML specification.
+     *
+     * @param namespace
+     * @param elem
+     * @param symbolCounts
+     * @return
+     */
     ObjectNode constructAvroJsonFromXmlSchema(String namespace, Node elem, Map<String,Integer>symbolCounts) {
 
         // symbolCounts can start null

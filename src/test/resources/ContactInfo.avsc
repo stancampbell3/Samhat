@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "ContactInfo",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+    { "name" : "lastName", "type" : "string" },
+    { "name" : "firstName", "type" : "string" },
+    { "name" : "streetAddress", "type" : "string" },
+    { "name" : "city", "type" : "string" },
+    { "name" : "state", "type" : "string" },
+    { "name" : "zip", "type" : "string" },
+    { "name" : "tracking", "type" : "string" }
+  ]
+}

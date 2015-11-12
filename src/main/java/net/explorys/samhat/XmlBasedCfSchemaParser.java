@@ -3,8 +3,10 @@ package net.explorys.samhat;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import net.explorys.samhat.z12.r837.EnhancedCf;
+import org.codehaus.jackson.node.ObjectNode;
 import org.pb.x12.Cf;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -23,6 +25,13 @@ import java.io.*;
  */
 public class XmlBasedCfSchemaParser implements ICfSchemaParser {
 
+    // For processing metadata
+    private ObjectMapper mapper = new ObjectMapper();
+
+
+    boolean isChildNode(String nodeName) {
+        return "child".equalsIgnoreCase(nodeName) || "loop".equalsIgnoreCase(nodeName) || "segment".equalsIgnoreCase(nodeName);
+    }
     /**
      * Internally, processSchema walks the XML document whose head is current and returns
      * an equivalent X12 schema as a Cf instance.
@@ -41,7 +50,7 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
         for(int i=0;i<children.getLength();i++) {
             Node child = children.item(i);
 
-            if("child".equalsIgnoreCase(child.getNodeName())) {
+            if(isChildNode(child.getNodeName())) {
                 final NamedNodeMap attributes = child.getAttributes();
                 String childNodeName = attributes.getNamedItem("name").getTextContent();
                 String segmentName = attributes.getNamedItem("segment").getTextContent();
@@ -57,6 +66,22 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
                 if (null == childSchema) {
                     // failed to construct the child, throw an error
                     throw new CfSchemaParsingException("Error in parsing on child node: " + child.getNodeName());
+                } else {
+                    // Check for metadata
+
+                    if(null!=attributes.getNamedItem("classname")) {
+
+                        String classname = attributes.getNamedItem("classname").getNodeValue();
+                        String arity = attributes.getNamedItem("arity").getNodeValue();
+                        String patterns = attributes.getNamedItem("patterns").getNodeValue();
+
+                        ObjectNode metadataObj = mapper.createObjectNode();
+                        metadataObj.put("classname", classname);
+                        metadataObj.put("arity", Integer.parseInt(arity));
+                        metadataObj.put("patterns", patterns);
+
+                        childSchema.setMetaData(metadataObj.toString());
+                    }
                 }
                 if (child.hasChildNodes()) {
                     // Dive into the subnodes (the loop members)
@@ -107,7 +132,7 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
             return parseSchema(doc);
 
         } catch (Exception e) {
-            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
+            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e, e);
         }
     }
 
@@ -133,7 +158,7 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
             return processSchema(null, elem);
 
         } catch (Exception e) {
-            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e);
+            throw new CfSchemaParsingException("Couldn't parse Cf from the spec:"+e, e);
         }
     }
 

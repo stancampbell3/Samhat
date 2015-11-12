@@ -89,6 +89,13 @@ public class EnhancedCf extends Cf {
         this.depth = depth;
     }
 
+    public String getMetaData() {
+        return metaData;
+    }
+
+    public void setMetaData(String metaData) {
+        this.metaData = metaData;
+    }
 
     @Override
     public String toString() {
@@ -108,6 +115,10 @@ public class EnhancedCf extends Cf {
         }
         if (getSegmentQualPos() != null)
             dump.append(" - ").append(getSegmentQualPos());
+
+        if(getMetaData() != null) {
+            dump.append(" - ").append(getMetaData());
+        }
         dump.append(System.getProperty("line.separator"));
         for (Cf cf : children) {
             dump.append(cf.toString());

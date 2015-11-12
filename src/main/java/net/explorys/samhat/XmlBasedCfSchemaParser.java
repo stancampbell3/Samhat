@@ -4,6 +4,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.ParserConfigurationException;
 
+import net.explorys.samhat.z12.r837.EnhancedCf;
 import org.pb.x12.Cf;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
@@ -31,10 +32,10 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
      * @return
      * @throws CfSchemaParsingException
      */
-    private Cf processSchema(Cf schema, Node current) throws CfSchemaParsingException {
+    private EnhancedCf processSchema(EnhancedCf schema, Node current) throws CfSchemaParsingException {
 
         if(null==schema) {
-            schema = new Cf("X12"); // top level
+            schema = new EnhancedCf("X12"); // top level
         }
         NodeList children = current.getChildNodes();
         for(int i=0;i<children.getLength();i++) {
@@ -44,11 +45,11 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
                 final NamedNodeMap attributes = child.getAttributes();
                 String childNodeName = attributes.getNamedItem("name").getTextContent();
                 String segmentName = attributes.getNamedItem("segment").getTextContent();
-                Cf childSchema;
+                EnhancedCf childSchema;
                 if (attributes.getLength() < 3) {
-                    childSchema = schema.addChild(childNodeName, segmentName);
+                    childSchema = (EnhancedCf)schema.addChild(childNodeName, segmentName);
                 } else {
-                    childSchema = schema.addChild(attributes.getNamedItem("name").getNodeValue(),
+                    childSchema = (EnhancedCf)schema.addChild(attributes.getNamedItem("name").getNodeValue(),
                             attributes.getNamedItem("segment").getNodeValue(),
                             attributes.getNamedItem("segmentQual").getNodeValue(),
                             Integer.parseInt(attributes.getNamedItem("segmentQualPos").getNodeValue()));

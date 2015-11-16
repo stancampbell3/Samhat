@@ -27,7 +27,7 @@ public class AvroSchemaGeneratorTest {
 
         try {
 
-            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional2.xml");
             ObjectNode avroSchemaDef = instance.constructAvroJsonFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
 
             assertNotNull(avroSchemaDef);
@@ -45,7 +45,7 @@ public class AvroSchemaGeneratorTest {
 
         try {
 
-            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional2.xml");
             String jsonSchema = instance.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
 
             assertNotNull(jsonSchema);
@@ -74,7 +74,7 @@ public class AvroSchemaGeneratorTest {
 
         try {
 
-            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional2.xml");
             String jsonSchema = instance.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
             ByteArrayInputStream testSchema = new ByteArrayInputStream(jsonSchema.getBytes());
 

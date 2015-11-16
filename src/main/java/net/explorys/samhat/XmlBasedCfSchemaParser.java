@@ -64,11 +64,12 @@ public class XmlBasedCfSchemaParser implements ICfSchemaParser {
                             Integer.parseInt(attributes.getNamedItem("segmentQualPos").getNodeValue()));
                 }
                 if (null == childSchema) {
+
                     // failed to construct the child, throw an error
                     throw new CfSchemaParsingException("Error in parsing on child node: " + child.getNodeName());
                 } else {
-                    // Check for metadata
 
+                    // Check for metadata
                     if(null!=attributes.getNamedItem("classname")) {
 
                         String classname = attributes.getNamedItem("classname").getNodeValue();

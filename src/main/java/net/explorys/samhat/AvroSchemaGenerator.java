@@ -180,18 +180,32 @@ public class AvroSchemaGenerator {
                     // Check for custom field mapping
                     if(fieldAttributes.getNamedItem("classname")!=null) {
 
-                        String clazz = fieldAttributes.getNamedItem("classname").getNodeValue();
+                        String declaredType = fieldAttributes.getNamedItem("classname").getNodeValue();
 
-                        // Look up the class of the named type
-                        Class recordClass = Class.forName(clazz);
 
-                        // Get the schema of the named type
-                        Field schemaField = recordClass.getDeclaredField("SCHEMA$");
-                        Schema recordSchema = (Schema)schemaField.get(null);
-                        String recordSchemaJsonStr = recordSchema.toString();
-                        JsonNode recordSchemaJson = mapper.readTree(recordSchemaJsonStr);
+                        if(!symbolCounts.containsKey(declaredType)) {
+                            // If we've not seen this class before in this schema generation session, add it
+                            // Look up the class of the declared type
+                            Class recordClass = Class.forName(declaredType);
 
-                        nullableField.add(recordSchemaJson);
+                            // Get the schema of the named type
+                            Field schemaField = recordClass.getDeclaredField("SCHEMA$");
+                            Schema recordSchema = (Schema)schemaField.get(null);
+                            String recordSchemaJsonStr = recordSchema.toString();
+                            JsonNode recordSchemaJson = mapper.readTree(recordSchemaJsonStr);
+
+                            nullableField.add(recordSchemaJson);
+
+                            // Add it to our symbol table
+                            symbolCounts.put(declaredType, 1);
+                        } else {
+                            // Otherwise, just declare the field as having that already defined type
+                            nullableField.add(declaredType);
+
+                            // Increment our count
+                            symbolCounts.put(declaredType, symbolCounts.get(declaredType)+1);
+                        }
+
                     } else {
                         nullableField.add("string");
                     }

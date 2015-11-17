@@ -285,8 +285,6 @@ public class AvroSchemaGenerator {
         final Document document = parser.loadXmlSchema(xmlInputStream);
         ObjectNode schemaDef = constructAvroJsonFromXmlSchema(namespace, document);
 
-        // TODO: For variants, introduce distinguished subtypes (maybe use the full path to the record to qualify?
-
         // Add in envelope description
         ObjectNode envelopeRecord = mapper.createObjectNode();
         envelopeRecord.put("type", "record");

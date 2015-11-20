@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x12_schema name="X12">
+   <loop name="ISA" segment="ISA">
+      <loop name="GS" segment="GS">
+         <loop name="ST" segment="ST" segmentQual="837" segmentQualPos="1">
+            <segment name="1000A" segment="NM1" segmentQual="41" segmentQualPos="1" />
+            <segment name="1000B" segment="NM1" segmentQual="40" segmentQualPos="1" />
+            <loop name="2000A" segment="HL" segmentQual="20" segmentQualPos="3">
+               <segment name="2010AA" segment="NM1" segmentQual="85"
+                        segmentQualPos="1"
+                        classname="net.explorys.samhat.z12.r837.ContactInfo"
+                        arity="7"
+                        patterns="['NM1\*IL\*1\*([^\*]+)\*([^\*]+)\*.*',
+                            'N3\*([^\*]+).*', 'N4\*([^\*]+)\*([^\*]+)\*([^\*]+)',
+                            'DMG\*[^\*]+\*(\d+)\*F.*' ]"
+               />
+               <segment name="2010AB" segment="NM1" segmentQual="87" segmentQualPos="1" />
+               <segment name="2010AC" segment="NM1" segmentQual="PE" segmentQualPos="1" />
+            </loop>
+            <loop name="2000B" segment="HL" segmentQual="22" segmentQualPos="3">
+               <segment name="2010BA" segment="NM1" segmentQual="IL" segmentQualPos="1" />
+               <segment name="2010BB" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+               <loop name="2300" segment="CLM">
+                    <segment name="2310A" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                    <segment name="2310B" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                    <segment name="2310C" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                    <segment name="2310D" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                    <segment name="2310E" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                    <segment name="2310F" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                    <loop name="2320" segment="SBR">
+                        <segment name="2330A" segment="NM1" segmentQual="IL" segmentQualPos="1" />
+                        <segment name="2330B" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+                        <segment name="2330C" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                        <segment name="2330D" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <segment name="2330E" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                        <segment name="2330F" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                        <segment name="2330G" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                        <segment name="2330H" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                        <segment name="2330I" segment="NM1" segmentQual="85" segmentQualPos="1" />
+                    </loop>
+                    <loop name="2400" segment="LX">
+                        <segment name="2410" segment="LIN" />
+                        <segment name="2420A" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <segment name="2420B" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                        <segment name="2420C" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                        <segment name="2420D" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                        <segment name="2430" segment="SVD" />
+                    </loop>
+                </loop>
+            </loop>
+            <loop name="2000C" segment="HL" segmentQual="23" segmentQualPos="3">
+                <segment name="2010CA" segment="NM1" segmentQual="QC" segmentQualPos="1" />
+                <loop name="2300" segment="CLM">
+                    <segment name="2310A" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                    <segment name="2310B" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                    <segment name="2310C" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                    <segment name="2310D" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                    <segment name="2310E" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                    <segment name="2310F" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                    <loop name="2320" segment="SBR">
+                        <segment name="2330A" segment="NM1" segmentQual="IL" segmentQualPos="1" />
+                        <segment name="2330B" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+                        <segment name="2330C" segment="NM1" segmentQual="71" segmentQualPos="1" />
+                        <segment name="2330D" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <segment name="2330E" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                        <segment name="2330F" segment="NM1" segmentQual="77" segmentQualPos="1" />
+                        <segment name="2330G" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                        <segment name="2330H" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                        <segment name="2330I" segment="NM1" segmentQual="85" segmentQualPos="1" />
+                    </loop>
+                    <loop name="2400" segment="LX">
+                        <segment name="2410" segment="LIN" />
+                        <segment name="2420A" segment="NM1" segmentQual="72" segmentQualPos="1" />
+                        <segment name="2420B" segment="NM1" segmentQual="ZZ" segmentQualPos="1" />
+                        <segment name="2420C" segment="NM1" segmentQual="82" segmentQualPos="1" />
+                        <segment name="2420D" segment="NM1" segmentQual="DN" segmentQualPos="1" />
+                        <segment name="2430" segment="SVD" />
+                    </loop>
+                </loop>
+            </loop>
+         </loop>
+         <segment name="SE" segment="SE"/>
+      </loop>
+      <loop name="GE" segment="GE"/>
+   </loop>
+   <segment name="IEA" segment="IEA"/>
+</x12_schema>

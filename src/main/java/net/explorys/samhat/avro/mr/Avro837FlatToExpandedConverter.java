@@ -1,9 +1,6 @@
 package net.explorys.samhat.avro.mr;
 
-import net.explorys.samhat.AvroSchemaGenerator;
-import net.explorys.samhat.XmlBasedCfSchemaParser;
-import net.explorys.samhat.CfSchemaParsingException;
-import net.explorys.samhat.ICfSchemaParser;
+import net.explorys.samhat.*;
 import net.explorys.samhat.avro.Avro837FlatToExpandedException;
 import net.explorys.samhat.avro.Avro837Util;
 import net.explorys.samhat.z12.r837.Flat837;
@@ -15,12 +12,19 @@ import org.apache.avro.util.Utf8;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.pb.x12.*;
+import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.xpath.*;
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by stan.campbell on 9/3/15.
@@ -36,19 +40,50 @@ public class Avro837FlatToExpandedConverter {
     private Schema segmentsArraySchema;
     private ObjectMapper mapper = new ObjectMapper();
 
-    public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException, IOException {
+    // Cached XML document containing the target X12 Schema (used for resolving declared types for segments)
+    private Document document = null;
+    private XPath xPath;
+    private Pattern patterns = Pattern.compile("\\[?'([^']+)'.*");
 
-        // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
-        ICfSchemaParser ICfSchemaParser = new XmlBasedCfSchemaParser();
-        Cf schema = ICfSchemaParser.parseSchema(cfSchemaXML);
+    public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException {
 
-        // Instantiate our x12Parser for the given cfSchema
-        x12Parser = new X12Parser(schema);
+        try {
+            // Cache the cfSchemaXML input stream since we'll use it twice
+            ByteBuffer xmlBytes = xmlStreamToByteBuffer(cfSchemaXML);
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xmlBytes.array());
 
-        // Instantiate our Avro schemas.
-        Schema.Parser avroParser = (new Schema.Parser());
-        x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
-        segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
+            // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
+            ICfSchemaParser ICfSchemaParser = new XmlBasedCfSchemaParser();
+            Cf schema = ICfSchemaParser.parseSchema(byteArrayInputStream);
+
+            // Reset the xml input stream
+            byteArrayInputStream.reset();
+
+            // Load the DOM
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            document = dBuilder.parse(byteArrayInputStream);
+
+            // Normalize to compensate for stray whitespace in the spec
+            document.getDocumentElement().normalize();
+
+            // Create our XPath
+            XPathFactory xPathFactory = XPathFactory.newInstance();
+            xPath = xPathFactory.newXPath();
+
+            // Instantiate our x12Parser for the given cfSchema
+            x12Parser = new X12Parser(schema);
+
+            // Instantiate our Avro schemas.
+            Schema.Parser avroParser = (new Schema.Parser());
+            x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
+            segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
+
+        } catch(Exception e) {
+
+            throw new CfSchemaParsingException("Error setting up schema information", e);
+        }
     }
 
     /**
@@ -114,6 +149,67 @@ public class Avro837FlatToExpandedConverter {
         return envRecord;
     }
 
+    String calculateXPath(Loop currentLoop) {
+
+        // Build the xpath expression
+        Stack<String> pathStack = new Stack<String>();
+        Loop loopPtr = currentLoop;
+        while(loopPtr!=null) {
+            String currentLoopName = loopPtr.getName();
+            loopPtr = loopPtr.getParent();
+            String entry = loopPtr == null ? "//x12_schema[@name=\""+currentLoopName+"\"]" : "loop[@name=\""+currentLoopName+"\"]";
+            pathStack.push(entry);
+        }
+        StringBuilder bld = new StringBuilder();
+        do {
+            bld.append(pathStack.pop());
+            if(!pathStack.empty()) {
+                bld.append("/");
+            }
+        } while(!pathStack.empty());
+        return bld.toString();
+    }
+
+
+    List<Pattern> compilePatterns(String rawPatterns) {
+
+        ArrayList<Pattern> patternArrayList = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(rawPatterns, ",");
+        while(st.hasMoreTokens()) {
+
+            String rawEntry = st.nextToken().trim();
+            Matcher m = patterns.matcher(rawEntry);
+            if(!m.matches()) {
+                throw new IllegalArgumentException("Pattern misformed: "+rawEntry);
+            }
+            String entry = m.group(1);
+            Pattern pattern = Pattern.compile(entry);
+            patternArrayList.add(pattern);
+        }
+        return patternArrayList;
+    }
+
+    DeclaredTypeInfo getDeclaredTypeInfo(String xPathStr) throws XPathExpressionException {
+
+        XPathExpression xPathExpression = xPath.compile(xPathStr);
+        NodeList nodeList = (NodeList) xPathExpression.evaluate(document, XPathConstants.NODESET);
+        if(null==nodeList || nodeList.getLength()==0) {
+            return null;
+        } else {
+            // TODO: add exception if more than one path is defined (dupe segment under same loop) or malformed attributes
+            Node node = nodeList.item(0); // Just take the first item
+            NamedNodeMap attribMap = node.getAttributes();
+            String className = attribMap.getNamedItem("classname").getNodeValue();
+            int arity = Integer.parseInt(attribMap.getNamedItem("arity").getNodeValue());
+
+            // Compile the patterns
+            String rawPatterns = attribMap.getNamedItem("patterns").getNodeValue();
+            List<Pattern> compiledPatterns = compilePatterns(rawPatterns);
+            DeclaredTypeInfo ret = new DeclaredTypeInfo(className, arity, compiledPatterns);
+            return ret;
+        }
+    }
+
     /**
      * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
      *
@@ -125,6 +221,9 @@ public class Avro837FlatToExpandedConverter {
         // An X12 is composed of loops and segments.
         // Segments contain data at this loop level.
         // Loops are nested collections of loops and segments.
+
+        // TODO: pass current path on param list rather than building it each time
+        String currentXPath = calculateXPath(currentLoop);
 
         // Set data from segments
         // -- Construct an avro array object to hold the segment info
@@ -175,8 +274,16 @@ public class Avro837FlatToExpandedConverter {
             } else {
 
                 // The segment data for this loop (it's a leaf) rolls up into the value of a property
-                // of the current record.  For instance, 1000A (Submitter Name) is a property of the enclosing loop
+                // of the current record.
+
+                // For instance, 1000A (Submitter Name) is a property of the enclosing loop
                 // and is implemented in the avro schema as an array of strings.
+
+                // Calculate the path of this subloop
+                String xpath = currentXPath + "/segment[@name=\"" + loopName + "\"]";
+                System.out.println("Leaf xPath: "+xpath);
+
+                // Check for declared type information in the XML schema
 
                 // Set the segment values of loop into the enclosing GenericRecord, x837Record
 
@@ -207,6 +314,23 @@ public class Avro837FlatToExpandedConverter {
                 x837Record.put(fieldName, null);
             }
         }
+    }
+
+    ByteBuffer xmlStreamToByteBuffer(InputStream xmlInputStream) throws IOException {
+
+        InputStreamReader rdr = new InputStreamReader( xmlInputStream );
+        ArrayList<Byte> arr = new ArrayList<>();
+
+        int datum = rdr.read();
+        while(datum>=0) {
+            arr.add((byte)datum);
+            datum = rdr.read();
+        }
+        ByteBuffer ret = ByteBuffer.allocate(arr.size());
+        for(Byte b : arr) {
+            ret.put(b.byteValue());
+        }
+        return ret;
     }
 
     public X12Parser getX12Parser() {

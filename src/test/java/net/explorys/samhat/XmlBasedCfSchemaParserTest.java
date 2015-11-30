@@ -26,7 +26,7 @@ public class XmlBasedCfSchemaParserTest {
     public void canParseStream() {
 
         try {
-            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional2.xml"));
+            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
 
             assertNotNull(schema);
 
@@ -41,7 +41,7 @@ public class XmlBasedCfSchemaParserTest {
     {
 
         try {
-            Cf schema = instance.parseSchema("./src/test/resources/x12_schema_837_professional2.xml");
+            Cf schema = instance.parseSchema("./src/test/resources/x12_schema_837_professional.xml");
 
             assertNotNull(schema);
 
@@ -58,7 +58,7 @@ public class XmlBasedCfSchemaParserTest {
             String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X223 Health Care Claim Institutional/X223-837-institutional-claim.edi";
 
             // Parse our schema from XML
-            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional2.xml"));
+            Cf schema = instance.parseSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
 
             // Load our source 837 in X12 EDI format
             String x12Data1 = loadResourceDocument(x12837Path);
@@ -95,7 +95,7 @@ public class XmlBasedCfSchemaParserTest {
 
         try {
 
-            Document doc = instance.loadXmlSchema(getClass().getResourceAsStream("/x12_schema_837_professional2.xml"));
+            Document doc = instance.loadXmlSchema(getClass().getResourceAsStream("/x12_schema_837_professional.xml"));
 
             assertNotNull(doc);
 

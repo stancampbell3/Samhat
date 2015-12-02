@@ -39,4 +39,15 @@ public class DeclaredTypeInfo {
     public List<Pattern> getPatterns() {
         return patterns;
     }
+
+    @Override
+    public String toString() {
+        StringBuffer buf = new StringBuffer();
+        buf.append(className).append(" : ").append(arity).append(" : {");
+        for(Pattern p : patterns) {
+            buf.append("\"").append(p).append("\" ");
+        }
+        buf.append(" }");
+        return buf.toString();
+    }
 }

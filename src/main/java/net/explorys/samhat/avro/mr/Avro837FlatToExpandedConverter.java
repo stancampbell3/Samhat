@@ -158,9 +158,16 @@ public class Avro837FlatToExpandedConverter {
         Loop loopPtr = currentLoop;
         while(loopPtr!=null) {
             String currentLoopName = loopPtr.getName();
+            if(null==loopPtr.getParent()) {
+                pathStack.push("x12_schema[@name=\""+currentLoopName+"\"]");
+            } else {
+                if(loopPtr.getLoops().size()==0) {
+                    pathStack.push("segment[@name=\""+currentLoopName+"\"]");
+                } else {
+                    pathStack.push("loop[@name=\""+currentLoopName+"\"]");
+                }
+            }
             loopPtr = loopPtr.getParent();
-            String entry = loopPtr == null ? "x12_schema[@name=\""+currentLoopName+"\"]" : "loop[@name=\""+currentLoopName+"\"]";
-            pathStack.push(entry);
         }
         StringBuilder bld = new StringBuilder();
         do {
@@ -201,6 +208,12 @@ public class Avro837FlatToExpandedConverter {
             // TODO: add exception if more than one path is defined (dupe segment under same loop) or malformed attributes
             Node node = nodeList.item(0); // Just take the first item
             NamedNodeMap attribMap = node.getAttributes();
+
+            // If the element has no declared type info, return null
+            if(null==attribMap.getNamedItem("classname")) {
+                return null;
+            }
+
             String className = attribMap.getNamedItem("classname").getNodeValue();
             int arity = Integer.parseInt(attribMap.getNamedItem("arity").getNodeValue());
 
@@ -275,14 +288,12 @@ public class Avro837FlatToExpandedConverter {
             // TODO: pass current path on param list rather than building it each time
             String currentXPath = calculateXPath(currentLoop);
 
-            // Set data from segments
-            // -- Construct an avro array object to hold the segment info
-            GenericArray<Utf8> segmentsArray = new GenericData.Array<>(currentLoop.getSegments().size(), segmentsArraySchema);
-            for (Segment segment : currentLoop.getSegments()) {
-
-                // -- add the segment data into the array
-                segmentsArray.add(new Utf8(segment.toString()));
-            }
+            // DEBUG
+            System.out.println("xpath: "+currentXPath);
+            int numSegments = currentLoop.getSegments().size();
+            System.out.println("--> segment count: "+numSegments);
+            int numSubloops = currentLoop.getLoops().size();
+            System.out.println("--> loop count: "+numSubloops);
 
             // For any fields which don't get set, we want to null them in the generic record.
             Set<String> schemaFieldsSet = new HashSet<>();
@@ -311,9 +322,15 @@ public class Avro837FlatToExpandedConverter {
                     // Create the nested record representing the loop
                     GenericRecord nestedRecord = new GenericData.Record(recordSchema);
 
+                    String loopXpath = calculateXPath(loop);
+                    DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
+                    if(null!=declaredTypeInfo) {
+                        System.out.println("*** PING PING PING ***");
+                    }
+
                     // walkThe nested loop
                     // DEBUG
-                    // System.out.println("walkTheLoop for "+recordSchemaName);
+                    System.out.println("walkTheLoop for "+recordSchemaName);
                     walkTheLoop(nestedRecord, loop);
 
                     // set the property of the outer record for this loop
@@ -321,6 +338,7 @@ public class Avro837FlatToExpandedConverter {
                     // System.out.println("set value for "+recordSchemaName);
                     x837Record.put(recordSchemaName, nestedRecord);
                     schemaFieldsSet.remove(recordSchemaName);
+
                 } else {
 
                     // The segment data for this loop (it's a leaf) rolls up into the value of a property
@@ -329,58 +347,26 @@ public class Avro837FlatToExpandedConverter {
                     // For instance, 1000A (Submitter Name) is a property of the enclosing loop
                     // and is implemented in the avro schema as an array of strings.
 
-                    // Calculate the path of this subloop
-                    String xpath = currentXPath + "/segment[@name=\"" + loopName + "\"]";
 
-                    // DEBUG
-                    System.out.println("xpath: "+xpath);
+                    // Set the segment values of loop into the enclosing GenericRecord, x837Record
+                    String subloopXpath = calculateXPath(loop);
+                    System.out.println("*** *** : "+subloopXpath );
 
-                    // Check for declared type information in the XML schema
-                    DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(xpath);
+                    // -- Construct an avro string object to hold the segment info
+                    ArrayNode segmentsFieldValueJson = mapper.createArrayNode();
 
-                    if (null != declaredTypeInfo) {
-
-                        // Instantiate a member of the declared type
-                        Class clazz = Class.forName(declaredTypeInfo.getClassName());
-
-                        // The class must have a single constructor of the target arity
-                        // We expect it (currently) to support only CharSequences as arguments
-                        // TODO: add support for other primitive types
-                        Constructor[] constructors = clazz.getConstructors();
-                        boolean found = false;
-                        for(int i=0;!found && i<constructors.length;i++) {
-
-                            if(constructors[i].getParameterTypes().length==declaredTypeInfo.getArity()) {
-
-                                // TODO: construct the arguments by applying the patterns
-                                Object subrecord;
-                                switch(declaredTypeInfo.getArity()) {
-                                    case 0 : subrecord = constructors[i].newInstance();
-                                        break;
-                                    default: subrecord = null;
-                                }
-                            }
-                        }
-
-                    } else {
-
-                        // Set the segment values of loop into the enclosing GenericRecord, x837Record
-
-                        // -- Construct an avro string object to hold the segment info
-                        ArrayNode segmentsFieldValueJson = mapper.createArrayNode();
-
-                        // -- Go through the segments and fill the array
-                        for (Segment segment : loop.getSegments()) {
-                            segmentsFieldValueJson.add(segment.toString());
-                        }
-
-                        // -- the field of the enclosing x837Record is named the same as the recordSchema
-                        // -- add the array object as a value of that field
-                        // DEBUG
-                        // System.out.println("set value for "+recordSchemaName);
-                        x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
-                        schemaFieldsSet.remove(recordSchemaName);
+                    // -- Go through the segments and fill the array
+                    for (Segment segment : loop.getSegments()) {
+                        segmentsFieldValueJson.add(segment.toString());
                     }
+
+                    // -- the field of the enclosing x837Record is named the same as the recordSchema
+                    // -- add the array object as a value of that field
+                    // DEBUG
+                    // System.out.println("set value for "+recordSchemaName);
+                    x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
+                    schemaFieldsSet.remove(recordSchemaName);
+
                 }
             } // loop processing
 

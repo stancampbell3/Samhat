@@ -19,6 +19,7 @@ import static org.junit.Assert.*;
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by stan.campbell on 9/3/15.
@@ -115,7 +116,7 @@ public class Avro837FlatToExpandedConverterTest {
             schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
             Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
 
-            String[] patternStrs = {"NM1\\*IL\\*1\\*([^\\*]+)\\*([^\\*]+)\\*.*",
+            String[] patternStrs = {"NM1\\*\\w\\w\\*\\d+\\*([^\\*]+)\\*([^\\*]+)\\*.*",
                     "N3\\*([^\\*]+).*",
                     "N4\\*([^\\*]+)\\*([^\\*]+)\\*([^\\*]+)",
                     "DMG\\*[^\\*]+\\*(\\d+)\\*F.*"
@@ -126,20 +127,37 @@ public class Avro837FlatToExpandedConverterTest {
             ArrayList<Segment> segmentsList = new ArrayList<>();
             Context context = new Context('~', '*', ':');
             Segment segment = new Segment(context);
-            String[] segmentElements = { "NM1", "41", "2", "PREMIERE BILLING SERVICE", "", "", "", "", "46", "TGJ23"};
+            String[] segmentElements = { "NM1","85","2","BEN KILDARE SERVICE","","","","","XX","9876543210" };
             for(String segmentElement : segmentElements) {
                 segment.addElement(segmentElement);
             }
             segmentsList.add(segment);
 
             segment = new Segment(context);
-            String[] segmentElements2 = { "PER", "IC", "JERRY", "TE", "3055552222", "EX", "231"};
-            for(String segmentElement : segmentElements) {
+            String[] segmentElements2 = { "N3","234 SEAWAY ST" };
+            for(String segmentElement : segmentElements2) {
                 segment.addElement(segmentElement);
             }
             segmentsList.add(segment);
 
-            instance.mapSegmentsThroughPatterns(segmentsList, declaredTypeInfo);
+            segment = new Segment(context);
+            String[] segmentElements4 = { "N4","MIAMI","FL","33111" };
+            for(String segmentElement : segmentElements4) {
+                segment.addElement(segmentElement);
+            }
+            segmentsList.add(segment);
+
+            segment = new Segment(context);
+            String[] segmentElements5 = { "REF","EI","587654321" };
+            for(String segmentElement : segmentElements5) {
+                segment.addElement(segmentElement);
+            }
+            segmentsList.add(segment);
+
+            CharSequence[] args = instance.mapSegmentsThroughPatterns(segmentsList, declaredTypeInfo);
+
+            assertNotNull(args);
+            assertEquals(args.length, declaredTypeInfo.getArity());
 
         } catch(Exception e) {
 

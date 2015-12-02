@@ -9,7 +9,7 @@
                <segment name="2010AA" segment="NM1" segmentQual="85" segmentQualPos="1"
                         classname="net.explorys.samhat.z12.r837.ContactInfo"
                         arity="7"
-                        patterns="['NM1\*IL\*1\*([^\*]+)\*([^\*]+)\*.*',
+                        patterns="['NM1\*\w\w\*\d\*([^\*]*)\*([^\*]*)\*.*',
                             'N3\*([^\*]+).*', 'N4\*([^\*]+)\*([^\*]+)\*([^\*]+)',
                             'DMG\*[^\*]+\*(\d+)\*F.*' ]" />
                <segment name="2010AB" segment="NM1" segmentQual="87" segmentQualPos="1" />

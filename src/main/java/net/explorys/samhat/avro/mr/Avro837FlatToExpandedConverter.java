@@ -257,7 +257,7 @@ public class Avro837FlatToExpandedConverter {
             if(matcher.matches()) {
 
                 int groupCount = matcher.groupCount();
-                for(int g=0;g<groupCount;g++) {
+                for(int g=1;g<=groupCount;g++) {
 
                     arguments[argCount++] = (matcher.group(g));
                 }
@@ -289,11 +289,11 @@ public class Avro837FlatToExpandedConverter {
             String currentXPath = calculateXPath(currentLoop);
 
             // DEBUG
-            System.out.println("xpath: "+currentXPath);
-            int numSegments = currentLoop.getSegments().size();
-            System.out.println("--> segment count: "+numSegments);
-            int numSubloops = currentLoop.getLoops().size();
-            System.out.println("--> loop count: "+numSubloops);
+            // System.out.println("xpath: "+currentXPath);
+            // int numSegments = currentLoop.getSegments().size();
+            // System.out.println("--> segment count: "+numSegments);
+            // int numSubloops = currentLoop.getLoops().size();
+            // System.out.println("--> loop count: "+numSubloops);
 
             // For any fields which don't get set, we want to null them in the generic record.
             Set<String> schemaFieldsSet = new HashSet<>();
@@ -323,8 +323,18 @@ public class Avro837FlatToExpandedConverter {
                     DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
                     if(null!=declaredTypeInfo) {
 
-                        CharSequence[] args = mapSegmentsThroughPatterns(loop.getSegments(), declaredTypeInfo);
-                        System.out.println("*** PING PING PING ***");
+                        List<Segment> segments = loop.getSegments();
+                        CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
+                        if(args.length==declaredTypeInfo.getArity()) {
+
+                            // Instantiate the declared type
+                            // Add the record to the enclosing record
+                            // Mark the field as being set
+
+                        } else {
+                            // TODO: qualify this exception
+                            throw new Exception("Declared type arguments list not of arity "+declaredTypeInfo.getArity()+" for "+declaredTypeInfo.getClassName());
+                        }
 
                     } else {
 
@@ -333,7 +343,7 @@ public class Avro837FlatToExpandedConverter {
 
                         // walkThe nested loop
                         // DEBUG
-                        System.out.println("walkTheLoop for " + recordSchemaName);
+                        // System.out.println("walkTheLoop for " + recordSchemaName);
                         walkTheLoop(nestedRecord, loop);
 
                         // set the property of the outer record for this loop
@@ -354,7 +364,6 @@ public class Avro837FlatToExpandedConverter {
 
                     // Set the segment values of loop into the enclosing GenericRecord, x837Record
                     String subloopXpath = calculateXPath(loop);
-                    System.out.println("*** *** : "+subloopXpath );
 
                     // -- Construct an avro string object to hold the segment info
                     ArrayNode segmentsFieldValueJson = mapper.createArrayNode();

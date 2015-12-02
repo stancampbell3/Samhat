@@ -198,6 +198,14 @@ public class Avro837FlatToExpandedConverter {
         return patternArrayList;
     }
 
+    /**
+     * Determine the declared type information for a given XPath.  Return null if no declared type exists in the
+     * schema at the given xPath.
+     *
+     * @param xPathStr
+     * @return
+     * @throws XPathExpressionException
+     */
     DeclaredTypeInfo getDeclaredTypeInfo(String xPathStr) throws XPathExpressionException {
 
         XPathExpression xPathExpression = xPath.compile(xPathStr);
@@ -271,6 +279,56 @@ public class Avro837FlatToExpandedConverter {
         return arguments;
     }
 
+    Object instantiateDeclaredType(CharSequence[] args, DeclaredTypeInfo declaredTypeInfo) throws Avro837FlatToExpandedException {
+
+        try {
+
+            Class clazz = Class.forName(declaredTypeInfo.getClassName());
+
+            // find the appropriate constructor with arity arguments
+            Constructor[] constructors = clazz.getConstructors();
+            for(Constructor constructor : constructors ) {
+
+                if(constructor.getParameterTypes().length == declaredTypeInfo.getArity()) {
+
+                    // First matching constructor
+                    switch(declaredTypeInfo.getArity()) {
+
+                        case 0 : throw new IllegalArgumentException("No matching constructor for "+declaredTypeInfo.getClassName());
+                        case 1 : return constructor.newInstance(args[0]);
+                        case 2 : return constructor.newInstance(args[0], args[1]);
+                        case 3 : return constructor.newInstance(args[0], args[1], args[2]);
+                        case 4 : return constructor.newInstance(args[0], args[1], args[2], args[3]);
+                        case 5 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4]);
+                        case 6 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5]);
+                        case 7 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+                        case 8 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+                        case 9 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+                        case 10 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
+                        case 11 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
+                        case 12 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
+                        case 13 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
+                        case 14 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
+                        case 15 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
+                        case 16 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
+                        case 17 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15], args[16]);
+                        case 18 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15], args[16], args[17]);
+                        case 19 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15], args[16], args[17], args[18]);
+                        case 20 : return constructor.newInstance(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15], args[16], args[17], args[18], args[19]);
+                        default :
+                            throw new IllegalArgumentException("No matching constructor for "+declaredTypeInfo.getClassName());
+                    }
+                }
+            }
+
+            throw new IllegalArgumentException("No matching constructor for "+declaredTypeInfo.getClassName());
+
+        } catch(Exception e) {
+
+            throw new Avro837FlatToExpandedException("Error constructing Avro record instance", e);
+        }
+    }
+
     /**
      * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
      *
@@ -328,8 +386,13 @@ public class Avro837FlatToExpandedConverter {
                         if(args.length==declaredTypeInfo.getArity()) {
 
                             // Instantiate the declared type
+                            Object obj = instantiateDeclaredType(args, declaredTypeInfo);
+
                             // Add the record to the enclosing record
+                            x837Record.put(recordSchemaName, obj);
+
                             // Mark the field as being set
+                            schemaFieldsSet.remove(recordSchemaName);
 
                         } else {
                             // TODO: qualify this exception

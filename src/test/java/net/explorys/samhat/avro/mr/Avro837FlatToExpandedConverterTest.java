@@ -1,6 +1,8 @@
 package net.explorys.samhat.avro.mr;
 
 import net.explorys.samhat.AvroSchemaGenerator;
+import net.explorys.samhat.AvroSchemaParsingException;
+import net.explorys.samhat.CfSchemaParsingException;
 import net.explorys.samhat.DeclaredTypeInfo;
 import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
@@ -10,9 +12,11 @@ import org.junit.Test;
 import org.pb.x12.Context;
 import org.pb.x12.Segment;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import static org.junit.Assert.*;
 
@@ -62,14 +66,7 @@ public class Avro837FlatToExpandedConverterTest {
 
         try {
 
-            InputStream schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-
-            AvroSchemaGenerator schemaGenerator = new AvroSchemaGenerator();
-            String jsonSchema = schemaGenerator.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schema837Pro);
-            InputStream schem837ProAvro = new ByteArrayInputStream(jsonSchema.getBytes());
-
-            schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
+            Avro837FlatToExpandedConverter instance = createInstance();
 
             Flat837 flatAvroRecord = createFlatTestRecordPro();
 
@@ -107,14 +104,7 @@ public class Avro837FlatToExpandedConverterTest {
 
         try {
 
-            InputStream schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-
-            AvroSchemaGenerator schemaGenerator = new AvroSchemaGenerator();
-            String jsonSchema = schemaGenerator.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schema837Pro);
-            InputStream schem837ProAvro = new ByteArrayInputStream(jsonSchema.getBytes());
-
-            schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
+            Avro837FlatToExpandedConverter instance = createInstance();
 
             String[] patternStrs = {"NM1\\*\\w\\w\\*\\d+\\*([^\\*]+)\\*([^\\*]+)\\*.*",
                     "N3\\*([^\\*]+).*",
@@ -124,35 +114,7 @@ public class Avro837FlatToExpandedConverterTest {
 
             DeclaredTypeInfo declaredTypeInfo = new DeclaredTypeInfo("net.explorys.samhat.z12.r837.ContactInfo", 7, patternStrs);
 
-            ArrayList<Segment> segmentsList = new ArrayList<>();
-            Context context = new Context('~', '*', ':');
-            Segment segment = new Segment(context);
-            String[] segmentElements = { "NM1","85","2","BEN KILDARE SERVICE","","","","","XX","9876543210" };
-            for(String segmentElement : segmentElements) {
-                segment.addElement(segmentElement);
-            }
-            segmentsList.add(segment);
-
-            segment = new Segment(context);
-            String[] segmentElements2 = { "N3","234 SEAWAY ST" };
-            for(String segmentElement : segmentElements2) {
-                segment.addElement(segmentElement);
-            }
-            segmentsList.add(segment);
-
-            segment = new Segment(context);
-            String[] segmentElements4 = { "N4","MIAMI","FL","33111" };
-            for(String segmentElement : segmentElements4) {
-                segment.addElement(segmentElement);
-            }
-            segmentsList.add(segment);
-
-            segment = new Segment(context);
-            String[] segmentElements5 = { "REF","EI","587654321" };
-            for(String segmentElement : segmentElements5) {
-                segment.addElement(segmentElement);
-            }
-            segmentsList.add(segment);
+            List<Segment> segmentsList = createTestSegments();
 
             CharSequence[] args = instance.mapSegmentsThroughPatterns(segmentsList, declaredTypeInfo);
 
@@ -164,6 +126,80 @@ public class Avro837FlatToExpandedConverterTest {
             e.printStackTrace();
             fail("Exception: "+e);
         }
+    }
+
+    @Test
+    public void testInstantiateDeclaredType() {
+
+        try {
+
+            Avro837FlatToExpandedConverter instance = createInstance();
+
+            String[] patternStrs = {"NM1\\*\\w\\w\\*\\d+\\*([^\\*]+)\\*([^\\*]+)\\*.*",
+                    "N3\\*([^\\*]+).*",
+                    "N4\\*([^\\*]+)\\*([^\\*]+)\\*([^\\*]+)",
+                    "DMG\\*[^\\*]+\\*(\\d+)\\*F.*"
+            };
+
+            DeclaredTypeInfo declaredTypeInfo = new DeclaredTypeInfo("net.explorys.samhat.z12.r837.ContactInfo", 7, patternStrs);
+            List<Segment> segmentsList = createTestSegments();
+
+            CharSequence[] args = instance.mapSegmentsThroughPatterns(segmentsList, declaredTypeInfo);
+
+            Object target = instance.instantiateDeclaredType(args, declaredTypeInfo);
+
+            assertNotNull(target);
+
+        } catch(Exception e) {
+
+            e.printStackTrace();
+            fail("Exception: "+e);
+        }
+    }
+
+    Avro837FlatToExpandedConverter createInstance() throws IllegalAccessException, ParserConfigurationException, AvroSchemaParsingException, IOException, ClassNotFoundException, SAXException, NoSuchFieldException, CfSchemaParsingException {
+        InputStream schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+
+        AvroSchemaGenerator schemaGenerator = new AvroSchemaGenerator();
+        String jsonSchema = schemaGenerator.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schema837Pro);
+        InputStream schem837ProAvro = new ByteArrayInputStream(jsonSchema.getBytes());
+
+        schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+        return new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
+    }
+
+    List<Segment> createTestSegments() {
+
+        ArrayList<Segment> segmentsList = new ArrayList<>();
+        Context context = new Context('~', '*', ':');
+        Segment segment = new Segment(context);
+        String[] segmentElements = { "NM1","85","2","BEN KILDARE SERVICE","","","","","XX","9876543210" };
+        for(String segmentElement : segmentElements) {
+            segment.addElement(segmentElement);
+        }
+        segmentsList.add(segment);
+
+        segment = new Segment(context);
+        String[] segmentElements2 = { "N3","234 SEAWAY ST" };
+        for(String segmentElement : segmentElements2) {
+            segment.addElement(segmentElement);
+        }
+        segmentsList.add(segment);
+
+        segment = new Segment(context);
+        String[] segmentElements4 = { "N4","MIAMI","FL","33111" };
+        for(String segmentElement : segmentElements4) {
+            segment.addElement(segmentElement);
+        }
+        segmentsList.add(segment);
+
+        segment = new Segment(context);
+        String[] segmentElements5 = { "REF","EI","587654321" };
+        for(String segmentElement : segmentElements5) {
+            segment.addElement(segmentElement);
+        }
+        segmentsList.add(segment);
+        return segmentsList;
     }
 
     /**

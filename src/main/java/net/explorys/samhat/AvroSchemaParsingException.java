@@ -3,7 +3,7 @@ package net.explorys.samhat;
 /**
  * Created by stan.campbell on 8/31/15.
  */
-class AvroSchemaParsingException extends Exception {
+public class AvroSchemaParsingException extends Exception {
 
     public AvroSchemaParsingException() {
     }

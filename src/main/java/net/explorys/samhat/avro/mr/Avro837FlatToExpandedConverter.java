@@ -319,25 +319,29 @@ public class Avro837FlatToExpandedConverter {
                 // TODO: potentially recognize different types of specified schemas
                 if (recordSchema.getType() == Schema.Type.RECORD) {
 
-                    // Create the nested record representing the loop
-                    GenericRecord nestedRecord = new GenericData.Record(recordSchema);
-
                     String loopXpath = calculateXPath(loop);
                     DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
                     if(null!=declaredTypeInfo) {
+
+                        CharSequence[] args = mapSegmentsThroughPatterns(loop.getSegments(), declaredTypeInfo);
                         System.out.println("*** PING PING PING ***");
+
+                    } else {
+
+                        // Create the nested record representing the loop
+                        GenericRecord nestedRecord = new GenericData.Record(recordSchema);
+
+                        // walkThe nested loop
+                        // DEBUG
+                        System.out.println("walkTheLoop for " + recordSchemaName);
+                        walkTheLoop(nestedRecord, loop);
+
+                        // set the property of the outer record for this loop
+                        // DEBUG
+                        // System.out.println("set value for "+recordSchemaName);
+                        x837Record.put(recordSchemaName, nestedRecord);
+                        schemaFieldsSet.remove(recordSchemaName);
                     }
-
-                    // walkThe nested loop
-                    // DEBUG
-                    System.out.println("walkTheLoop for "+recordSchemaName);
-                    walkTheLoop(nestedRecord, loop);
-
-                    // set the property of the outer record for this loop
-                    // DEBUG
-                    // System.out.println("set value for "+recordSchemaName);
-                    x837Record.put(recordSchemaName, nestedRecord);
-                    schemaFieldsSet.remove(recordSchemaName);
 
                 } else {
 

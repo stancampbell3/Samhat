@@ -385,8 +385,6 @@ public class Avro837FlatToExpandedConverter {
                         CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
                         if(args.length==declaredTypeInfo.getArity()) {
 
-                            System.out.println("***** *****");
-
                             // Instantiate the declared type
                             Object obj = instantiateDeclaredType(args, declaredTypeInfo);
 

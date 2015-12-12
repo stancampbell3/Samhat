@@ -9,14 +9,24 @@ import scala.io.Source
  */
 class CompilerSpec extends FlatSpec with Matchers {
 
+  val instance:Compiler = new Compiler
+
+  def getTestYaml(filename:String):String = Source.fromInputStream(getClass().getResourceAsStream(filename)).getLines.mkString("\n")
+
   "A Samhat Schema Compiler" should "be able to parse a simple schema" in {
 
-    val instance:Compiler = new Compiler
+    val schemaYaml = getTestYaml("/simple_schema.yml")
+    val ast = instance.parse(schemaYaml)
 
-    val schemaYaml = Source.fromInputStream(getClass().getResourceAsStream("/simple_schema.yml")).getLines.mkString("\n")
+    println(ast)
 
-    println("Target schema:\n'"+schemaYaml+"'")
+    ast should not be null
+    ast.successful should equal(true)
+  }
 
+  it should "be able to parse a schema with multiple loops" in {
+
+    val schemaYaml = getTestYaml("/simple_schema2.yml")
     val ast = instance.parse(schemaYaml)
 
     println(ast)

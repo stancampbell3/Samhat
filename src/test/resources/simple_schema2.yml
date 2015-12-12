@@ -1,0 +1,5 @@
+X12:
+  - ISA:
+      - _segment: "ISA"
+        GS:
+          - _segment: "GS"

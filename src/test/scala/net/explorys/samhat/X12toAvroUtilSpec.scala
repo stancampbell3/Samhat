@@ -84,7 +84,7 @@ class X12toAvroUtilSpec extends FlatSpec with Matchers {
     "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X292 Health Care Predetermination Institutional/X292-two-claims-for-the-same-provider.edi"
   )
 
-  "An X12toAvroUtilSpec" should "be able to parse all of the professional X12 format 837 transactions" in {
+  "An X12toAvroUtil" should "be able to parse all of the professional X12 format 837 transactions" in {
 
     testSrcs_professional.foreach( src => {
       val x12Data = Source.fromURL(getClass.getResource(src)).getLines.toList.mkString("\n")

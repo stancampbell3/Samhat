@@ -44,7 +44,7 @@ class Compiler {
   class SchemaParser extends JavaTokenParsers {
     def stringProperty: Parser[StringProperty] = ident ~ ":" ~ stringLiteral ^^ { case x ~ ":" ~ y => StringProperty(x,y) }
     def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty)
-    def propDefList: Parser[List[Property[_]]] = rep(stringProperty)
+    def propDefList: Parser[List[Property[_]]] = rep(propertyDef)
     def props: Parser[List[Property[_]]] = "-" ~ propDefList ^^ { case "-" ~ props => props }
     def loop: Parser[Loop] = ident ~ ":" ~ "-" ~ propDefList ^^ { case id ~ ":" ~ "-" ~ props => Loop(id, props) }
     def loopProperty: Parser[LoopProperty] = ident ~ ":" ~ loop ^^ { case id ~ ":" ~ loop => LoopProperty(id, loop)}

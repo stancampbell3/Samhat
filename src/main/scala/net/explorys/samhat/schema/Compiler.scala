@@ -8,10 +8,10 @@ import java.util.Properties
  * YAML Grammar for Samhat Schema File:
  *
  * Schema -> "X12" ":" "\n" "-" LOOP
- * LOOP -> "id ":" "\n" PROPS
- * PROPS -> "-" PROPDEFLIST
+ * LOOP -> "id ":" "\n" "[" PROPDEFLIST "]"
  * PROPDEFLIST -> "id" ":" scalar "\n" [PROPDEFLIST]
  *             -> LOOP
+ *             -> ""
  */
 class Compiler {
 
@@ -42,12 +42,17 @@ class Compiler {
 
 
   class SchemaParser extends JavaTokenParsers {
+
     def stringProperty: Parser[StringProperty] = ident ~ ":" ~ stringLiteral ^^ { case x ~ ":" ~ y => StringProperty(x,y) }
+
     def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty)
+
     def propDefList: Parser[List[Property[_]]] = rep(propertyDef)
-    def props: Parser[List[Property[_]]] = "-" ~ propDefList ^^ { case "-" ~ props => props }
-    def loop: Parser[Loop] = ident ~ ":" ~ "-" ~ propDefList ^^ { case id ~ ":" ~ "-" ~ props => Loop(id, props) }
+
+    def loop: Parser[Loop] = ident ~ ":" ~ "[" ~ propDefList ~ "]" ^^ { case id ~ ":" ~ "[" ~ props ~ "]" => Loop(id, props) }
+
     def loopProperty: Parser[LoopProperty] = ident ~ ":" ~ loop ^^ { case id ~ ":" ~ loop => LoopProperty(id, loop)}
+
     def schema: Parser[List[Loop]] = "X12" ~ ":" ~ "-" ~ rep(loop)  ^^ { case "X12" ~ ":" ~ "-" ~ loops => loops }
   }
 }

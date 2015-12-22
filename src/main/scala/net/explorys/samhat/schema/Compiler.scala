@@ -51,7 +51,7 @@ class Compiler {
 
     def loop: Parser[Loop] = ident ~ ":" ~ "[" ~ propDefList ~ "]" ^^ { case id ~ ":" ~ "[" ~ props ~ "]" => Loop(id, props) }
 
-    def loopProperty: Parser[LoopProperty] = ident ~ ":" ~ loop ^^ { case id ~ ":" ~ loop => LoopProperty(id, loop)}
+    def loopProperty: Parser[LoopProperty] = loop ^^ { case loop => LoopProperty(loop.name, loop)}
 
     def schema: Parser[List[Loop]] = "X12" ~ ":" ~ "-" ~ rep(loop)  ^^ { case "X12" ~ ":" ~ "-" ~ loops => loops }
   }

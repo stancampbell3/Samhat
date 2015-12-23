@@ -1,6 +1,23 @@
 package net.explorys.samhat.schema
 
-import java.util.Properties
+trait Property[T] {
+
+  def getName():String
+  def getValue():T
+}
+case class StringProperty(name:String, value:String) extends Property[String] {
+
+  override def getName(): String = name
+  override def getValue(): String = value
+}
+
+case class Loop(name:String, properties:List[Property[_]])
+
+case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
+
+  override def getName(): String = name
+  override def getValue(): Loop = value
+}
 
 /**
  * Compiler for Samhat schema description files ".sam"
@@ -20,26 +37,6 @@ class Compiler {
   def parse(yaml:String) = parser.parseAll(parser.schema, yaml)
 
   import scala.util.parsing.combinator._
-
-  trait Property[T] {
-
-    def getName():String
-    def getValue():T
-  }
-  case class StringProperty(name:String, value:String) extends Property[String] {
-
-    override def getName(): String = name
-    override def getValue(): String = value
-  }
-
-  case class Loop(name:String, properties:List[Property[_]])
-
-  case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
-
-    override def getName(): String = name
-    override def getValue(): Loop = value
-  }
-
 
   class SchemaParser extends JavaTokenParsers {
 

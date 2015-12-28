@@ -1,12 +1,13 @@
 package net.explorys.samhat.schema
 
-import org.apache.commons.lang.NotImplementedException
-
 import scala.xml.{Node, Elem}
 
 class XmlSamParsingException(reason:String, cause:Throwable = null) extends Exception(reason, cause)
 
-case class SamhatSchema(val loops:List[Loop])
+case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable {
+
+  def toYaml():String = "X12 :\n\t- " + loops.map( _.toYaml() + "\n\t")
+}
 
 /**
  * Tool for converting XML-based Samhat specifications to YAML.
@@ -62,6 +63,15 @@ class XmlToYamlSam {
       if(!schema.isDefined) {
         throw new XmlSamParsingException("Error with YAML AST generation")
       }
+
+      val schemaAsString = schema.get.toYaml()
+
+      // Write thte file
+
+      val outputFile = new java.io.File(yamlFilename)
+      val outWtr = (new java.io.BufferedWriter(new java.io.FileWriter(outputFile)))
+      outWtr.write( schemaAsString )
+      outWtr.close()
 
     } catch {
 

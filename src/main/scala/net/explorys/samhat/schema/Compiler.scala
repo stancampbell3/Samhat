@@ -1,22 +1,37 @@
 package net.explorys.samhat.schema
 
-trait Property[T] {
+trait YamlWriteable {
+
+  def toYaml():String
+}
+
+trait Property[T] extends YamlWriteable {
 
   def getName():String
   def getValue():T
+
+  def toYaml():String = getName() + " : " + getValue()
 }
+
 case class StringProperty(name:String, value:String) extends Property[String] {
 
   override def getName(): String = name
   override def getValue(): String = value
+
+  override def toString: String = name + " : \"" + value +"\""
 }
 
-case class Loop(name:String, properties:List[Property[_]])
+case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable {
+
+  def toYaml():String = name + " : \n\t[\n" + (properties.map(p => "\t\t"+p.toYaml()+"\n")).mkString("\n") + "\n\t]\n"
+}
 
 case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
 
   override def getName(): String = name
   override def getValue(): Loop = value
+
+  override def toYaml():String = getName() + " : " + getValue().toYaml()
 }
 
 /**

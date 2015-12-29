@@ -2,7 +2,7 @@ package net.explorys.samhat.schema
 
 trait YamlWriteable {
 
-  def toYaml():String
+  def toYaml(indent:Int = 0):String
 }
 
 trait Property[T] extends YamlWriteable {
@@ -10,20 +10,30 @@ trait Property[T] extends YamlWriteable {
   def getName():String
   def getValue():T
 
-  def toYaml():String = getName() + " : " + getValue()
+  def toYaml(indent:Int = 0):String = ("\t" * indent) + getName() + " : " + getValue()
+}
+
+object StringProperty {
+
+  val builtInProperties = Set("segment", "segmentQual", "segmentQualPos")
 }
 
 case class StringProperty(name:String, value:String) extends Property[String] {
 
+  def isKnownProperty:Boolean = StringProperty.builtInProperties.contains(name)
+
   override def getName(): String = name
   override def getValue(): String = value
 
-  override def toString: String = name + " : \"" + value +"\""
+  override def toYaml(indent:Int = 0): String = ("\t" * indent) +
+    (if(isKnownProperty) "_"+name else name) + " : \"" + value +"\""
 }
 
 case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable {
 
-  def toYaml():String = name + " : \n\t[\n" + (properties.map(p => "\t\t"+p.toYaml()+"\n")).mkString("\n") + "\n\t]\n"
+  def toYaml(indent:Int = 0):String = ("\t" * indent) + name + " : \n" + ("\t" * indent) +
+    "[\n" + (properties.map(p => p.toYaml(indent+1)+"\n")).mkString("\n") +
+    ("\t" * indent) +"]\n"
 }
 
 case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
@@ -31,7 +41,7 @@ case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
   override def getName(): String = name
   override def getValue(): Loop = value
 
-  override def toYaml():String = getName() + " : " + getValue().toYaml()
+  override def toYaml(indent:Int = 0):String = getValue().toYaml(indent)
 }
 
 /**

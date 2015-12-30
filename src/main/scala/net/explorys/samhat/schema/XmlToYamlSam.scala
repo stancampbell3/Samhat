@@ -6,7 +6,7 @@ class XmlSamParsingException(reason:String, cause:Throwable = null) extends Exce
 
 case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable {
 
-  def toYaml(indent:Int = 0):String = "X12 :\n\t- " + loops.map( _.toYaml(indent+1) + "\n\t").mkString("\n")
+  def toYaml(indent:Int = 0):String = "X12 :\n" + loops.map( loop => " - " + loop.toYaml(indent+1)).mkString("\n")
 }
 
 /**

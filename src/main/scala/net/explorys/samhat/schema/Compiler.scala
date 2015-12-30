@@ -10,30 +10,28 @@ trait Property[T] extends YamlWriteable {
   def getName():String
   def getValue():T
 
-  def toYaml(indent:Int = 0):String = ("\t" * indent) + getName() + " : " + getValue()
-}
-
-object StringProperty {
-
-  val builtInProperties = Set("segment", "segmentQual", "segmentQualPos")
+  def toYaml(indent:Int = 0):String = (" " * indent) + getName() + " : " + getValue()
 }
 
 case class StringProperty(name:String, value:String) extends Property[String] {
 
-  def isKnownProperty:Boolean = StringProperty.builtInProperties.contains(name)
-
   override def getName(): String = name
   override def getValue(): String = value
 
-  override def toYaml(indent:Int = 0): String = ("\t" * indent) +
-    (if(isKnownProperty) "_"+name else name) + " : \"" + value +"\""
+  override def toYaml(indent:Int = 0): String =
+    name match {
+      case "segment" | "segmentQual" | "segmentQualPos" | "classname" | "arity" => (" " * indent) + "_"+name+ " : \"" + value +"\""
+        // patterns need to be escaped
+      case "patterns" => (" " * indent) + "_"+name+ " : \"" + value.replace("\\", "\\\\") +"\""
+      case _ => (" " * indent) + name+ " : \"" + value +"\""
+    }
 }
 
 case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable {
 
-  def toYaml(indent:Int = 0):String = ("\t" * indent) + name + " : \n" + ("\t" * indent) +
-    "[\n" + (properties.map(p => p.toYaml(indent+1)+"\n")).mkString("\n") +
-    ("\t" * indent) +"]\n"
+  def toYaml(indent:Int = 0):String = (" " * indent) + name + " : {\n" +
+    (properties.map(p => p.toYaml(indent+1))).mkString(",\n") + "\n" +
+    (" " * indent) +"}"
 }
 
 case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
@@ -50,7 +48,7 @@ case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
  * YAML Grammar for Samhat Schema File:
  *
  * Schema -> "X12" ":" "\n" "-" LOOP
- * LOOP -> "id ":" "\n" "[" PROPDEFLIST "]"
+ * LOOP -> "id ":" "{" PROPDEFLIST "}"
  * PROPDEFLIST -> "id" ":" scalar "\n" [PROPDEFLIST]
  *             -> LOOP
  *             -> ""
@@ -69,9 +67,9 @@ class Compiler {
 
     def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty)
 
-    def propDefList: Parser[List[Property[_]]] = rep(propertyDef)
+    def propDefList: Parser[List[Property[_]]] = repsep(propertyDef, ",")
 
-    def loop: Parser[Loop] = ident ~ ":" ~ "[" ~ propDefList ~ "]" ^^ { case id ~ ":" ~ "[" ~ props ~ "]" => Loop(id, props) }
+    def loop: Parser[Loop] = ident ~ ":" ~ "{" ~ propDefList ~ "}" ^^ { case id ~ ":" ~ "{" ~ props ~ "}" => Loop(id, props) }
 
     def loopProperty: Parser[LoopProperty] = loop ^^ { case loop => LoopProperty(loop.name, loop)}
 

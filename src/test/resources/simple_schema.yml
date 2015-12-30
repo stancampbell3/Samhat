@@ -1,3 +1,4 @@
 X12 :
-  - ISA :
-    [ _segment: "ISA" ]
+  - ISA : {
+      _segment: "ISA"
+    }

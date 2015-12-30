@@ -10,7 +10,7 @@ class XmlToYamlSamSpec extends FlatSpec with Matchers {
   val instance = new XmlToYamlSam
   val outputFilename = "/tmp/x12_schema_837_professional_out.yml"
 
-  "An XmlToYamlSamSpec" should "be able to convert an XML spec file to a valid YAML spec file" in {
+  "An XmlToYamlSam" should "be able to convert an XML spec file to a valid YAML spec file" in {
 
     // remove any existing output file
     val outputFile = new java.io.File(outputFilename)

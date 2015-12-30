@@ -62,7 +62,6 @@ class XmlToYamlSam {
       val schemaAsString = schema.get.toYaml()
 
       // Write the file
-
       val outputFile = new java.io.File(yamlFilename)
       val outWtr = (new java.io.BufferedWriter(new java.io.FileWriter(outputFile)))
       outWtr.write( schemaAsString )

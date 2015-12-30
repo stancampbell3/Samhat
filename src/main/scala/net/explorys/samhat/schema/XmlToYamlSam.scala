@@ -4,11 +4,6 @@ import scala.xml.{Node, Elem}
 
 class XmlSamParsingException(reason:String, cause:Throwable = null) extends Exception(reason, cause)
 
-case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable {
-
-  def toYaml(indent:Int = 0):String = "X12 :\n" + loops.map( loop => " - " + loop.toYaml(indent+1)).mkString("\n")
-}
-
 /**
  * Tool for converting XML-based Samhat specifications to YAML.
  */
@@ -66,7 +61,7 @@ class XmlToYamlSam {
 
       val schemaAsString = schema.get.toYaml()
 
-      // Write thte file
+      // Write the file
 
       val outputFile = new java.io.File(yamlFilename)
       val outWtr = (new java.io.BufferedWriter(new java.io.FileWriter(outputFile)))

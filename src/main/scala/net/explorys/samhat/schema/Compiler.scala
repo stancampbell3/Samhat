@@ -42,13 +42,18 @@ case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
   override def toYaml(indent:Int = 0):String = getValue().toYaml(indent)
 }
 
+case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable {
+
+  def toYaml(indent:Int = 0):String = "X12 :\n" + loops.map( loop => " - " + loop.toYaml(indent+1)).mkString("\n")
+}
+
 /**
  * Compiler for Samhat schema description files ".sam"
  *
  * YAML Grammar for Samhat Schema File:
  *
- * Schema -> "X12" ":" "\n" "-" LOOP
- * LOOP -> "id ":" "{" PROPDEFLIST "}"
+ * Schema -> "X12" ":" "\n" LOOP
+ * LOOP -> "-" "id ":" "{" PROPDEFLIST "}"
  * PROPDEFLIST -> "id" ":" scalar "\n" [PROPDEFLIST]
  *             -> LOOP
  *             -> ""
@@ -63,16 +68,22 @@ class Compiler {
 
   class SchemaParser extends JavaTokenParsers {
 
-    def stringProperty: Parser[StringProperty] = ident ~ ":" ~ stringLiteral ^^ { case x ~ ":" ~ y => StringProperty(x,y) }
+    // Samhat identifiers allow beginning numbers
+    def samIdent: Parser[String] =
+      """\p{javaJavaIdentifierPart}\p{javaJavaIdentifierPart}*""".r
+
+    def stringProperty: Parser[StringProperty] = samIdent ~ ":" ~ stringLiteral ^^ { case x ~ ":" ~ y => StringProperty(x,y) }
 
     def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty)
 
     def propDefList: Parser[List[Property[_]]] = repsep(propertyDef, ",")
 
-    def loop: Parser[Loop] = ident ~ ":" ~ "{" ~ propDefList ~ "}" ^^ { case id ~ ":" ~ "{" ~ props ~ "}" => Loop(id, props) }
+    def loop: Parser[Loop] = samIdent ~ ":" ~ "{" ~ propDefList ~ "}" ^^ { case id ~ ":" ~ "{" ~ props ~ "}" => Loop(id, props) }
 
     def loopProperty: Parser[LoopProperty] = loop ^^ { case loop => LoopProperty(loop.name, loop)}
 
-    def schema: Parser[List[Loop]] = "X12" ~ ":" ~ "-" ~ rep(loop)  ^^ { case "X12" ~ ":" ~ "-" ~ loops => loops }
+    def loopEntry: Parser[Loop] = "-" ~ loop ^^ { case "-" ~ loopDef => loopDef }
+
+    def schema: Parser[SamhatSchema] = "X12" ~ ":" ~ rep(loopEntry)  ^^ { case "X12" ~ ":" ~ loops => SamhatSchema(loops) }
   }
 }

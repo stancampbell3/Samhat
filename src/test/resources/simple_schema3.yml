@@ -1,0 +1,20 @@
+X12 :
+  -  ISA : {
+   _segment : "ISA",
+   GS : {
+    _segment : "GS",
+    ST : {
+     _segmentQualPos : "1",
+     _segmentQual : "837",
+     _segment : "ST",
+     1000A : {
+      _segmentQualPos : "1",
+      _segmentQual : "41",
+      _segment : "NM1"
+     }
+    }
+  }
+ }
+ -  IEA : {
+   _segment : "IEA"
+ }

@@ -24,9 +24,20 @@ class CompilerSpec extends FlatSpec with Matchers {
     ast.successful should equal(true)
   }
 
-  it should "be able to parse a schema with multiple loops" in {
+  it should "be able to parse a schema with nested loops" in {
 
     val schemaYaml = getTestYaml("/simple_schema2.yml")
+    val ast = instance.parse(schemaYaml)
+
+    println(ast)
+
+    ast should not be null
+    ast.successful should equal(true)
+  }
+
+  it should "be able to parse a schema with multiple loops" in {
+
+    val schemaYaml = getTestYaml("/simple_schema3.yml")
     val ast = instance.parse(schemaYaml)
 
     println(ast)

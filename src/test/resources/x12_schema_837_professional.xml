@@ -6,6 +6,7 @@
             <segment name="1000A" segment="NM1" segmentQual="41" segmentQualPos="1" />
             <segment name="1000B" segment="NM1" segmentQual="40" segmentQualPos="1" />
             <loop name="2000A" segment="HL" segmentQual="20" segmentQualPos="3">
+               <!-- this is a comment -->
                <segment name="2010AA" segment="NM1" segmentQual="85" segmentQualPos="1"
                         classname="net.explorys.samhat.z12.r837.ContactInfo"
                         arity="7"

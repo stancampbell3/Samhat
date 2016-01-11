@@ -35,6 +35,17 @@ case class StringProperty(name:String, value:String) extends Property[String] {
 
 }
 
+case class CommentProperty(comment:String) extends Property[String] {
+
+  override def getName():String = "comment"
+  override def getValue():String = comment
+
+  override def toString():String = comment
+
+  override def toYaml(indent:Int = 0): String = "# "+comment
+  override def toXml(indent:Int = 0): String = "<!-- " + comment + "-->"
+}
+
 case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable with XmlWriteable {
 
   def toYaml(indent:Int = 0):String = (" " * indent) + name + " : {\n" +
@@ -73,10 +84,16 @@ case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
   override def toXml(indent:Int = 0):String = getValue().toXml(indent)
 }
 
-case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable with XmlWriteable {
+case class SamhatSchema(val loops:List[Loop], val preamble:Option[String] = None) extends YamlWriteable with XmlWriteable {
 
-  def toYaml(indent:Int = 0):String = "X12 :\n" + loops.map( loop => " - " + loop.toYaml(indent+1)).mkString("\n")
-  def toXml(indent:Int = 0):String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<x12_schema name=\"X12\">\n" + loops.map( _.toXml(indent+1) ).mkString("\n") + "</x12_schema>"
+  def toYaml(indent:Int = 0):String = (if(preamble.isDefined) "# " + preamble.get + "\n" else "") +
+    "X12 :\n" + loops.map( loop => " - " + loop.toYaml(indent+1)).mkString("\n")
+
+  def toXml(indent:Int = 0):String = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>" +
+    (if(preamble.isDefined) "\n<!-- " + preamble + " -->\n" else "") +
+    "\n<x12_schema name=\"X12\">\n" +
+    loops.map( _.toXml(indent+1) ).mkString("\n") +
+    "</x12_schema>"
 }
 
 /**
@@ -84,11 +101,16 @@ case class SamhatSchema(val loops:List[Loop]) extends YamlWriteable with XmlWrit
  *
  * YAML Grammar for Samhat Schema File:
  *
- * Schema -> "X12" ":" "\n" LOOP
- * LOOP -> "-" "id ":" "{" PROPDEFLIST "}"
- * PROPDEFLIST -> "id" ":" scalar "\n" [PROPDEFLIST]
- *             -> LOOP
- *             -> ""
+ * SamhatSchema -> "X12" ":" LoopEntries
+ * LoopEntries -> Loop LoopEntries
+ *   -> ε
+ * Loop -> SamhatID ":" "{" PropertyDefList "}"
+ * PropertyDefList -> PropertyDef
+ *   -> PropertyDef "," PropertyDefList
+ * PropertyDef -> StringProperty | LoopProperty | CommentProperty
+ * StringProperty -> SamhatID ":" stringLiteral
+ * LoopProperty -> Loop
+ * SamhatID -> any valid Java identifier part (can start with underscores or numbers, case sensitive)
  */
 class Compiler {
 
@@ -100,13 +122,18 @@ class Compiler {
 
   class SchemaParser extends JavaTokenParsers {
 
+    // Helpful for formatting comments at the beginning of the file
+    def preamble(commentsList:List[CommentProperty]):Option[String] = if(commentsList.isEmpty) None else Some( commentsList.mkString("\n") )
+
     // Samhat identifiers allow beginning numbers
     def samIdent: Parser[String] =
       """\p{javaJavaIdentifierPart}\p{javaJavaIdentifierPart}*""".r
 
     def stringProperty: Parser[StringProperty] = samIdent ~ ":" ~ stringLiteral ^^ { case x ~ ":" ~ y => StringProperty(x,y) }
 
-    def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty)
+    def commentProperty: Parser[CommentProperty] = "#" ~ stringLiteral ^^ { case "#" ~ comments => CommentProperty(comments) }
+
+    def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty | commentProperty)
 
     def propDefList: Parser[List[Property[_]]] = repsep(propertyDef, ",")
 
@@ -116,6 +143,6 @@ class Compiler {
 
     def loopEntry: Parser[Loop] = "-" ~ loop ^^ { case "-" ~ loopDef => loopDef }
 
-    def schema: Parser[SamhatSchema] = "X12" ~ ":" ~ rep(loopEntry)  ^^ { case "X12" ~ ":" ~ loops => SamhatSchema(loops) }
+    def schema: Parser[SamhatSchema] = rep(commentProperty) ~ "X12" ~ ":" ~ rep(loopEntry)  ^^ { case commentsList ~ "X12" ~ ":" ~ loops => SamhatSchema(loops, preamble(commentsList)) }
   }
 }

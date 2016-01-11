@@ -46,4 +46,15 @@ class CompilerSpec extends FlatSpec with Matchers {
     ast.successful should equal(true)
   }
 
+  it should "be able to parse a schema with comments" in {
+
+    val schemaYaml = getTestYaml("/simple_schema4.yml")
+    val ast = instance.parse(schemaYaml)
+
+    println(ast)
+
+    ast should not be null
+    ast.successful should equal(true)
+  }
+
 }

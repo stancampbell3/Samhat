@@ -29,3 +29,17 @@ class YamlSamToXml {
   }
 
 }
+
+object YamlSamToXml {
+  def main(args: Array[String]): Unit = {
+
+    if (args.size < 2) {
+
+      println("Usage: java net.explorys.samhat.schema.YamlSamToXml <input yml sam file> <output xml file>")
+    } else {
+
+      val instance = new YamlSamToXml()
+      instance.yamlToXmlFile(args(0), args(1))
+    }
+  }
+}

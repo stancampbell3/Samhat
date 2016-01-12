@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x12_schema name="X12">
+    <loop name="ISA" segment="ISA">
+        <loop name="GS" segment="GS">
+            <loop name="ST" segment="ST" segmentQual="835" segmentQualPos="1">
+                <segment name="1000A" segment="NM1" segmentQual="PR" segmentQualPos="1" />
+                <segment name="1000B" segment="NM1" segmentQual="PE" segmentQualPos="1" />
+                <loop name="2000" segment="LX">
+                    <loop name="2100" segment="CLP">
+                        <segment name="2110" segment="SVC" />
+                    </loop>
+                </loop>
+            </loop>
+            <segment name="SE" segment="SE"/>
+        </loop>
+        <segment name="GE" segment="GE"/>
+    </loop>
+    <segment name="IEA" segment="IEA"/>
+</x12_schema>

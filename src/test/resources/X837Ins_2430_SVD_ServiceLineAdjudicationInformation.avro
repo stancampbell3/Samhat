@@ -1,0 +1,12 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2430_SVD_ServiceLineAdjudicationInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2430SVD01PayerIdentifier", "type" : "string" },
+	{ "name" : "_2430SVD02ServiceLinePaidAmount", "type" : "string" },
+	{ "name" : "_2430SVD04ServiceLineRevenueCode", "type" : "string" },
+	{ "name" : "_2430SVD05AdjustmentQuantity", "type" : "string" },
+	{ "name" : "_2430SVD06BundledOrUnbundledLineNumber", "type" : "string" }
+  ]
+}

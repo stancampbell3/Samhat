@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_DTP_DateTest",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400DTP01DateTimeQualifier", "type" : "string" },
+	{ "name" : "_2400DTP02DateTimePeriodFormatQualifier", "type" : "string" },
+	{ "name" : "_2400DTP03TestPerformedDate", "type" : "string" }
+  ]
+}

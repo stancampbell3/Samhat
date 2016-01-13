@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2420B_NM1_PurchasedServiceProviderName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2420BNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2420BNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2420BNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2420BNM109PurchasedServiceProviderIdentifier", "type" : "string" }
+  ]
+}

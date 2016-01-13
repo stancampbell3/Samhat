@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010BD_REF_CreditDebitCardInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010BDREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2010BDREF02CreditOrDebitCardAuthorizationNumber", "type" : "string" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010AB_N4_PayToProviderCityStateZIPCode",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010ABN401PayToProviderCityName", "type" : "string" },
+	{ "name" : "_2010ABN402PayToProviderStateCode", "type" : "string" },
+	{ "name" : "_2010ABN403PayToProviderPostalZoneOrZIPCode", "type" : "string" },
+	{ "name" : "_2010ABN404CountryCode", "type" : "string" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2010BD_N4_ResponsiblePartyCityStateZIPCode",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010BDN401ResponsiblePartyCityName", "type" : "string" },
+	{ "name" : "_2010BDN402ResponsiblePartyStateCode", "type" : "string" },
+	{ "name" : "_2010BDN403ResponsiblePartyPostalZoneOrZIPCode", "type" : "string" },
+	{ "name" : "_2010BDN404CountryCode", "type" : "string" }
+  ]
+}

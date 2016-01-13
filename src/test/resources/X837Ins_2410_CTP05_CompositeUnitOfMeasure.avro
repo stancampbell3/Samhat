@@ -1,0 +1,8 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2410_CTP05_CompositeUnitOfMeasure",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2410CTP0501UnitOrBasisForMeasurementCode", "type" : "string" }
+  ]
+}

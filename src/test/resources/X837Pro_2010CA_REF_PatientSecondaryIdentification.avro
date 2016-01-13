@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010CA_REF_PatientSecondaryIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010CAREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2010CAREF02PatientSecondaryIdentifier", "type" : "string" }
+  ]
+}

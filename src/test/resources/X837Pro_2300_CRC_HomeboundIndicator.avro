@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_CRC_HomeboundIndicator",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300CRC01CodeCategory", "type" : "string" },
+	{ "name" : "_2300CRC02CertificationConditionIndicator", "type" : "string" },
+	{ "name" : "_2300CRC03HomeboundIndicator", "type" : "string" }
+  ]
+}

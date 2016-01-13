@@ -1,0 +1,12 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_SV5_DurableMedicalEquipmentService",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400SV502UnitOrBasisForMeasurementCode", "type" : "string" },
+	{ "name" : "_2400SV503Quantity", "type" : "string" },
+	{ "name" : "_2400SV504MonetaryAmount", "type" : "string" },
+	{ "name" : "_2400SV505MonetaryAmount", "type" : "string" },
+	{ "name" : "_2400SV506FrequencyCode", "type" : "string" }
+  ]
+}

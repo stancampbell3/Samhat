@@ -1,0 +1,8 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2300_HI_ConditionInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+
+  ]
+}

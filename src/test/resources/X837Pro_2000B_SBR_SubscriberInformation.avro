@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2000B_SBR_SubscriberInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2000BSBR01PayerResponsibilitySequenceNumberCode", "type" : "string" },
+	{ "name" : "_2000BSBR02IndividualRelationshipCode", "type" : "string" },
+	{ "name" : "_2000BSBR03InsuredGroupOrPolicyNumber", "type" : "string" },
+	{ "name" : "_2000BSBR04InsuredGroupName", "type" : "string" },
+	{ "name" : "_2000BSBR05InsuranceTypeCode", "type" : "string" },
+	{ "name" : "_2000BSBR09ClaimFilingIndicatorCode", "type" : "string" }
+  ]
+}

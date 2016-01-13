@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2010BC_N3_PayerAddress",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010BCN301PayerAddressLine", "type" : "string" },
+	{ "name" : "_2010BCN302PayerAddressLine", "type" : "string" }
+  ]
+}

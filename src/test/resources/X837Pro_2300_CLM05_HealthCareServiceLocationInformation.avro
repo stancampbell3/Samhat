@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_CLM05_HealthCareServiceLocationInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300CLM0501FacilityTypeCode", "type" : "string" },
+	{ "name" : "_2300CLM0503ClaimFrequencyCode", "type" : "string" }
+  ]
+}

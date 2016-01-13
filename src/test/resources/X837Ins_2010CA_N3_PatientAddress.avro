@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2010CA_N3_PatientAddress",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010CAN301PatientAddressLine", "type" : "string" },
+	{ "name" : "_2010CAN302PatientAddressLine", "type" : "string" }
+  ]
+}

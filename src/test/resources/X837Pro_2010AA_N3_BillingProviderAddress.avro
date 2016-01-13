@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010AA_N3_BillingProviderAddress",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010AAN301BillingProviderAddressLine", "type" : "string" },
+	{ "name" : "_2010AAN302BillingProviderAddressLine", "type" : "string" }
+  ]
+}

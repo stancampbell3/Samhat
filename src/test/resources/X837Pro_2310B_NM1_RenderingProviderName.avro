@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2310B_NM1_RenderingProviderName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2310BNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2310BNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2310BNM103RenderingProviderLastOrOrganizationName", "type" : "string" },
+	{ "name" : "_2310BNM104RenderingProviderFirstName", "type" : "string" },
+	{ "name" : "_2310BNM105RenderingProviderMiddleName", "type" : "string" },
+	{ "name" : "_2310BNM107RenderingProviderNameSuffix", "type" : "string" },
+	{ "name" : "_2310BNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2310BNM109RenderingProviderIdentifier", "type" : "string" }
+  ]
+}

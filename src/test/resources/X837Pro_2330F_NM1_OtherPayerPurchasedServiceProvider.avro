@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2330F_NM1_OtherPayerPurchasedServiceProvider",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330FNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2330FNM102EntityTypeQualifier", "type" : "string" }
+  ]
+}

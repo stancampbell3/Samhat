@@ -1,0 +1,17 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_HCP_ClaimPricingRepricingInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300HCP01PricingMethodology", "type" : "string" },
+	{ "name" : "_2300HCP02RepricedAllowedAmount", "type" : "string" },
+	{ "name" : "_2300HCP03RepricedSavingAmount", "type" : "string" },
+	{ "name" : "_2300HCP04RepricingOrganizationIdentifier", "type" : "string" },
+	{ "name" : "_2300HCP05RepricingPerDiemOrFlatRateAmount", "type" : "string" },
+	{ "name" : "_2300HCP06RepricedApprovedAmbulatoryPatientGroupCode", "type" : "string" },
+	{ "name" : "_2300HCP07RepricedApprovedAmbulatoryPatientGroupAmount", "type" : "string" },
+	{ "name" : "_2300HCP13RejectReasonCode", "type" : "string" },
+	{ "name" : "_2300HCP14PolicyComplianceCode", "type" : "string" },
+	{ "name" : "_2300HCP15ExceptionCode", "type" : "string" }
+  ]
+}

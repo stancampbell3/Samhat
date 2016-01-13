@@ -1,0 +1,8 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_HI_HealthCareDiagnosisCode",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_CR1_AmbulanceTransportInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400CR101UnitOrBasisForMeasurementCode", "type" : "string" },
+	{ "name" : "_2400CR102PatientWeight", "type" : "string" },
+	{ "name" : "_2400CR103AmbulanceTransportCode", "type" : "string" },
+	{ "name" : "_2400CR104AmbulanceTransportReasonCode", "type" : "string" },
+	{ "name" : "_2400CR105UnitOrBasisForMeasurementCode", "type" : "string" },
+	{ "name" : "_2400CR106TransportDistance", "type" : "string" },
+	{ "name" : "_2400CR109RoundTripPurposeDescription", "type" : "string" },
+	{ "name" : "_2400CR110StretcherPurposeDescription", "type" : "string" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro__REF_TransmissionTypeIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_REF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_REF02TransmissionTypeCode", "type" : "string" }
+  ]
+}

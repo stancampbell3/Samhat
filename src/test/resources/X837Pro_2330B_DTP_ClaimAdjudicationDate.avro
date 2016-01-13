@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2330B_DTP_ClaimAdjudicationDate",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330BDTP01DateTimeQualifier", "type" : "string" },
+	{ "name" : "_2330BDTP02DateTimePeriodFormatQualifier", "type" : "string" },
+	{ "name" : "_2330BDTP03AdjudicationOrPaymentDate", "type" : "string" }
+  ]
+}

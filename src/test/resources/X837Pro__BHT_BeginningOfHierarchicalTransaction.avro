@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "X837Pro__BHT_BeginningOfHierarchicalTransaction",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_BHT01HierarchicalStructureCode", "type" : "string" },
+	{ "name" : "_BHT02TransactionSetPurposeCode", "type" : "string" },
+	{ "name" : "_BHT03OriginatorApplicationTransactionIdentifier", "type" : "string" },
+	{ "name" : "_BHT04TransactionSetCreationDate", "type" : "string" },
+	{ "name" : "_BHT05TransactionSetCreationTime", "type" : "string" },
+	{ "name" : "_BHT06ClaimOrEncounterIdentifier", "type" : "string" }
+  ]
+}

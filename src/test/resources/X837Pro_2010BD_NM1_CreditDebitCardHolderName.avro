@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010BD_NM1_CreditDebitCardHolderName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010BDNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2010BDNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2010BDNM103CreditOrDebitCardHolderLastOrOrganizationalName", "type" : "string" },
+	{ "name" : "_2010BDNM104CreditOrDebitCardHolderFirstName", "type" : "string" },
+	{ "name" : "_2010BDNM105CreditOrDebitCardHolderMiddleName", "type" : "string" },
+	{ "name" : "_2010BDNM107CreditOrDebitCardHolderNameSuffix", "type" : "string" },
+	{ "name" : "_2010BDNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2010BDNM109CreditOrDebitCardNumber", "type" : "string" }
+  ]
+}

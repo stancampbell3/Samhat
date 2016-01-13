@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2420B_NM1_OperatingPhysicianName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2420BNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2420BNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2420BNM103OperatingPhysicianLastName", "type" : "string" },
+	{ "name" : "_2420BNM104OperatingPhysicianFirstName", "type" : "string" },
+	{ "name" : "_2420BNM105OperatingPhysicanMiddleName", "type" : "string" },
+	{ "name" : "_2420BNM107OperatingPhysicianNameSuffix", "type" : "string" },
+	{ "name" : "_2420BNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2420BNM109OperatingPhysicianPrimaryIdentifier", "type" : "string" }
+  ]
+}

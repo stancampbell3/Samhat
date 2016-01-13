@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2330G_NM1_OtherPayerServiceFacilityLocation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330GNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2330GNM102EntityTypeQualifier", "type" : "string" }
+  ]
+}

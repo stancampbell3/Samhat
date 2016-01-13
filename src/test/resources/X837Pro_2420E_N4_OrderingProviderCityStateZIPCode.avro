@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2420E_N4_OrderingProviderCityStateZIPCode",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2420EN401OrderingProviderCityName", "type" : "string" },
+	{ "name" : "_2420EN402OrderingProviderStateCode", "type" : "string" },
+	{ "name" : "_2420EN403OrderingProviderPostalZoneOrZIPCode", "type" : "string" },
+	{ "name" : "_2420EN404CountryCode", "type" : "string" }
+  ]
+}

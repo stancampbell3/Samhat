@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2310E_REF_SupervisingProviderSecondaryIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2310EREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2310EREF02SupervisingProviderSecondaryIdentifier", "type" : "string" }
+  ]
+}

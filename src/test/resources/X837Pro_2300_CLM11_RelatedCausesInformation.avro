@@ -1,0 +1,12 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_CLM11_RelatedCausesInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300CLM1101RelatedCausesCode", "type" : "string" },
+	{ "name" : "_2300CLM1102RelatedCausesCode", "type" : "string" },
+	{ "name" : "_2300CLM1103RelatedCausesCode", "type" : "string" },
+	{ "name" : "_2300CLM1104AutoAccidentStateOrProvinceCode", "type" : "string" },
+	{ "name" : "_2300CLM1105CountryCode", "type" : "string" }
+  ]
+}

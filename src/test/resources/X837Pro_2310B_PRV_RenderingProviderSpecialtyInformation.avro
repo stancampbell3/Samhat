@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2310B_PRV_RenderingProviderSpecialtyInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2310BPRV01ProviderCode", "type" : "string" },
+	{ "name" : "_2310BPRV02ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2310BPRV03ProviderTaxonomyCode", "type" : "string" }
+  ]
+}

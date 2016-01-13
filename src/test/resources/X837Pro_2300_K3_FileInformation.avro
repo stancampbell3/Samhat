@@ -1,0 +1,8 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_K3_FileInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300K301FixedFormatInformation", "type" : "string" }
+  ]
+}

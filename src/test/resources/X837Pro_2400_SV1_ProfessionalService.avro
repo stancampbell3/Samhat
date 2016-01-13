@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_SV1_ProfessionalService",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400SV102LineItemChargeAmount", "type" : "string" },
+	{ "name" : "_2400SV103UnitOrBasisForMeasurementCode", "type" : "string" },
+	{ "name" : "_2400SV104ServiceUnitCount", "type" : "string" },
+	{ "name" : "_2400SV105PlaceOfServiceCode", "type" : "string" },
+	{ "name" : "_2400SV109EmergencyIndicator", "type" : "string" },
+	{ "name" : "_2400SV111EPSDTIndicator", "type" : "string" },
+	{ "name" : "_2400SV112FamilyPlanningIndicator", "type" : "string" },
+	{ "name" : "_2400SV115CoPayStatusCode", "type" : "string" }
+  ]
+}

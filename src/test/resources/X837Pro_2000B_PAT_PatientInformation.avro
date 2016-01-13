@@ -1,0 +1,12 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2000B_PAT_PatientInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2000BPAT05DateTimePeriodFormatQualifier", "type" : "string" },
+	{ "name" : "_2000BPAT06InsuredIndividualDeathDate", "type" : "string" },
+	{ "name" : "_2000BPAT07UnitOrBasisForMeasurementCode", "type" : "string" },
+	{ "name" : "_2000BPAT08PatientWeight", "type" : "string" },
+	{ "name" : "_2000BPAT09PregnancyIndicator", "type" : "string" }
+  ]
+}

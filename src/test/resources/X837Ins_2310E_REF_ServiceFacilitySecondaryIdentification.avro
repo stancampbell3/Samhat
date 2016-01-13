@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2310E_REF_ServiceFacilitySecondaryIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2310EREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2310EREF02LaboratoryOrFacilitySecondaryIdentifier", "type" : "string" }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010BA_NM1_SubscriberName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010BANM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2010BANM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2010BANM103SubscriberLastName", "type" : "string" },
+	{ "name" : "_2010BANM104SubscriberFirstName", "type" : "string" },
+	{ "name" : "_2010BANM105SubscriberMiddleName", "type" : "string" },
+	{ "name" : "_2010BANM107SubscriberNameSuffix", "type" : "string" },
+	{ "name" : "_2010BANM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2010BANM109SubscriberPrimaryIdentifier", "type" : "string" }
+  ]
+}

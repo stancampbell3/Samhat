@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2010AA_PER_BillingProviderContactInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010AAPER01ContactFunctionCode", "type" : "string" },
+	{ "name" : "_2010AAPER02BillingProviderContactName", "type" : "string" },
+	{ "name" : "_2010AAPER03CommunicationNumberQualifier", "type" : "string" },
+	{ "name" : "_2010AAPER04CommunicationNumber", "type" : "string" },
+	{ "name" : "_2010AAPER05CommunicationNumberQualifier", "type" : "string" },
+	{ "name" : "_2010AAPER06CommunicationNumber", "type" : "string" },
+	{ "name" : "_2010AAPER07CommunicationNumberQualifier", "type" : "string" },
+	{ "name" : "_2010AAPER08CommunicationNumber", "type" : "string" }
+  ]
+}

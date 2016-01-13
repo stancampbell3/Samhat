@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2420D_NM1_SupervisingProviderName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2420DNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2420DNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2420DNM103SupervisingProviderLastName", "type" : "string" },
+	{ "name" : "_2420DNM104SupervisingProviderFirstName", "type" : "string" },
+	{ "name" : "_2420DNM105SupervisingProviderMiddleName", "type" : "string" },
+	{ "name" : "_2420DNM107SupervisingProviderNameSuffix", "type" : "string" },
+	{ "name" : "_2420DNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2420DNM109SupervisingProviderIdentifier", "type" : "string" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_PS1_PurchasedServiceInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400PS101PurchasedServiceProviderIdentifier", "type" : "string" },
+	{ "name" : "_2400PS102PurchasedServiceChargeAmount", "type" : "string" }
+  ]
+}

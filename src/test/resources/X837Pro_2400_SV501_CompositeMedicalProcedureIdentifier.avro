@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_SV501_CompositeMedicalProcedureIdentifier",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400SV50101ProductServiceIDQualifier", "type" : "string" },
+	{ "name" : "_2400SV50102ProcedureCode", "type" : "string" }
+  ]
+}

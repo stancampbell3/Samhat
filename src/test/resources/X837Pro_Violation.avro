@@ -1,0 +1,16 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_Violation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_ErrorType", "type" : "string" },
+	{ "name" : "_FileID", "type" : "string" },
+	{ "name" : "_TraceNumber", "type" : "string" },
+	{ "name" : "_ViolationLocation", "type" : "string" },
+	{ "name" : "_ViolationDescription", "type" : "string" },
+	{ "name" : "_RuleProcessor", "type" : "string" },
+	{ "name" : "_RuleSource", "type" : "string" },
+	{ "name" : "_RuleViolationText", "type" : "string" },
+	{ "name" : "_BadDataContent", "type" : "string" }
+  ]
+}

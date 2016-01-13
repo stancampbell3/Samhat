@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2330B_REF_OtherPayerSecondaryIdentificationAndReferenceNumber",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330BREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2330BREF02OtherPayerSecondaryIdentifier", "type" : "string" }
+  ]
+}

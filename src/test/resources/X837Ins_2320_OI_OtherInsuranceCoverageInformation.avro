@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2320_OI_OtherInsuranceCoverageInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2320OI03BenefitsAssignmentCertificationIndicator", "type" : "string" },
+	{ "name" : "_2320OI06ReleaseOfInformationCode", "type" : "string" }
+  ]
+}

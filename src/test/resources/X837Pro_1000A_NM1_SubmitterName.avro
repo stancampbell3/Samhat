@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_1000A_NM1_SubmitterName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_1000ANM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_1000ANM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_1000ANM103SubmitterLastOrOrganizationName", "type" : "string" },
+	{ "name" : "_1000ANM104SubmitterFirstName", "type" : "string" },
+	{ "name" : "_1000ANM105SubmitterMiddleName", "type" : "string" },
+	{ "name" : "_1000ANM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_1000ANM109SubmitterIdentifier", "type" : "string" }
+  ]
+}

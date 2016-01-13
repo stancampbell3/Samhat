@@ -1,0 +1,12 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2440_FRM_SupportingDocumentation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2440FRM01QuestionNumberLetter", "type" : "string" },
+	{ "name" : "_2440FRM02QuestionResponse", "type" : "string" },
+	{ "name" : "_2440FRM03QuestionResponse", "type" : "string" },
+	{ "name" : "_2440FRM04QuestionResponse", "type" : "string" },
+	{ "name" : "_2440FRM05QuestionResponse", "type" : "string" }
+  ]
+}

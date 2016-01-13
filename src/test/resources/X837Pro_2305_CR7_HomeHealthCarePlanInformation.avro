@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2305_CR7_HomeHealthCarePlanInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2305CR701DisciplineTypeCode", "type" : "string" },
+	{ "name" : "_2305CR702TotalVisitsRenderedCount", "type" : "string" },
+	{ "name" : "_2305CR703CertificationPeriodProjectedVisitCount", "type" : "string" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2420C_N4_ServiceFacilityLocationCityStateZIP",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2420CN401LaboratoryOrFacilityCityName", "type" : "string" },
+	{ "name" : "_2420CN402LaboratoryOrFacilityStateOrProvinceCode", "type" : "string" },
+	{ "name" : "_2420CN403LaboratoryOrFacilityPostalZoneOrZIPCode", "type" : "string" },
+	{ "name" : "_2420CN404CountryCode", "type" : "string" }
+  ]
+}

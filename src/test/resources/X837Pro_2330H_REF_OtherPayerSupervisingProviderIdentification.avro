@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2330H_REF_OtherPayerSupervisingProviderIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330HREF01ReferenceIdentificationQualifier", "type" : "string" },
+	{ "name" : "_2330HREF02OtherPayerSupervisingProviderIdentifier", "type" : "string" }
+  ]
+}

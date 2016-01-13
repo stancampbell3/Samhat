@@ -1,0 +1,16 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2320_MOA_MedicareOutpatientAdjudicationInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2320MOA01ReimbursementRate", "type" : "string" },
+	{ "name" : "_2320MOA02ClaimHCPCSPayableAmount", "type" : "string" },
+	{ "name" : "_2320MOA03RemarkCode", "type" : "string" },
+	{ "name" : "_2320MOA04RemarkCode", "type" : "string" },
+	{ "name" : "_2320MOA05RemarkCode", "type" : "string" },
+	{ "name" : "_2320MOA06RemarkCode", "type" : "string" },
+	{ "name" : "_2320MOA07RemarkCode", "type" : "string" },
+	{ "name" : "_2320MOA08ClaimESRDPaymentAmount", "type" : "string" },
+	{ "name" : "_2320MOA09NonpayableProfessionalComponentAmount", "type" : "string" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2320_MIA_MedicareInpatientAdjudicationInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2320MIA01CoveredDaysOrVisitsCount", "type" : "string" },
+	{ "name" : "_2320MIA02LifetimeReserveDaysCount", "type" : "string" },
+	{ "name" : "_2320MIA03LifetimePsychiatricDaysCount", "type" : "string" },
+	{ "name" : "_2320MIA04ClaimDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA05RemarkCode", "type" : "string" },
+	{ "name" : "_2320MIA06ClaimDisproportionateShareAmount", "type" : "string" },
+	{ "name" : "_2320MIA07ClaimMSPPassThroughAmount", "type" : "string" },
+	{ "name" : "_2320MIA08ClaimPPSCapitalAmount", "type" : "string" },
+	{ "name" : "_2320MIA09PPSCapitalFSPDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA10PPSCapitalHSPDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA11PPSCapitalDSHDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA12OldCapitalAmount", "type" : "string" },
+	{ "name" : "_2320MIA13PPSCapitalIMEAmount", "type" : "string" },
+	{ "name" : "_2320MIA14PPSOperatingHospitalSpecificDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA15CostReportDayCount", "type" : "string" },
+	{ "name" : "_2320MIA16PPSOperatingFederalSpecificDRGAmount", "type" : "string" },
+	{ "name" : "_2320MIA17ClaimPPSCapitalOutlierAmount", "type" : "string" },
+	{ "name" : "_2320MIA18ClaimIndirectTeachingAmount", "type" : "string" },
+	{ "name" : "_2320MIA19NonpayableProfessionalComponentAmount", "type" : "string" },
+	{ "name" : "_2320MIA20RemarkCode", "type" : "string" },
+	{ "name" : "_2320MIA21RemarkCode", "type" : "string" },
+	{ "name" : "_2320MIA22RemarkCode", "type" : "string" },
+	{ "name" : "_2320MIA23RemarkCode", "type" : "string" },
+	{ "name" : "_2320MIA24PPSCapitalExceptionAmount", "type" : "string" }
+  ]
+}

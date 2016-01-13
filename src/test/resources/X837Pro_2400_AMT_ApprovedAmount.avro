@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_AMT_ApprovedAmount",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400AMT01AmountQualifierCode", "type" : "string" },
+	{ "name" : "_2400AMT02ApprovedAmount", "type" : "string" }
+  ]
+}

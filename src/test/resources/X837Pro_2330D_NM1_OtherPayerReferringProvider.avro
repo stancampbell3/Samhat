@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2330D_NM1_OtherPayerReferringProvider",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2330DNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2330DNM102EntityTypeQualifier", "type" : "string" }
+  ]
+}

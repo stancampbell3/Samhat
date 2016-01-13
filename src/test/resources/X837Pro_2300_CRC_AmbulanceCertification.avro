@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_CRC_AmbulanceCertification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300CRC01CodeCategory", "type" : "string" },
+	{ "name" : "_2300CRC02CertificationConditionIndicator", "type" : "string" },
+	{ "name" : "_2300CRC03ConditionCode", "type" : "string" },
+	{ "name" : "_2300CRC04ConditionCode", "type" : "string" },
+	{ "name" : "_2300CRC05ConditionCode", "type" : "string" },
+	{ "name" : "_2300CRC06ConditionCode", "type" : "string" },
+	{ "name" : "_2300CRC07ConditionCode", "type" : "string" }
+  ]
+}

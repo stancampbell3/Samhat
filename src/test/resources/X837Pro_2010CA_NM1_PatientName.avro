@@ -1,0 +1,15 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2010CA_NM1_PatientName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2010CANM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2010CANM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2010CANM103PatientLastName", "type" : "string" },
+	{ "name" : "_2010CANM104PatientFirstName", "type" : "string" },
+	{ "name" : "_2010CANM105PatientMiddleName", "type" : "string" },
+	{ "name" : "_2010CANM107PatientNameSuffix", "type" : "string" },
+	{ "name" : "_2010CANM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2010CANM109PatientPrimaryIdentifier", "type" : "string" }
+  ]
+}

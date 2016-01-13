@@ -1,0 +1,13 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_CN1_ContractInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400CN101ContractTypeCode", "type" : "string" },
+	{ "name" : "_2400CN102ContractAmount", "type" : "string" },
+	{ "name" : "_2400CN103ContractPercentage", "type" : "string" },
+	{ "name" : "_2400CN104ContractCode", "type" : "string" },
+	{ "name" : "_2400CN105TermsDiscountPercentage", "type" : "string" },
+	{ "name" : "_2400CN106ContractVersionIdentifier", "type" : "string" }
+  ]
+}

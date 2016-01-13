@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2300_HI10_HealthCareCodeInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300HI1001CodeListQualifierCode", "type" : "string" },
+	{ "name" : "_2300HI1002TreatmentCode", "type" : "string" }
+  ]
+}

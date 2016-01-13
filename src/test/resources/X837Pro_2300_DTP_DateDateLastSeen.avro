@@ -1,0 +1,10 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_DTP_DateDateLastSeen",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300DTP01DateTimeQualifier", "type" : "string" },
+	{ "name" : "_2300DTP02DateTimePeriodFormatQualifier", "type" : "string" },
+	{ "name" : "_2300DTP03LastSeenDate", "type" : "string" }
+  ]
+}

@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_AMT_TotalPurchasedServiceAmount",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300AMT01AmountQualifierCode", "type" : "string" },
+	{ "name" : "_2300AMT02TotalPurchasedServiceAmount", "type" : "string" }
+  ]
+}

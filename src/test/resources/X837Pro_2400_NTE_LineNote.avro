@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2400_NTE_LineNote",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2400NTE01NoteReferenceCode", "type" : "string" },
+	{ "name" : "_2400NTE02LineNoteText", "type" : "string" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "X837Ins_2430_SVD03_CompositeMedicalProcedureIdentifier",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2430SVD0301ProductOrServiceIDQualifier", "type" : "string" },
+	{ "name" : "_2430SVD0302ProcedureCode", "type" : "string" },
+	{ "name" : "_2430SVD0303ProcedureModifier", "type" : "string" },
+	{ "name" : "_2430SVD0304ProcedureModifier", "type" : "string" },
+	{ "name" : "_2430SVD0305ProcedureModifier", "type" : "string" },
+	{ "name" : "_2430SVD0306ProcedureModifier", "type" : "string" },
+	{ "name" : "_2430SVD0307ProcedureCodeDescription", "type" : "string" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2300_PWK_ClaimSupplementalInformation",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2300PWK01AttachmentReportTypeCode", "type" : "string" },
+	{ "name" : "_2300PWK02AttachmentTransmissionCode", "type" : "string" },
+	{ "name" : "_2300PWK05IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2300PWK06AttachmentControlNumber", "type" : "string" }
+  ]
+}

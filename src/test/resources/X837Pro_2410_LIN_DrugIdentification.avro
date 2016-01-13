@@ -1,0 +1,9 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2410_LIN_DrugIdentification",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2410LIN02ProductOrServiceIDQualifier", "type" : "string" },
+	{ "name" : "_2410LIN03NationalDrugCode", "type" : "string" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "type" : "record",
+  "name" : "X837Pro_2310C_NM1_PurchasedServiceProviderName",
+  "namespace" : "net.explorys.samhat.z12.r837",
+  "fields" : [
+	{ "name" : "_2310CNM101EntityIdentifierCode", "type" : "string" },
+	{ "name" : "_2310CNM102EntityTypeQualifier", "type" : "string" },
+	{ "name" : "_2310CNM103NameLastOrOrganizationName", "type" : "string" },
+	{ "name" : "_2310CNM104NameFirst", "type" : "string" },
+	{ "name" : "_2310CNM105NameMiddle", "type" : "string" },
+	{ "name" : "_2310CNM108IdentificationCodeQualifier", "type" : "string" },
+	{ "name" : "_2310CNM109PurchasedServiceProviderIdentifier", "type" : "string" }
+  ]
+}

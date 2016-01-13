@@ -10,10 +10,7 @@ import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.util.*;
 
@@ -331,8 +328,46 @@ public class AvroSchemaGenerator {
 
         // Serialize to string
         String jsonSchema = envelopeRecord.toString();
-        System.out.println("JSON Avro Schema:"+jsonSchema);
+        // System.out.println("JSON Avro Schema:"+jsonSchema);
 
         return jsonSchema;
+    }
+
+    public static void main(String[] args) {
+
+        if(args.length<3) {
+            System.out.println("Usage: java net.explorys.samhat.AvroSchemaGenerator <xml schema definition> <namespace> <output file>");
+        } else {
+
+            String xmlSchemaFilename = args[0];
+            String namespace = args[1];
+            String outputFilename = args[2];
+
+            try {
+
+                AvroSchemaGenerator instance = new AvroSchemaGenerator();
+                InputStream schemaDefinition = new FileInputStream(xmlSchemaFilename);
+                String jsonSchema = instance.constructAvroSchemaFromXmlSchema(namespace, schemaDefinition);
+
+                System.out.println("Checking compiled schema with Avro's Schema.Parser...");
+
+                // Try to compile the schema
+                Schema.Parser avroParser = new Schema.Parser();
+                Schema schemaCooked = avroParser.parse(jsonSchema);
+
+                System.out.println("Writing the Avro schema file to "+outputFilename);
+
+                // Write the schema to outputFilename
+                BufferedWriter wtr = new BufferedWriter( new FileWriter(outputFilename));
+                wtr.write(jsonSchema);
+                wtr.close();
+
+                System.out.println("Done.");
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.exit(1);
+            }
+        }
     }
 }

@@ -10,6 +10,11 @@ trait XmlWriteable {
   def toXml(indent:Int = 0):String
 }
 
+/**
+ * A Property of type T which is expressible as both Yaml and Xml in a Samhat schema.
+ *
+ * @tparam T
+ */
 trait Property[T] extends YamlWriteable with XmlWriteable {
 
   def getName():String
@@ -18,6 +23,12 @@ trait Property[T] extends YamlWriteable with XmlWriteable {
   def toYaml(indent:Int = 0):String = (" " * indent) + getName() + " : " + getValue()
 }
 
+/**
+ * All scalars are currently implemented as String properties.  Support for other scalars such as numerics to come.
+ *
+ * @param name
+ * @param value
+ */
 case class StringProperty(name:String, value:String) extends Property[String] {
 
   override def getName(): String = name
@@ -35,6 +46,11 @@ case class StringProperty(name:String, value:String) extends Property[String] {
 
 }
 
+/**
+ * Ignored for the purposes of schema management, but useful as part of the description language.
+ *
+ * @param comment
+ */
 case class CommentProperty(comment:String) extends Property[String] {
 
   override def getName():String = "comment"
@@ -46,6 +62,12 @@ case class CommentProperty(comment:String) extends Property[String] {
   override def toXml(indent:Int = 0): String = "<!-- " + comment + "-->"
 }
 
+/**
+ * A definition of a named set of properties including terminal segments and/or other Loops.
+ *
+ * @param name
+ * @param properties
+ */
 case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable with XmlWriteable {
 
   def toYaml(indent:Int = 0):String = (" " * indent) + name + " : {\n" +
@@ -75,6 +97,12 @@ case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable
   }
 }
 
+/**
+ * A definition of a portion of an X12 document containing other properties which may include other, nested Loops.
+ *
+ * @param name
+ * @param value
+ */
 case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
 
   override def getName(): String = name
@@ -84,6 +112,12 @@ case class LoopProperty(name:String, value:Loop) extends Property[Loop] {
   override def toXml(indent:Int = 0):String = getValue().toXml(indent)
 }
 
+/**
+ * Represents an AST for a parsed Samhat schema description.
+ *
+ * @param loops
+ * @param preamble
+ */
 case class SamhatSchema(val loops:List[Loop], val preamble:Option[String] = None) extends YamlWriteable with XmlWriteable {
 
   def toYaml(indent:Int = 0):String = (if(preamble.isDefined) "# " + preamble.get + "\n" else "") +

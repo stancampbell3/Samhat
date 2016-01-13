@@ -204,7 +204,7 @@ public class Avro837Util implements Serializable {
             if(args.length<5) {
 
                 System.out.println("Usage: \n");
-                System.out.println("java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util flat <flatSchemaPath> <x837Path> <orgName> <orgId> <ediPath> <outputPath>");
+                System.out.println("java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util flat <flatSchemaPath> <edi path> <org name> <org id> <remotefilename> <output path>");
                 System.out.println("OR");
                 System.out.println("java -cp Samhat.jar net.explorys.samhat.avro.Avro837Util expand <avroExpandedSchemaPath> <xmlSchemaPath> <inputPath> <outputPath>");
             } else {

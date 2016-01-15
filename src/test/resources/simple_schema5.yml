@@ -1,0 +1,26 @@
+#  "This is a comment"
+#  "This is a"
+#  "multi-line"
+#  "comment."
+X12 :
+  -  ISA : {
+   _segment : "ISA",
+   # "This is a comment",
+   GS : {
+    _segment : "GS",
+    ST : {
+     # "This is a comment as well",
+     _segmentQualPos : "1",
+     _segmentQual : "837",
+     _segment : "ST",
+     1000A : {
+      _segmentQualPos : "1",
+      _segmentQual : "41",
+      _segment : "NM1"
+     }
+    }
+  }
+ }
+ -  IEA : {
+   _segment : "IEA"
+ }

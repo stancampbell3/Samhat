@@ -135,7 +135,8 @@ case class SamhatSchema(val loops:List[Loop], val preamble:Option[String] = None
  *
  * YAML Grammar for Samhat Schema File:
  *
- * SamhatSchema -> "X12" ":" LoopEntries
+ * SamhatSchema -> Preamble "X12" ":" LoopEntries
+ * Preamble -> CommentProperty | CommentProperty Preamble
  * LoopEntries -> Loop LoopEntries
  *   -> ε
  * Loop -> SamhatID ":" "{" PropertyDefList "}"

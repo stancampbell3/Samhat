@@ -1,7 +1,5 @@
 package net.explorys.samhat.schema
 
-import scala.xml.{Node, Elem}
-
 class YamlSamParsingException(reason:String, cause:Throwable = null) extends Exception(reason, cause)
 
 /**

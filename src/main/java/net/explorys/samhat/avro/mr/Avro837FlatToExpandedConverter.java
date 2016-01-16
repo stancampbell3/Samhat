@@ -35,167 +35,107 @@ import java.util.regex.Pattern;
  * Avro record definition of an 837 instance into a fully nested Avro record.  For use in the MR Mapper.
  *
  */
-public class Avro837FlatToExpandedConverter {
+public class Avro837FlatToExpandedConverter extends AbstractAvro837FlatToExpandedConverter {
 
-    private X12Parser x12Parser;
-    private Schema x837AvroSchema;
-    private Schema segmentsArraySchema;
-    private ObjectMapper mapper = new ObjectMapper();
-
-    // Cached XML document containing the target X12 Schema (used for resolving declared types for segments)
-    private Document document = null;
-    private XPath xPath;
-    private Pattern patterns = Pattern.compile("\\[?'([^']+)'.*");
+    private final Pattern patterns = Pattern.compile("\\[?'([^']+)'.*");
 
     public Avro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException {
 
-        try {
-            // Cache the cfSchemaXML input stream since we'll use it twice
-            ByteBuffer xmlBytes = xmlStreamToByteBuffer(cfSchemaXML);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(xmlBytes.array());
-
-            // Use our Cf schema parser to translate the XML specification into an instance of CfSchema
-            ICfSchemaParser ICfSchemaParser = new XmlBasedCfSchemaParser();
-            Cf schema = ICfSchemaParser.parseSchema(byteArrayInputStream);
-
-            // Reset the xml input stream
-            byteArrayInputStream.reset();
-
-            // Load the DOM
-            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-
-            document = dBuilder.parse(byteArrayInputStream);
-
-            // Normalize to compensate for stray whitespace in the spec
-            document.getDocumentElement().normalize();
-
-            // Create our XPath
-            XPathFactory xPathFactory = XPathFactory.newInstance();
-            xPath = xPathFactory.newXPath();
-
-            // Instantiate our x12Parser for the given cfSchema
-            x12Parser = new X12Parser(schema);
-
-            // Instantiate our Avro schemas.
-            Schema.Parser avroParser = (new Schema.Parser());
-            x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
-            segmentsArraySchema = AvroSchemaGenerator.getSegmentsArraySchemaDefinition(avroParser);
-
-        } catch(Exception e) {
-
-            throw new CfSchemaParsingException("Error setting up schema information", e);
-        }
+        super(cfSchemaXML, x837AvroSchemaStream);
     }
 
-    /**
-     * Take an instance of an Avro record in flat format, parse it using the appropriate X12/837 Cf schema and
-     * return an expanded GenericRecord containing the same data as the original wrapped in an envelope.
-     *
-     * We expect the GenericRecord to contain the following fields in flat format:
-     *
-     * sourceFile            for example "BigHospital_Subsystem_1441214822957.edi"
-     * ingestionTimestamp    for example 1441229222420
-     * organization          for example "80"
-     * data                  a ByteBuffer containing the text contents of the 837 as bytes in UTF-8 encoding
-     *
-     * @param flat837Record
-     * @return
-     */
-    public GenericRecord expand837(Flat837 flat837Record) throws
-            CfSchemaParsingException, IOException, FormatException, Avro837FlatToExpandedException {
+    @Override
+    void createTheCurrentRecord(Schema recordSchema, Loop loop,
+                                GenericRecord x837Record,
+                                Set<String> schemaFieldsSet, String recordSchemaName) throws Exception {
 
-        ByteBuffer data = (ByteBuffer)flat837Record.get("data");
-        X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
+        // TODO: potentially recognize different types of specified schemas
+        if (recordSchema.getType() == Schema.Type.RECORD) {
 
-        // DEBUG
-        // System.out.println("x837: " + x837.toXML());
+            String loopXpath = calculateXPath(loop);
+            DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
+            if (null != declaredTypeInfo) {
 
-        // Build the envelope and copy over the source_file, ingestion timestamp, etc.
-        Schema envSchema = x837AvroSchema;
-        GenericRecord envRecord = new GenericData.Record(envSchema);
+                List<Segment> segments = loop.getSegments();
+                CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
+                if (args.length == declaredTypeInfo.getArity()) {
 
-        // TODO: use the proper accessors
-        String sourceFilename = flat837Record.getSourceFilename().toString();
-        Long ingestedTimestamp = flat837Record.getIngestedTimestamp();
-        String organization = flat837Record.getOrganization().toString();
+                    // Instantiate the declared type
+                    Object obj = instantiateDeclaredType(args, declaredTypeInfo);
 
-        envRecord.put("source_filename", sourceFilename);
-        envRecord.put("ingested_timestamp", ingestedTimestamp);
-        envRecord.put("organization", organization);
+                    // Add the record to the enclosing record
+                    x837Record.put(recordSchemaName, obj);
 
-        // Build the GenericRecord by walking the parsed X12 instance
+                    // Mark the field as being set
+                    schemaFieldsSet.remove(recordSchemaName);
 
-        // Create the envelope record
-        Schema.Field dataField = getX837AvroSchema().getField("data");
-        // -- schema has this field nullable so it's a union of "null" and a record type
-        // -- take the second element in the array's schema
-        Iterator<Schema> typeSchemaItr = dataField.schema().getTypes().iterator();
-        if(!typeSchemaItr.hasNext()) {
-            throw new Avro837FlatToExpandedException("Expected a nullable field definition.");
-        }
-        // -- Discard the "null"
-        typeSchemaItr.next();
-        if(!typeSchemaItr.hasNext()) {
-            throw new Avro837FlatToExpandedException("Expected a nullable field definition.");
-        }
-        Schema recordSchema = typeSchemaItr.next();
-        GenericRecord x837Record = new GenericData.Record(recordSchema);
-
-        // Stick it in the envelope
-        envRecord.put("data", x837Record);
-
-        // Build the rest of the nested records
-        walkTheLoop(x837Record, x837);
-
-        return envRecord;
-    }
-
-    String calculateXPath(Loop currentLoop) {
-
-        // Build the xpath expression
-        Stack<String> pathStack = new Stack<String>();
-        Loop loopPtr = currentLoop;
-        while(loopPtr!=null) {
-            String currentLoopName = loopPtr.getName();
-            if(null==loopPtr.getParent()) {
-                pathStack.push("x12_schema[@name=\""+currentLoopName+"\"]");
-            } else {
-                if(loopPtr.getLoops().size()==0) {
-                    pathStack.push("segment[@name=\""+currentLoopName+"\"]");
                 } else {
-                    pathStack.push("loop[@name=\""+currentLoopName+"\"]");
+                    // TODO: qualify this exception
+                    throw new Exception("Declared type arguments list not of arity " + declaredTypeInfo.getArity() + " for " + declaredTypeInfo.getClassName());
+                }
+
+            } else {
+
+                // Create the nested record representing the loop
+                GenericRecord nestedRecord = new GenericData.Record(recordSchema);
+
+                // walkThe nested loop
+                // DEBUG
+                // System.out.println("walkTheLoop for " + recordSchemaName);
+                walkTheLoop(nestedRecord, loop);
+
+                // set the property of the outer record for this loop
+                // DEBUG
+                // System.out.println("set value for "+recordSchemaName);
+                x837Record.put(recordSchemaName, nestedRecord);
+                schemaFieldsSet.remove(recordSchemaName);
+            }
+
+        } else {
+
+            // The segment data for this loop (it's a leaf) rolls up into the value of a property
+            // of the current record.
+
+            // For instance, 1000A (Submitter Name) is a property of the enclosing loop
+            // and is implemented in the avro schema as an array of arrays of strings.
+            // So, if we have elements like
+            //  NM1*41*2*AAA AMBULANCE SERVICE*****46*376985369
+            //  PER*IC*LISA SMITH*TE*3037752536
+            // Then we end up with a segments data field like:
+            //  [[NM1, 41, 2, AAA AMBULANCE SERVICE, , , , , 46, 376985369], [PER, IC, LISA SMITH, TE, 3037752536]]
+
+            // Set the segment values of loop into the enclosing GenericRecord, x837Record
+
+            // -- Construct a GenericData.Array of GenericData.Arrays of String to hold the segment info
+            GenericData.Array<GenericData.Array<String>> segmentsField = new GenericData.Array<GenericData.Array<String>>(loop.getSegments().size(), AvroSchemaGenerator.SEGMENTS_ARRAY_SCHEMA);
+
+            // -- Go through the segments and fill the array of arrays
+            for (Segment segment : loop.getSegments()) {
+
+                String segmentData = segment.toString();
+                // TODO:  The delimiter is actually specified in the X12 document.. suggest using that rather than forcing
+                // see X12Parser:73 and constant POS_COMPOSITE_ELEMENT
+
+                if(null!=segmentData && !"".equals(segmentData)) {
+
+                    // Split on the delimiter
+                    String[] data = segmentData.split(getX12Delimiter()); // todo: maybe a faster splitter?
+
+                    // Create an array in which to place it
+                    GenericData.Array<String> dataArr = new GenericData.Array<String>(data.length, AvroSchemaGenerator.SEGMENTS_ELEMENT_SCHEMA);
+                    for (String datum : data) {
+                        dataArr.add( datum );
+                    }
+                    segmentsField.add(dataArr);
                 }
             }
-            loopPtr = loopPtr.getParent();
+
+            // -- the field of the enclosing x837Record is named the same as the recordSchema
+            // -- add the array object as a value of that field
+            x837Record.put(recordSchemaName, segmentsField);
+            schemaFieldsSet.remove(recordSchemaName);
+
         }
-        StringBuilder bld = new StringBuilder();
-        do {
-            bld.append(pathStack.pop());
-            if(!pathStack.empty()) {
-                bld.append("/");
-            }
-        } while(!pathStack.empty());
-        return bld.toString();
-    }
-
-
-    List<Pattern> compilePatterns(String rawPatterns) {
-
-        ArrayList<Pattern> patternArrayList = new ArrayList<>();
-        StringTokenizer st = new StringTokenizer(rawPatterns, ",");
-        while(st.hasMoreTokens()) {
-
-            String rawEntry = st.nextToken().trim();
-            Matcher m = patterns.matcher(rawEntry);
-            if(!m.matches()) {
-                throw new IllegalArgumentException("Pattern misformed: "+rawEntry);
-            }
-            String entry = m.group(1);
-            Pattern pattern = Pattern.compile(entry);
-            patternArrayList.add(pattern);
-        }
-        return patternArrayList;
     }
 
     /**
@@ -231,6 +171,24 @@ public class Avro837FlatToExpandedConverter {
             DeclaredTypeInfo ret = new DeclaredTypeInfo(className, arity, compiledPatterns);
             return ret;
         }
+    }
+
+    List<Pattern> compilePatterns(String rawPatterns) {
+
+        ArrayList<Pattern> patternArrayList = new ArrayList<>();
+        StringTokenizer st = new StringTokenizer(rawPatterns, ",");
+        while(st.hasMoreTokens()) {
+
+            String rawEntry = st.nextToken().trim();
+            Matcher m = patterns.matcher(rawEntry);
+            if(!m.matches()) {
+                throw new IllegalArgumentException("Pattern misformed: "+rawEntry);
+            }
+            String entry = m.group(1);
+            Pattern pattern = Pattern.compile(entry);
+            patternArrayList.add(pattern);
+        }
+        return patternArrayList;
     }
 
     /**
@@ -327,168 +285,5 @@ public class Avro837FlatToExpandedConverter {
 
             throw new Avro837FlatToExpandedException("Error constructing Avro record instance", e);
         }
-    }
-
-    /**
-     * Recursive method for building an expanded (nested) Avro record instance from the given X12 Loop
-     *
-     * @param x837Record
-     * @param currentLoop
-     */
-    void walkTheLoop(GenericRecord x837Record, Loop currentLoop) throws Avro837FlatToExpandedException {
-
-        try {
-
-            // An X12 is composed of loops and segments.
-            // Segments contain data at this loop level.
-            // Loops are nested collections of loops and segments.
-
-            // TODO: pass current path on param list rather than building it each time
-            String currentXPath = calculateXPath(currentLoop);
-
-            // DEBUG
-            // System.out.println("xpath: "+currentXPath);
-            // int numSegments = currentLoop.getSegments().size();
-            // System.out.println("--> segment count: "+numSegments);
-            // int numSubloops = currentLoop.getLoops().size();
-            // System.out.println("--> loop count: "+numSubloops);
-
-            // For any fields which don't get set, we want to null them in the generic record.
-            Set<String> schemaFieldsSet = new HashSet<>();
-            for (Schema.Field field : x837Record.getSchema().getFields()) {
-
-                schemaFieldsSet.add(field.name());
-            }
-            schemaFieldsSet.remove("zSEGMENTS"); // this one is optional
-
-            // For each loop in currentLoop
-            for (Loop loop : currentLoop.getLoops()) {
-
-                // Select the proper schema for the next loop
-                String loopName = loop.getName();
-                String recordSchemaName = Avro837Util.makeAvroName(loopName);
-                Schema.Field field = x837Record.getSchema().getField(recordSchemaName);
-                if (null == field) {
-                    throw new Avro837FlatToExpandedException("Couldn't locate a field for: " + recordSchemaName);
-                }
-                // For Union types (nullable fields), we'll take the second type in the array
-                Schema recordSchema = field.schema().getType() == Schema.Type.UNION ? field.schema().getTypes().get(1) : field.schema();
-
-                // TODO: potentially recognize different types of specified schemas
-                if (recordSchema.getType() == Schema.Type.RECORD) {
-
-                    String loopXpath = calculateXPath(loop);
-                    DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
-                    if(null!=declaredTypeInfo) {
-
-                        List<Segment> segments = loop.getSegments();
-                        CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
-                        if(args.length==declaredTypeInfo.getArity()) {
-
-                            // Instantiate the declared type
-                            Object obj = instantiateDeclaredType(args, declaredTypeInfo);
-
-                            // Add the record to the enclosing record
-                            x837Record.put(recordSchemaName, obj);
-
-                            // Mark the field as being set
-                            schemaFieldsSet.remove(recordSchemaName);
-
-                        } else {
-                            // TODO: qualify this exception
-                            throw new Exception("Declared type arguments list not of arity "+declaredTypeInfo.getArity()+" for "+declaredTypeInfo.getClassName());
-                        }
-
-                    } else {
-
-                        // Create the nested record representing the loop
-                        GenericRecord nestedRecord = new GenericData.Record(recordSchema);
-
-                        // walkThe nested loop
-                        // DEBUG
-                        // System.out.println("walkTheLoop for " + recordSchemaName);
-                        walkTheLoop(nestedRecord, loop);
-
-                        // set the property of the outer record for this loop
-                        // DEBUG
-                        // System.out.println("set value for "+recordSchemaName);
-                        x837Record.put(recordSchemaName, nestedRecord);
-                        schemaFieldsSet.remove(recordSchemaName);
-                    }
-
-                } else {
-
-                    // The segment data for this loop (it's a leaf) rolls up into the value of a property
-                    // of the current record.
-
-                    // For instance, 1000A (Submitter Name) is a property of the enclosing loop
-                    // and is implemented in the avro schema as an array of strings.
-
-
-                    // Set the segment values of loop into the enclosing GenericRecord, x837Record
-                    String subloopXpath = calculateXPath(loop);
-
-                    // -- Construct an avro string object to hold the segment info
-                    ArrayNode segmentsFieldValueJson = mapper.createArrayNode();
-
-                    // -- Go through the segments and fill the array
-                    for (Segment segment : loop.getSegments()) {
-                        segmentsFieldValueJson.add(segment.toString());
-                    }
-
-                    // -- the field of the enclosing x837Record is named the same as the recordSchema
-                    // -- add the array object as a value of that field
-                    // DEBUG
-                    // System.out.println("set value for "+recordSchemaName);
-                    x837Record.put(recordSchemaName, segmentsFieldValueJson.toString());
-                    schemaFieldsSet.remove(recordSchemaName);
-
-                }
-            } // loop processing
-
-            // Check for missing fields
-            if (!schemaFieldsSet.isEmpty()) {
-
-                for (String fieldName : schemaFieldsSet) {
-
-                    // DEBUG
-                    // System.out.println("Setting "+fieldName+" to empty.");
-                    x837Record.put(fieldName, null);
-                }
-            }
-
-        } catch(Exception e) {
-
-            throw new Avro837FlatToExpandedException("Error constructing Avro record instance", e);
-        }
-    }
-
-    ByteBuffer xmlStreamToByteBuffer(InputStream xmlInputStream) throws IOException {
-
-        InputStreamReader rdr = new InputStreamReader( xmlInputStream );
-        ArrayList<Byte> arr = new ArrayList<>();
-
-        int datum = rdr.read();
-        while(datum>=0) {
-            arr.add((byte)datum);
-            datum = rdr.read();
-        }
-        ByteBuffer ret = ByteBuffer.allocate(arr.size());
-        for(Byte b : arr) {
-            ret.put(b.byteValue());
-        }
-        return ret;
-    }
-
-    public X12Parser getX12Parser() {
-        return x12Parser;
-    }
-
-    public Schema getX837AvroSchema() {
-        return x837AvroSchema;
-    }
-
-    public Schema getSegmentsArraySchema() {
-        return segmentsArraySchema;
     }
 }

@@ -3,6 +3,7 @@ package net.explorys.samhat;
 import net.explorys.samhat.avro.Avro837Util;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -19,12 +20,17 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    public static final String SEGMENTS_NAMED_AVRO_TYPE_DEFINITION = "[ \"null\", { \"type\" : \"array\", \"items\" : \"string\" } ]";
-    public static final String SEGMENTS_ARRAY_SCHEMA_DEFINITION = "{ \"type\" : \"array\", \"items\" : \"string\" }";
-    public static final String X12_ENVELOPE_SCHEMA_DEFINITION = "{    \"type\": \"record\",    \"namespace\": \"net.explorys.samhat.z12.r837\",    \"name\": \"zX12Envelope\",    \"fields\": [    {    \"name\" : \"source_filename\",    \"type\" : \"string\"    },    {    \"name\" : \"ingested_timestamp\",    \"type\" : \"long\"    },    {    \"name\" : \"organization\",    \"type\" : \"string\"    },    {    \"name\" : \"data\",    \"type\" : \"zX12\"    }        ]   }";
+    // The Avro Array of Arrays of Strings containing element data.
+    public static final Schema SEGMENTS_ARRAY_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}");
+
+    // The Avro Array of Strings containing element data for one of the elements, split by "*"
+    public static final Schema SEGMENTS_ELEMENT_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":\"string\"}");
 
     private ObjectMapper mapper;
     private XmlBasedCfSchemaParser parser;
+
+    JsonNode segmentsArraySchemaJson;
+    JsonNode segmentsElementSchemaJson;
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
@@ -46,51 +52,20 @@ public class AvroSchemaGenerator {
         this.parser = new XmlBasedCfSchemaParser();
     }
 
-    /**
-     * Handy method for returning the Avro schema definition for a standard segments array type.
-     *
-     * @param parser
-     * @return
-     */
-    public static Schema getSegmentsArraySchemaDefinition(Schema.Parser parser) {
-        try {
-            return parser.parse(SEGMENTS_ARRAY_SCHEMA_DEFINITION);
-        } catch (Exception e){
+    public JsonNode getSegmentsArraySchemaJson() throws IOException {
 
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_ARRAY_SCHEMA_DEFINITION is faulty!", e);
+        if(null==segmentsArraySchemaJson) {
+            segmentsArraySchemaJson = mapper.readValue(SEGMENTS_ARRAY_SCHEMA.toString(false), JsonNode.class);
         }
+        return segmentsArraySchemaJson;
     }
 
+    public JsonNode getSegmentsElementSchemaJson() throws IOException {
 
-
-    public static ObjectNode getX12EnvelopeSchemaDefinition(ObjectMapper mapper) {
-        try {
-            return mapper.readValue(X12_ENVELOPE_SCHEMA_DEFINITION, ObjectNode.class);
-        } catch (IOException e){
-
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of X12_ENVELOPE_SCHEMA_DEFINITION is faulty!", e);
+        if(null==segmentsElementSchemaJson) {
+            segmentsElementSchemaJson = mapper.readValue(SEGMENTS_ELEMENT_SCHEMA.toString(false), JsonNode.class);
         }
-    }
-
-    /**
-     * Handy method for returning the JSON nodes necessary to specify the Avro for a named type (a Record def).
-     *
-     * @param mapper
-     * @return
-     */
-    public static JsonNode getSegmentsNamedAvroTypeDefinition(ObjectMapper mapper) {
-        try {
-            return mapper.readValue(SEGMENTS_NAMED_AVRO_TYPE_DEFINITION, JsonNode.class);
-        } catch (IOException e){
-
-            // This should never occur because the field definition is static
-            // However, if the definition is somehow changed and not tested (heaven forfend!)
-            throw new RuntimeException("Definition of SEGMENTS_NAMED_AVRO_TYPE_DEFINITION is faulty!", e);
-        }
+        return segmentsElementSchemaJson;
     }
 
     boolean isChildElement(Node node) {
@@ -179,7 +154,6 @@ public class AvroSchemaGenerator {
 
                         String declaredType = fieldAttributes.getNamedItem("classname").getNodeValue();
 
-
                         if(!symbolCounts.containsKey(declaredType)) {
                             // If we've not seen this class before in this schema generation session, add it
                             // Look up the class of the declared type
@@ -204,7 +178,10 @@ public class AvroSchemaGenerator {
                         }
 
                     } else {
-                        nullableField.add("string");
+
+                        // Use the new array of arrays of string to hold the element contents instead of a JSON array
+                        // String type = "{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}";
+                        nullableField.add(getSegmentsArraySchemaJson());
                     }
 
                     fieldObject.put("type", nullableField);

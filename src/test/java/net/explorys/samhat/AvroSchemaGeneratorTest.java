@@ -72,10 +72,12 @@ public class AvroSchemaGeneratorTest {
     @Test
     public void avroSchemaIsCompilable() {
 
+        String jsonSchema = null;
+
         try {
 
             InputStream schemaDefinition = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
-            String jsonSchema = instance.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
+            jsonSchema = instance.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schemaDefinition);
             ByteArrayInputStream testSchema = new ByteArrayInputStream(jsonSchema.getBytes());
 
             StringBuffer buf = new StringBuffer();
@@ -99,6 +101,10 @@ public class AvroSchemaGeneratorTest {
 
         } catch (Exception e) {
             e.printStackTrace();
+
+            if(jsonSchema!=null) {
+                System.out.println("Error in generated schema: "+jsonSchema);
+            }
             fail("Exception: " + e);
         }
     }

@@ -6,7 +6,12 @@
                 <segment name="1000A" segment="NM1" segmentQual="41" segmentQualPos="1" />
                 <segment name="1000B" segment="NM1" segmentQual="40" segmentQualPos="1" />
                 <loop name="2000A" segment="HL" segmentQual="20" segmentQualPos="3">
-                    <segment name="2010AA" segment="NM1" segmentQual="85" segmentQualPos="1" />
+                    <segment name="2010AA" segment="NM1" segmentQual="85" segmentQualPos="1"
+                             classname="net.explorys.samhat.z12.r837.ContactInfo"
+                             arity="7"
+                             patterns="['NM1\*\w\w\*\d\*([^\*]*)\*([^\*]*)\*.*',
+                            'N3\*([^\*]+).*', 'N4\*([^\*]+)\*([^\*]+)\*([^\*]+)',
+                            'DMG\*[^\*]+\*(\d+)\*F.*' ]" />
                     <segment name="2010AB" segment="NM1" segmentQual="87" segmentQualPos="1" />
                     <segment name="2010AC" segment="NM1" segmentQual="PE" segmentQualPos="1" />
                 </loop>

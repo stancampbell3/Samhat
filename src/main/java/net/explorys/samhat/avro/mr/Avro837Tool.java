@@ -73,15 +73,18 @@ public class Avro837Tool extends Configured implements Tool {
 
         conf.setNumReduceTasks(0);
 
+        // DEBUG
+        System.out.println("Flat schema path:"+getX837FlatSchemaPath());
+        System.out.println("Flat data path:"+getX837FlatDataPath());
+        System.out.println("Expanded schema path:"+getX837ExpandedSchemaPath());
+        System.out.println("Output path:"+getOutputPath());
+
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Path path = new Path(x837FlatSchemaPath);
-        // DEBUG
-        // System.out.println("x837FlatSchemaPath: "+path);
         FileSystem fs = FileSystem.get(conf);
         InputStream fsDataInputStream = fs.open(path);
         Schema inputSchema = new Schema.Parser().parse(fsDataInputStream);
         path = new Path(x837ExpandedSchemaPath);
-        // System.out.println("x837ExpandedSchemaPath: "+path);
         fsDataInputStream = fs.open(path);
         Schema outputSchema = new Schema.Parser().parse(fsDataInputStream);
 
@@ -102,9 +105,9 @@ public class Avro837Tool extends Configured implements Tool {
 
         try {
 
-            if(args.length<7) {
+            if(args.length<4) {
 
-                System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool -libjars $LIBJARS <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
+                System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
             } else {
 
                 Avro837Tool tool = new Avro837Tool();
@@ -113,14 +116,11 @@ public class Avro837Tool extends Configured implements Tool {
                     conf = new Configuration();
                 }
                 String[] otherArgs=new GenericOptionsParser(conf,args).getRemainingArgs();
-                // DEBUG
-                /*for(int i=0;i<otherArgs.length;i++) {
-                    System.out.println("OtherARG"+i+": "+otherArgs[i]);
-                }*/
-                tool.setX837FlatDataPath(otherArgs[3]);
-                tool.setOutputPath(otherArgs[4]);
-                tool.setX837FlatSchemaPath(otherArgs[5]);
-                tool.setX837ExpandedSchemaPath(otherArgs[6]);
+
+                tool.setX837FlatDataPath(otherArgs[0]);
+                tool.setOutputPath(otherArgs[1]);
+                tool.setX837FlatSchemaPath(otherArgs[2]);
+                tool.setX837ExpandedSchemaPath(otherArgs[3]);
 
                 int res = ToolRunner.run(conf, tool, args);
                 System.exit(res);

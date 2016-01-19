@@ -6,7 +6,6 @@ import org.apache.avro.generic.GenericRecord;
 import org.apache.avro.mapred.AvroCollector;
 import org.apache.avro.mapred.AvroMapper;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.mapred.JobConf;
@@ -31,17 +30,19 @@ public class Avro837Mapper extends AvroMapper<Flat837, GenericRecord> {
             // TODO: figure out how we want to provide the needed schema files to the converter
 
             FileSystem fileSystem = FileSystem.get(jobConf);
+            String samhatSchemaPath = jobConf.get("samhat.schema.path");
+            String avroOutSchemaPath = jobConf.get("avro.outschema.path");
 
             InputStream cfSchemaXml;
             try {
                 // TODO: pull from job configuration not hardcoded path
-                Path path = new Path("x12_schema_837_professional.xml");
+                Path path = new Path(samhatSchemaPath);
                 cfSchemaXml = fileSystem.open(path);
             } catch (FileNotFoundException fnf) {
                 try {
                     // Check the classpath (used for testing)
                     cfSchemaXml = Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream("x12_schema_837_professional.xml");
+                            .getResourceAsStream(samhatSchemaPath);
                 } catch(Exception e) {
                     throw e;
                 }
@@ -49,13 +50,13 @@ public class Avro837Mapper extends AvroMapper<Flat837, GenericRecord> {
 
             InputStream avroSchema;
             try {
-                Path path = new Path("x12_schema_837_professional_avro.json");
+                Path path = new Path(avroOutSchemaPath);
                 avroSchema = fileSystem.open(path);
             } catch (FileNotFoundException fnf) {
                 try {
                     // Check the classpath (used for testing)
                     avroSchema = Thread.currentThread().getContextClassLoader()
-                            .getResourceAsStream("x12_schema_837_professional_avro.json");
+                            .getResourceAsStream(avroOutSchemaPath);
                 } catch(Exception e) {
                     throw e;
                 }

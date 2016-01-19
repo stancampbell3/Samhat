@@ -28,6 +28,7 @@ public class Avro837Tool extends Configured implements Tool {
     private String outputPath = null;
     private String x837FlatSchemaPath = null;
     private String x837ExpandedSchemaPath = null;
+    private String x837SamhatSchemaPath = null; // the XML Samhat schema
 
     public String getX837FlatDataPath() {
         return x837FlatDataPath;
@@ -61,13 +62,20 @@ public class Avro837Tool extends Configured implements Tool {
         this.x837ExpandedSchemaPath = x837ExpandedSchemaPath;
     }
 
+    public String getX837SamhatSchemaPath() {
+        return x837SamhatSchemaPath;
+    }
+
+    public void setX837SamhatSchemaPath(String x837SamhatSchemaPath) {
+        this.x837SamhatSchemaPath = x837SamhatSchemaPath;
+    }
+
     @Override
     public int run(String[] args) throws Exception {
 
         Configuration baseConf = getConf();
         JobConf conf = new JobConf(baseConf, Avro837Tool.class);
         conf.setJobName("Avro837Tool");
-        // conf.set("mapreduce.job.user.classpath.first", "true");
 
         FileInputFormat.setInputPaths(conf, new Path(getX837FlatDataPath()));
         FileOutputFormat.setOutputPath(conf, new Path(getOutputPath()));
@@ -79,6 +87,13 @@ public class Avro837Tool extends Configured implements Tool {
         System.out.println("Flat data path:"+getX837FlatDataPath());
         System.out.println("Expanded schema path:"+getX837ExpandedSchemaPath());
         System.out.println("Output path:"+getOutputPath());
+        System.out.println("Samhat schema path:"+getX837SamhatSchemaPath());
+
+        // Set the Samhat schema
+        conf.set("samhat.schema.path", getX837SamhatSchemaPath());
+
+        // Set the Avro output schema
+        conf.set("avro.outschema.path", getX837ExpandedSchemaPath());
 
         // TODO: investigate where we should expect these schemas to actually live.. maybe HBase?
         Path path = new Path(x837FlatSchemaPath);
@@ -106,27 +121,27 @@ public class Avro837Tool extends Configured implements Tool {
 
         try {
 
-            if(args.length<4) {
+            Avro837Tool tool = new Avro837Tool();
+            Configuration conf = tool.getConf();
+            if(null==conf) {
+                conf = new Configuration();
+            }
 
-                System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath>");
+            String[] otherArgs=new GenericOptionsParser(conf,args).getRemainingArgs();
+
+            if(otherArgs.length<5) {
+                System.out.println("Usage: hadoop jar Samhat.jar net.explorys.samhat.avro.mr.Avro837Tool <x837FlatDataPath> <outputPath> <flatSchemaPath> <expandedSchemaPath> <samhatSchemaPath>");
             } else {
-
-                Avro837Tool tool = new Avro837Tool();
-                Configuration conf = tool.getConf();
-                if(null==conf) {
-                    conf = new Configuration();
-                }
-                String[] otherArgs=new GenericOptionsParser(conf,args).getRemainingArgs();
 
                 tool.setX837FlatDataPath(otherArgs[0]);
                 tool.setOutputPath(otherArgs[1]);
                 tool.setX837FlatSchemaPath(otherArgs[2]);
                 tool.setX837ExpandedSchemaPath(otherArgs[3]);
+                tool.setX837SamhatSchemaPath(otherArgs[4]);
 
                 int res = ToolRunner.run(conf, tool, args);
                 System.exit(res);
             }
-
         } catch(Exception e) {
 
             e.printStackTrace();

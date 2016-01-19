@@ -171,7 +171,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
     public GenericRecord expand837(Flat837 flat837Record) throws
             CfSchemaParsingException, IOException, FormatException, Avro837FlatToExpandedException {
 
-        ByteBuffer data = (ByteBuffer)flat837Record.get("data");
+        ByteBuffer data = flat837Record.getData();
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.array()));
 
         // Build the envelope and copy over the source_file, ingestion timestamp, etc.

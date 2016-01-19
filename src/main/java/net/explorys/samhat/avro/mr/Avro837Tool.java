@@ -67,6 +67,7 @@ public class Avro837Tool extends Configured implements Tool {
         Configuration baseConf = getConf();
         JobConf conf = new JobConf(baseConf, Avro837Tool.class);
         conf.setJobName("Avro837Tool");
+        // conf.set("mapreduce.job.user.classpath.first", "true");
 
         FileInputFormat.setInputPaths(conf, new Path(getX837FlatDataPath()));
         FileOutputFormat.setOutputPath(conf, new Path(getOutputPath()));

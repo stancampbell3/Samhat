@@ -33,6 +33,7 @@ public class Avro837Test {
         job.setX837ExpandedSchemaPath("src/test/resources/x12_schema_837_professional_avro.json");
         job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_professional.avro");
         job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
+        job.setX837SamhatSchemaPath("src/test/resources/x12_schema_837_professional.xml");
 
         job.run(null);
 

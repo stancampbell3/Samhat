@@ -115,7 +115,7 @@ public class Avro837FlatToExpandedConverter extends AbstractAvro837FlatToExpande
                                         setRecordField(nestedRecord, id1, data);
                                     } else {
                                         // otherwise, it's unmapped
-                                        setRecordField(nestedRecord, "unmapped", data);
+                                        addUnmappedRecordField(nestedRecord, "unmapped", data);
                                     }
                                 }
                             }

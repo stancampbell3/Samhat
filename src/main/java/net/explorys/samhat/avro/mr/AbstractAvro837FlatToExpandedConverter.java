@@ -124,6 +124,30 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
         }
     }
 
+    public void addUnmappedRecordField(GenericRecord nestedRecord, String fieldName, String[] data) throws Avro837FlatToExpandedException {
+        GenericData.Array<GenericData.Array<String>> arrays;
+        Object currentContents = nestedRecord.get("unmapped");
+        if(null==currentContents) {
+            arrays = new GenericData.Array<GenericData.Array<String>>(1, AvroSchemaGenerator.UNMAPPED_ELEMENTS_SCHEMA);
+        } else {
+            arrays = (GenericData.Array<GenericData.Array<String>>)currentContents;
+        }
+
+        GenericData.Array<String> array = new GenericData.Array<String>(data.length, AvroSchemaGenerator.SEGMENTS_ELEMENT_SCHEMA);
+        for(String datum : data) {
+            array.add(datum);
+        }
+
+        // Stick in in the array of unmapped data
+        arrays.add(array);
+
+        try {
+            nestedRecord.put(fieldName, arrays);
+        } catch(Exception e) {
+            throw new Avro837FlatToExpandedException("Error setting record field for "+fieldName, e);
+        }
+    }
+
     /**
      * Read an XML document into a bytebuffer for convenient handling.
      *

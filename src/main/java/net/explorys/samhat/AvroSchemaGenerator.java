@@ -24,15 +24,17 @@ public class AvroSchemaGenerator {
     static final String UNMAPPED = "unmapped";
     static final String NAMESPACE = "net.explorys.samhat.z12.r837";
 
-    // The Avro Array of Strings containing element data for one of the elements, split by "*"
-    public static final Schema SEGMENTS_ELEMENT_SCHEMA= (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":\"string\"}");
+    public static final Schema SEGMENTS_ELEMENT_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":\"string\"}");
     public static final Schema SEGMENTS_FIELD_SCHEMA = (new Schema.Parser()).parse("[ \"null\", {\"type\":\"array\",\"items\":\"string\"} ]");
+    public static final Schema UNMAPPED_ELEMENTS_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}");
+    public static final Schema UNMAPPED_FIELD_SCHEMA = (new Schema.Parser()).parse("[ \"null\", {\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}} ]");
 
     private ObjectMapper mapper;
     private XmlBasedCfSchemaParser parser;
 
     JsonNode segmentsElementSchemaJson;
     JsonNode segmentsFieldSchemaJson;
+    JsonNode unmappedFieldsSchemaJson;
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
@@ -67,6 +69,13 @@ public class AvroSchemaGenerator {
             segmentsFieldSchemaJson = mapper.readValue(SEGMENTS_FIELD_SCHEMA.toString(false), JsonNode.class);
         }
         return segmentsFieldSchemaJson;
+    }
+
+    public JsonNode getUnmappedFieldsSchemaJson() throws IOException {
+        if(null==unmappedFieldsSchemaJson) {
+            unmappedFieldsSchemaJson = mapper.readValue(UNMAPPED_FIELD_SCHEMA.toString(false), JsonNode.class);
+        }
+        return unmappedFieldsSchemaJson;
     }
 
     boolean isChildElement(Node node) {
@@ -111,7 +120,7 @@ public class AvroSchemaGenerator {
         // Provide an unmapped field for holding segment data for which there are no mappings
         ObjectNode unmapped = mapper.createObjectNode();
         unmapped.put("name", UNMAPPED);
-        unmapped.put("type", getSegmentsFieldSchemaJson());
+        unmapped.put("type", getUnmappedFieldsSchemaJson());
         fields.add(unmapped);
 
         // Time to gather the fields array from each of the subelements of elem...
@@ -235,7 +244,7 @@ public class AvroSchemaGenerator {
                             // Provide an unmapped field for holding segment data for which there are no mappings
                             unmapped = mapper.createObjectNode();
                             unmapped.put("name", UNMAPPED);
-                            unmapped.put("type", getSegmentsFieldSchemaJson());
+                            unmapped.put("type", getUnmappedFieldsSchemaJson());
                             subrecordFields.add(unmapped);
 
                             nullableField.add(subrecord);

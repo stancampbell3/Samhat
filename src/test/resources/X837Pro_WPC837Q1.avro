@@ -1,8 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_WPC837Q1",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2420C_REF_ServiceFacilityLocationSecondaryIdentification",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2420CREF01ReferenceIdentificationQualifier", "type" : "string" },
-	{ "name" : "_2420CREF02ServiceFacilityLocationSecondaryIdentifier", "type" : "string" }
-  ]
-}

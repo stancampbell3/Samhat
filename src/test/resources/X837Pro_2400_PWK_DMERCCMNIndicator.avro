@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2400_PWK_DMERCCMNIndicator",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2400PWK01AttachmentReportTypeCode", "type" : "string" },
-	{ "name" : "_2400PWK02AttachmentTransmissionCode", "type" : "string" }
-  ]
-}

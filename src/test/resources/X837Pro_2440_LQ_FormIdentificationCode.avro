@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2440_LQ_FormIdentificationCode",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2440LQ01CodeListQualifierCode", "type" : "string" },
-	{ "name" : "_2440LQ02FormIdentifier", "type" : "string" }
-  ]
-}

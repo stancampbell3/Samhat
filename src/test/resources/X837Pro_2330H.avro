@@ -1,8 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2330H",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-
-  ]
-}

@@ -8,6 +8,7 @@ import net.explorys.samhat.z12.r837.Flat837;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.pb.x12.Context;
 import org.pb.x12.Segment;
@@ -42,7 +43,7 @@ public class Avro837FlatToExpandedConverterTest {
             String jsonSchema = schemaGenerator.constructAvroSchemaFromXmlSchema("net.explorys.samhat.z12.r837", schema837Pro);
             InputStream schem837ProAvro = new ByteArrayInputStream(jsonSchema.getBytes());
 
-            schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional.xml");
+            schema837Pro = getClass().getResourceAsStream("/x12_schema_837_professional_custom.xml");
             Avro837FlatToExpandedConverter instance = new Avro837FlatToExpandedConverter(schema837Pro, schem837ProAvro);
 
             String xPath = "x12_schema[@name=\"X12\"]/loop[@name=\"ISA\"]/loop[@name=\"GS\"]/loop[@name=\"ST\"]/loop[@name=\"2000A\"]/segment[@name=\"2010AA\"]";

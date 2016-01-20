@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2320_AMT_CoordinationOfBenefitsCOBTotalClaimBeforeTaxesAmount",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2320AMT01AmountQualifierCode", "type" : "string" },
-	{ "name" : "_2320AMT02OtherPayerPreTaxClaimTotalAmount", "type" : "string" }
-  ]
-}

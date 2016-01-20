@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2420A_REF_RenderingProviderSecondaryIdentification",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2420AREF01ReferenceIdentificationQualifier", "type" : "string" },
-	{ "name" : "_2420AREF02RenderingProviderSecondaryIdentifier", "type" : "string" }
-  ]
-}

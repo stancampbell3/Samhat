@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2300_REF_ClinicalLaboratoryImprovementAmendmentCLIANumber",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2300REF01ReferenceIdentificationQualifier", "type" : "string" },
-	{ "name" : "_2300REF02ClinicalLaboratoryImprovementAmendmentNumber", "type" : "string" }
-  ]
-}

@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2410_REF_PrescriptionNumber",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2410REF01ReferenceIdentificationQualifier", "type" : "string" },
-	{ "name" : "_2410REF02PrescriptionNumber", "type" : "string" }
-  ]
-}

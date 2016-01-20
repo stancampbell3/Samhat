@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2300_HI01_HealthCareCodeInformation",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2300HI0101DiagnosisTypeCode", "type" : "string" },
-	{ "name" : "_2300HI0102DiagnosisCode", "type" : "string" }
-  ]
-}

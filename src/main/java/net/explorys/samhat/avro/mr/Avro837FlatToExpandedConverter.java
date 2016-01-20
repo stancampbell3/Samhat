@@ -49,94 +49,97 @@ public class Avro837FlatToExpandedConverter extends AbstractAvro837FlatToExpande
                                 GenericRecord x837Record,
                                 Set<String> schemaFieldsSet, String recordSchemaName) throws Exception {
 
-        // TODO: potentially recognize different types of specified schemas
         if (recordSchema.getType() == Schema.Type.RECORD) {
 
-            String loopXpath = calculateXPath(loop);
-            DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(loopXpath);
-            if (null != declaredTypeInfo) {
+            // todo: fix the crazy multiple path searching silliness here
+            DeclaredTypeInfo declaredTypeInfo = getDeclaredTypeInfo(calculateXPath(loop, "loop"));
+            if(null==declaredTypeInfo) {
+                // try looking it up by loop
+                declaredTypeInfo = getDeclaredTypeInfo(calculateXPath(loop, "segment"));
+            }
 
-                List<Segment> segments = loop.getSegments();
-                CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
-                if (args.length == declaredTypeInfo.getArity()) {
+            if(null!=declaredTypeInfo) {
+                if (null != declaredTypeInfo.getClassName()) {
 
-                    // Instantiate the declared type
-                    Object obj = instantiateDeclaredType(args, declaredTypeInfo);
+                    List<Segment> segments = loop.getSegments();
+                    CharSequence[] args = mapSegmentsThroughPatterns(segments, declaredTypeInfo);
+                    if (args.length == declaredTypeInfo.getArity()) {
 
-                    // Add the record to the enclosing record
-                    x837Record.put(recordSchemaName, obj);
+                        // Instantiate the declared type
+                        Object obj = instantiateDeclaredType(args, declaredTypeInfo);
 
-                    // Mark the field as being set
-                    schemaFieldsSet.remove(recordSchemaName);
+                        // Add the record to the enclosing record
+                        x837Record.put(recordSchemaName, obj);
+
+                        // Mark the field as being set
+                        schemaFieldsSet.remove(recordSchemaName);
+
+                    } else {
+                        // TODO: qualify this exception
+                        throw new Exception("Declared type arguments list not of arity " + declaredTypeInfo.getArity() + " for " + declaredTypeInfo.getClassName());
+                    }
 
                 } else {
-                    // TODO: qualify this exception
-                    throw new Exception("Declared type arguments list not of arity " + declaredTypeInfo.getArity() + " for " + declaredTypeInfo.getClassName());
+
+                    // Create the nested record representing the loop
+                    GenericRecord nestedRecord = new GenericData.Record(recordSchema);
+
+                    // Distinguish between a leaf loop and a loop with subloops
+                    if (loop.childList().size() > 0) {
+
+                        // walkThe nested loop
+                        // DEBUG
+                        // System.out.println("walkTheLoop for " + recordSchemaName);
+                        walkTheLoop(nestedRecord, loop);
+                    } else {
+
+                        for (Segment segment : loop.getSegments()) {
+
+                            String segmentData = segment.toString();
+                            if (null != segmentData && !"".equals(segmentData)) {
+
+                                // Split on the delimiter
+                                String[] data = segmentData.split(getX12Delimiter()); // todo: maybe a faster splitter?
+
+                                if (null != data && data.length > 1) {
+
+                                    String id0 = data[0];
+                                    String id1 = data[0] + "_" + data[1];
+
+                                    // The first item (exempli gratia "NM1") should either be an unqualified field
+                                    if (declaredTypeInfo.getUnqualifiedFields().contains(id0)) {
+                                        // Cool, stick it in the proper field
+                                        setRecordField(nestedRecord, id0, data);
+                                    } else if (declaredTypeInfo.getQualifiedFields().contains(id1)) {
+                                        // or the first item underscore the second (exempli gratia "SBR_P") should be an qualified field
+                                        setRecordField(nestedRecord, id1, data);
+                                    } else {
+                                        // otherwise, it's unmapped
+                                        setRecordField(nestedRecord, "unmapped", data);
+                                    }
+                                }
+                            }
+                        } // segment processing
+                    }
+
+                    // set the property of the outer record for this loop
+                    // DEBUG
+                    // System.out.println("set value for "+recordSchemaName);
+                    x837Record.put(recordSchemaName, nestedRecord);
+                    schemaFieldsSet.remove(recordSchemaName);
                 }
 
             } else {
 
-                // Create the nested record representing the loop
-                GenericRecord nestedRecord = new GenericData.Record(recordSchema);
-
-                // walkThe nested loop
-                // DEBUG
-                // System.out.println("walkTheLoop for " + recordSchemaName);
-                walkTheLoop(nestedRecord, loop);
-
-                // set the property of the outer record for this loop
-                // DEBUG
-                // System.out.println("set value for "+recordSchemaName);
-                x837Record.put(recordSchemaName, nestedRecord);
-                schemaFieldsSet.remove(recordSchemaName);
+                throw new Avro837FlatToExpandedException("No type information for "+recordSchemaName);
             }
 
         } else {
 
-            // The segment data for this loop (it's a leaf) rolls up into the value of a property
-            // of the current record.
-
-            // For instance, 1000A (Submitter Name) is a property of the enclosing loop
-            // and is implemented in the avro schema as an array of arrays of strings.
-            // So, if we have elements like
-            //  NM1*41*2*AAA AMBULANCE SERVICE*****46*376985369
-            //  PER*IC*LISA SMITH*TE*3037752536
-            // Then we end up with a segments data field like:
-            //  [[NM1, 41, 2, AAA AMBULANCE SERVICE, , , , , 46, 376985369], [PER, IC, LISA SMITH, TE, 3037752536]]
-
-            // Set the segment values of loop into the enclosing GenericRecord, x837Record
-
-            // -- Construct a GenericData.Array of GenericData.Arrays of String to hold the segment info
-            GenericData.Array<GenericData.Array<String>> segmentsField = new GenericData.Array<GenericData.Array<String>>(loop.getSegments().size(), AvroSchemaGenerator.SEGMENTS_ARRAY_SCHEMA);
-
-            // -- Go through the segments and fill the array of arrays
-            for (Segment segment : loop.getSegments()) {
-
-                String segmentData = segment.toString();
-                // TODO:  The delimiter is actually specified in the X12 document.. suggest using that rather than forcing
-                // see X12Parser:73 and constant POS_COMPOSITE_ELEMENT
-
-                if(null!=segmentData && !"".equals(segmentData)) {
-
-                    // Split on the delimiter
-                    String[] data = segmentData.split(getX12Delimiter()); // todo: maybe a faster splitter?
-
-                    // Create an array in which to place it
-                    GenericData.Array<String> dataArr = new GenericData.Array<String>(data.length, AvroSchemaGenerator.SEGMENTS_ELEMENT_SCHEMA);
-                    for (String datum : data) {
-                        dataArr.add( datum );
-                    }
-                    segmentsField.add(dataArr);
-                }
-            }
-
-            // -- the field of the enclosing x837Record is named the same as the recordSchema
-            // -- add the array object as a value of that field
-            x837Record.put(recordSchemaName, segmentsField);
-            schemaFieldsSet.remove(recordSchemaName);
-
+            throw new Avro837FlatToExpandedException("Unsupported non-record type for "+recordSchemaName);
         }
     }
+
 
     /**
      * Determine the declared type information for a given XPath.  Return null if no declared type exists in the
@@ -157,18 +160,43 @@ public class Avro837FlatToExpandedConverter extends AbstractAvro837FlatToExpande
             Node node = nodeList.item(0); // Just take the first item
             NamedNodeMap attribMap = node.getAttributes();
 
-            // If the element has no declared type info, return null
-            if(null==attribMap.getNamedItem("classname")) {
-                return null;
+            String className = null;
+            List<Pattern> compiledPatterns = new ArrayList<Pattern>();
+            int arity = 0;
+
+            if(null!=attribMap.getNamedItem("classname")) {
+
+
+                className = attribMap.getNamedItem("classname").getNodeValue();
+                arity = Integer.parseInt(attribMap.getNamedItem("arity").getNodeValue());
+
+                // Compile the patterns
+                String rawPatterns = attribMap.getNamedItem("patterns").getNodeValue();
+                compiledPatterns = compilePatterns(rawPatterns);
             }
 
-            String className = attribMap.getNamedItem("classname").getNodeValue();
-            int arity = Integer.parseInt(attribMap.getNamedItem("arity").getNodeValue());
+            ArrayList<String> qualifiedFields = new ArrayList<>();
+            ArrayList<String> unqualifiedFields = new ArrayList<>();
 
-            // Compile the patterns
-            String rawPatterns = attribMap.getNamedItem("patterns").getNodeValue();
-            List<Pattern> compiledPatterns = compilePatterns(rawPatterns);
-            DeclaredTypeInfo ret = new DeclaredTypeInfo(className, arity, compiledPatterns);
+            if(null!=attribMap.getNamedItem("qualifiedFields")) {
+                String rawQualifiedFields = attribMap.getNamedItem("qualifiedFields").getNodeValue();
+                if(!"".equals(rawQualifiedFields)) {
+                    for(String field : rawQualifiedFields.split(",( )?")) {
+                        qualifiedFields.add(field);
+                    }
+                }
+            }
+
+            if(null!=attribMap.getNamedItem("unqualifiedFields")) {
+                String rawUnqualifiedFields = attribMap.getNamedItem("unqualifiedFields").getNodeValue();
+                if(!"".equals(rawUnqualifiedFields)) {
+                    for(String field : rawUnqualifiedFields.split(",( )?")) {
+                        unqualifiedFields.add(field);
+                    }
+                }
+            }
+
+            DeclaredTypeInfo ret = new DeclaredTypeInfo(className, arity, compiledPatterns, qualifiedFields, unqualifiedFields);
             return ret;
         }
     }

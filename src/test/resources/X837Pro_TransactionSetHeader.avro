@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_TransactionSetHeader",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_TransactionSetIdentifierCode", "type" : "string" },
-	{ "name" : "_TransactionSetControlNumber", "type" : "string" }
-  ]
-}

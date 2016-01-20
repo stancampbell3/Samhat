@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2300_NTE_ClaimNote",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2300NTE01NoteReferenceCode", "type" : "string" },
-	{ "name" : "_2300NTE02ClaimNoteText", "type" : "string" }
-  ]
-}

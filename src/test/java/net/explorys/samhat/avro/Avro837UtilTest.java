@@ -68,7 +68,6 @@ public class Avro837UtilTest {
             DatumReader<Flat837> flat837DatumReader = new SpecificDatumReader<Flat837>(Flat837.class);
             DataFileReader<Flat837> dataFileReader = new DataFileReader<Flat837>(new File(inputPath), flat837DatumReader);
 
-            // TODO: handle no "next"
             Flat837 flat837 = dataFileReader.next();
 
             InputStream avroExpandedSchemaStr = new FileInputStream(avroExpandedSchemaPath);
@@ -82,6 +81,8 @@ public class Avro837UtilTest {
             DatumWriter<GenericRecord> expandedDatumWriter = new GenericDatumWriter<GenericRecord>(converter.getX837AvroSchema());
             DataFileWriter<GenericRecord> expandedDataFileWriter = new DataFileWriter<GenericRecord>(expandedDatumWriter);
             expandedDataFileWriter.create(converter.getX837AvroSchema(), new File(outputPath));
+
+            System.out.println("EXPANDED: "+expanded837.toString());
             expandedDataFileWriter.append(expanded837);
             expandedDataFileWriter.close();
 

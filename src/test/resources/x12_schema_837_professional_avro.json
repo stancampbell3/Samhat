@@ -25,6 +25,16 @@
           "name": "zX12",
           "fields": [
             {
+              "name": "unmapped",
+              "type": [
+                "null",
+                {
+                  "type": "array",
+                  "items": "string"
+                }
+              ]
+            },
+            {
               "name": "zISA",
               "type": [
                 "null",
@@ -33,6 +43,16 @@
                   "namespace": "net.explorys.samhat.z12.r837",
                   "name": "zISA",
                   "fields": [
+                    {
+                      "name": "unmapped",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": "string"
+                        }
+                      ]
+                    },
                     {
                       "name": "zGS",
                       "type": [
@@ -43,6 +63,16 @@
                           "name": "zGS",
                           "fields": [
                             {
+                              "name": "unmapped",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": "string"
+                                }
+                              ]
+                            },
+                            {
                               "name": "zST",
                               "type": [
                                 "null",
@@ -52,15 +82,55 @@
                                   "name": "zST",
                                   "fields": [
                                     {
-                                      "name": "z1000A",
+                                      "name": "unmapped",
                                       "type": [
                                         "null",
                                         {
                                           "type": "array",
-                                          "items": {
-                                            "type": "array",
-                                            "items": "string"
-                                          }
+                                          "items": "string"
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "name": "z1000A",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "record",
+                                          "namespace": "net.explorys.samhat.z12.r837",
+                                          "name": "z1000A",
+                                          "fields": [
+                                            {
+                                              "name": "NM1",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "PER",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "unmapped",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            }
+                                          ]
                                         }
                                       ]
                                     },
@@ -69,11 +139,21 @@
                                       "type": [
                                         "null",
                                         {
-                                          "type": "array",
-                                          "items": {
-                                            "type": "array",
-                                            "items": "string"
-                                          }
+                                          "type": "record",
+                                          "namespace": "net.explorys.samhat.z12.r837",
+                                          "name": "z1000B",
+                                          "fields": [
+                                            {
+                                              "name": "unmapped",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            }
+                                          ]
                                         }
                                       ]
                                     },
@@ -87,41 +167,33 @@
                                           "name": "z2000A",
                                           "fields": [
                                             {
+                                              "name": "unmapped",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "array",
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
                                               "name": "z2010AA",
                                               "type": [
                                                 "null",
                                                 {
                                                   "type": "record",
-                                                  "name": "ContactInfo",
                                                   "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010AA",
                                                   "fields": [
                                                     {
-                                                      "name": "lastName",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "firstName",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "streetAddress",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "city",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "state",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "zip",
-                                                      "type": "string"
-                                                    },
-                                                    {
-                                                      "name": "tracking",
-                                                      "type": "string"
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
                                                     }
                                                   ]
                                                 }
@@ -132,11 +204,21 @@
                                               "type": [
                                                 "null",
                                                 {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": "string"
-                                                  }
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010AB",
+                                                  "fields": [
+                                                    {
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
                                               ]
                                             },
@@ -145,11 +227,21 @@
                                               "type": [
                                                 "null",
                                                 {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": "string"
-                                                  }
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010AC",
+                                                  "fields": [
+                                                    {
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
                                               ]
                                             }
@@ -167,15 +259,35 @@
                                           "name": "z2000B",
                                           "fields": [
                                             {
-                                              "name": "z2010BA",
+                                              "name": "unmapped",
                                               "type": [
                                                 "null",
                                                 {
                                                   "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": "string"
-                                                  }
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010BA",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010BA",
+                                                  "fields": [
+                                                    {
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
                                               ]
                                             },
@@ -184,11 +296,21 @@
                                               "type": [
                                                 "null",
                                                 {
-                                                  "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": "string"
-                                                  }
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010BB",
+                                                  "fields": [
+                                                    {
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
                                               ]
                                             },
@@ -202,15 +324,35 @@
                                                   "name": "z2300",
                                                   "fields": [
                                                     {
-                                                      "name": "z2310A",
+                                                      "name": "unmapped",
                                                       "type": [
                                                         "null",
                                                         {
                                                           "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310A",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310A",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -219,11 +361,21 @@
                                                       "type": [
                                                         "null",
                                                         {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310B",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -232,11 +384,21 @@
                                                       "type": [
                                                         "null",
                                                         {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310C",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -245,11 +407,21 @@
                                                       "type": [
                                                         "null",
                                                         {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310D",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -258,11 +430,21 @@
                                                       "type": [
                                                         "null",
                                                         {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310E",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -271,11 +453,21 @@
                                                       "type": [
                                                         "null",
                                                         {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "type": "record",
+                                                          "namespace": "net.explorys.samhat.z12.r837",
+                                                          "name": "z2310F",
+                                                          "fields": [
+                                                            {
+                                                              "name": "unmapped",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "array",
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            }
+                                                          ]
                                                         }
                                                       ]
                                                     },
@@ -289,15 +481,35 @@
                                                           "name": "z2320",
                                                           "fields": [
                                                             {
-                                                              "name": "z2330A",
+                                                              "name": "unmapped",
                                                               "type": [
                                                                 "null",
                                                                 {
                                                                   "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330A",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330A",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -306,11 +518,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330B",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -319,11 +541,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330C",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -332,11 +564,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330D",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -345,11 +587,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330E",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -358,11 +610,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330F",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -371,11 +633,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330G",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -384,11 +656,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330H",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -397,11 +679,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2330I",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             }
@@ -419,15 +711,35 @@
                                                           "name": "z2400",
                                                           "fields": [
                                                             {
-                                                              "name": "z2410",
+                                                              "name": "unmapped",
                                                               "type": [
                                                                 "null",
                                                                 {
                                                                   "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "items": "string"
+                                                                }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2410",
+                                                              "type": [
+                                                                "null",
+                                                                {
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2410",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -436,11 +748,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2420A",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -449,11 +771,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2420B",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -462,11 +794,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2420C",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -475,11 +817,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2420D",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             },
@@ -488,11 +840,21 @@
                                                               "type": [
                                                                 "null",
                                                                 {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "type": "record",
+                                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                                  "name": "z2430",
+                                                                  "fields": [
+                                                                    {
+                                                                      "name": "unmapped",
+                                                                      "type": [
+                                                                        "null",
+                                                                        {
+                                                                          "type": "array",
+                                                                          "items": "string"
+                                                                        }
+                                                                      ]
+                                                                    }
+                                                                  ]
                                                                 }
                                                               ]
                                                             }
@@ -518,15 +880,35 @@
                                           "name": "z2000C",
                                           "fields": [
                                             {
-                                              "name": "z2010CA",
+                                              "name": "unmapped",
                                               "type": [
                                                 "null",
                                                 {
                                                   "type": "array",
-                                                  "items": {
-                                                    "type": "array",
-                                                    "items": "string"
-                                                  }
+                                                  "items": "string"
+                                                }
+                                              ]
+                                            },
+                                            {
+                                              "name": "z2010CA",
+                                              "type": [
+                                                "null",
+                                                {
+                                                  "type": "record",
+                                                  "namespace": "net.explorys.samhat.z12.r837",
+                                                  "name": "z2010CA",
+                                                  "fields": [
+                                                    {
+                                                      "name": "unmapped",
+                                                      "type": [
+                                                        "null",
+                                                        {
+                                                          "type": "array",
+                                                          "items": "string"
+                                                        }
+                                                      ]
+                                                    }
+                                                  ]
                                                 }
                                               ]
                                             },
@@ -540,81 +922,55 @@
                                                   "name": "z2300_1",
                                                   "fields": [
                                                     {
-                                                      "name": "z2310A",
+                                                      "name": "unmapped",
                                                       "type": [
                                                         "null",
                                                         {
                                                           "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
+                                                          "items": "string"
                                                         }
+                                                      ]
+                                                    },
+                                                    {
+                                                      "name": "z2310A",
+                                                      "type": [
+                                                        "null",
+                                                        "z2310A"
                                                       ]
                                                     },
                                                     {
                                                       "name": "z2310B",
                                                       "type": [
                                                         "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
-                                                        }
+                                                        "z2310B"
                                                       ]
                                                     },
                                                     {
                                                       "name": "z2310C",
                                                       "type": [
                                                         "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
-                                                        }
+                                                        "z2310C"
                                                       ]
                                                     },
                                                     {
                                                       "name": "z2310D",
                                                       "type": [
                                                         "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
-                                                        }
+                                                        "z2310D"
                                                       ]
                                                     },
                                                     {
                                                       "name": "z2310E",
                                                       "type": [
                                                         "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
-                                                        }
+                                                        "z2310E"
                                                       ]
                                                     },
                                                     {
                                                       "name": "z2310F",
                                                       "type": [
                                                         "null",
-                                                        {
-                                                          "type": "array",
-                                                          "items": {
-                                                            "type": "array",
-                                                            "items": "string"
-                                                          }
-                                                        }
+                                                        "z2310F"
                                                       ]
                                                     },
                                                     {
@@ -627,120 +983,76 @@
                                                           "name": "z2320_1",
                                                           "fields": [
                                                             {
-                                                              "name": "z2330A",
+                                                              "name": "unmapped",
                                                               "type": [
                                                                 "null",
                                                                 {
                                                                   "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "items": "string"
                                                                 }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2330A",
+                                                              "type": [
+                                                                "null",
+                                                                "z2330A"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330B",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330B"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330C",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330C"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330D",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330D"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330E",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330E"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330F",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330F"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330G",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330G"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330H",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330H"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2330I",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2330I"
                                                               ]
                                                             }
                                                           ]
@@ -757,81 +1069,55 @@
                                                           "name": "z2400_1",
                                                           "fields": [
                                                             {
-                                                              "name": "z2410",
+                                                              "name": "unmapped",
                                                               "type": [
                                                                 "null",
                                                                 {
                                                                   "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
+                                                                  "items": "string"
                                                                 }
+                                                              ]
+                                                            },
+                                                            {
+                                                              "name": "z2410",
+                                                              "type": [
+                                                                "null",
+                                                                "z2410"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2420A",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2420A"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2420B",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2420B"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2420C",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2420C"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2420D",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2420D"
                                                               ]
                                                             },
                                                             {
                                                               "name": "z2430",
                                                               "type": [
                                                                 "null",
-                                                                {
-                                                                  "type": "array",
-                                                                  "items": {
-                                                                    "type": "array",
-                                                                    "items": "string"
-                                                                  }
-                                                                }
+                                                                "z2430"
                                                               ]
                                                             }
                                                           ]
@@ -855,11 +1141,21 @@
                               "type": [
                                 "null",
                                 {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "array",
-                                    "items": "string"
-                                  }
+                                  "type": "record",
+                                  "namespace": "net.explorys.samhat.z12.r837",
+                                  "name": "zSE",
+                                  "fields": [
+                                    {
+                                      "name": "unmapped",
+                                      "type": [
+                                        "null",
+                                        {
+                                          "type": "array",
+                                          "items": "string"
+                                        }
+                                      ]
+                                    }
+                                  ]
                                 }
                               ]
                             }
@@ -872,11 +1168,21 @@
                       "type": [
                         "null",
                         {
-                          "type": "array",
-                          "items": {
-                            "type": "array",
-                            "items": "string"
-                          }
+                          "type": "record",
+                          "namespace": "net.explorys.samhat.z12.r837",
+                          "name": "zGE",
+                          "fields": [
+                            {
+                              "name": "unmapped",
+                              "type": [
+                                "null",
+                                {
+                                  "type": "array",
+                                  "items": "string"
+                                }
+                              ]
+                            }
+                          ]
                         }
                       ]
                     }
@@ -889,11 +1195,21 @@
               "type": [
                 "null",
                 {
-                  "type": "array",
-                  "items": {
-                    "type": "array",
-                    "items": "string"
-                  }
+                  "type": "record",
+                  "namespace": "net.explorys.samhat.z12.r837",
+                  "name": "zIEA",
+                  "fields": [
+                    {
+                      "name": "unmapped",
+                      "type": [
+                        "null",
+                        {
+                          "type": "array",
+                          "items": "string"
+                        }
+                      ]
+                    }
+                  ]
                 }
               ]
             }

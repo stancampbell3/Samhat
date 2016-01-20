@@ -3,7 +3,6 @@ package net.explorys.samhat;
 import net.explorys.samhat.avro.Avro837Util;
 import org.apache.avro.Schema;
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.node.ArrayNode;
 import org.codehaus.jackson.node.ObjectNode;
@@ -20,17 +19,20 @@ import java.util.*;
  */
 public class AvroSchemaGenerator {
 
-    // The Avro Array of Arrays of Strings containing element data.
-    public static final Schema SEGMENTS_ARRAY_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}");
+    static final String UNQUALIFIED_FIELDS = "unqualifiedFields";
+    static final String QUALIFIED_FIELDS = "qualifiedFields";
+    static final String UNMAPPED = "unmapped";
+    static final String NAMESPACE = "net.explorys.samhat.z12.r837";
 
     // The Avro Array of Strings containing element data for one of the elements, split by "*"
-    public static final Schema SEGMENTS_ELEMENT_SCHEMA = (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":\"string\"}");
+    public static final Schema SEGMENTS_ELEMENT_SCHEMA= (new Schema.Parser()).parse("{\"type\":\"array\",\"items\":\"string\"}");
+    public static final Schema SEGMENTS_FIELD_SCHEMA = (new Schema.Parser()).parse("[ \"null\", {\"type\":\"array\",\"items\":\"string\"} ]");
 
     private ObjectMapper mapper;
     private XmlBasedCfSchemaParser parser;
 
-    JsonNode segmentsArraySchemaJson;
     JsonNode segmentsElementSchemaJson;
+    JsonNode segmentsFieldSchemaJson;
 
     public AvroSchemaGenerator() {
         this.mapper = new ObjectMapper();
@@ -52,20 +54,19 @@ public class AvroSchemaGenerator {
         this.parser = new XmlBasedCfSchemaParser();
     }
 
-    public JsonNode getSegmentsArraySchemaJson() throws IOException {
-
-        if(null==segmentsArraySchemaJson) {
-            segmentsArraySchemaJson = mapper.readValue(SEGMENTS_ARRAY_SCHEMA.toString(false), JsonNode.class);
-        }
-        return segmentsArraySchemaJson;
-    }
-
     public JsonNode getSegmentsElementSchemaJson() throws IOException {
 
         if(null==segmentsElementSchemaJson) {
             segmentsElementSchemaJson = mapper.readValue(SEGMENTS_ELEMENT_SCHEMA.toString(false), JsonNode.class);
         }
         return segmentsElementSchemaJson;
+    }
+
+    public JsonNode getSegmentsFieldSchemaJson() throws IOException {
+        if(null==segmentsFieldSchemaJson) {
+            segmentsFieldSchemaJson = mapper.readValue(SEGMENTS_FIELD_SCHEMA.toString(false), JsonNode.class);
+        }
+        return segmentsFieldSchemaJson;
     }
 
     boolean isChildElement(Node node) {
@@ -106,6 +107,12 @@ public class AvroSchemaGenerator {
 
         ArrayNode fields = mapper.createArrayNode();
         objectNode.put("fields", fields);
+
+        // Provide an unmapped field for holding segment data for which there are no mappings
+        ObjectNode unmapped = mapper.createObjectNode();
+        unmapped.put("name", UNMAPPED);
+        unmapped.put("type", getSegmentsFieldSchemaJson());
+        fields.add(unmapped);
 
         // Time to gather the fields array from each of the subelements of elem...
         NodeList children = elem.getChildNodes();
@@ -179,9 +186,67 @@ public class AvroSchemaGenerator {
 
                     } else {
 
-                        // Use the new array of arrays of string to hold the element contents instead of a JSON array
-                        // String type = "{\"type\":\"array\",\"items\":{\"type\":\"array\",\"items\":\"string\"}}";
-                        nullableField.add(getSegmentsArraySchemaJson());
+                        // We'll construct an object record specific to this field
+                        // Any elements which are specified in the X12 schema as having tagged elements will have
+                        // those elements spelled out in the Avro schema as individual fields in this record.
+                        // Anything else will end up in a designated "other" field within this record.
+
+                        rawName = fieldAttributes.getNamedItem("name").getNodeValue();
+                        String subrecordType = Avro837Util.makeAvroName(rawName);
+
+                        // If this record type has already been defined, we'll just reference it
+                        if(!symbolCounts.containsKey(subrecordType)) {
+                            ObjectNode subrecord = mapper.createObjectNode();
+                            subrecord.put("type", "record");
+                            subrecord.put("namespace", NAMESPACE);
+                            subrecord.put("name", subrecordType);
+
+                            ArrayNode subrecordFields = mapper.createArrayNode();
+                            subrecord.put("fields", subrecordFields);
+
+                            // Unqualified fields
+                            Node distinguished = fieldAttributes.getNamedItem(UNQUALIFIED_FIELDS);
+                            if (distinguished != null) {
+                                String values = distinguished.getNodeValue();
+                                if (!"".equals(values)) {
+                                    for (String s : values.split(",( )?")) {
+                                        ObjectNode subrecordField = mapper.createObjectNode();
+                                        subrecordField.put("name", s);
+                                        subrecordField.put("type", getSegmentsFieldSchemaJson());
+                                        subrecordFields.add(subrecordField);
+                                    }
+                                }
+                            }
+
+                            // Qualified fields requiring a second value to be meaningful, so resulting in a more complex field
+                            distinguished = fieldAttributes.getNamedItem(QUALIFIED_FIELDS);
+                            if (distinguished != null) {
+                                String values = distinguished.getNodeValue();
+                                if (!"".equals(values)) {
+                                    for (String s : values.split(",( )?")) {
+                                        ObjectNode subrecordField = mapper.createObjectNode();
+                                        subrecordField.put("name", s);
+                                        subrecordField.put("type", getSegmentsFieldSchemaJson());
+                                        subrecordFields.add(subrecordField);
+                                    }
+                                }
+                            }
+
+                            // Provide an unmapped field for holding segment data for which there are no mappings
+                            unmapped = mapper.createObjectNode();
+                            unmapped.put("name", UNMAPPED);
+                            unmapped.put("type", getSegmentsFieldSchemaJson());
+                            subrecordFields.add(unmapped);
+
+                            nullableField.add(subrecord);
+
+                            // Note that we've defined this type
+                            symbolCounts.put(subrecordType, 1);
+                        } else {
+
+                            // Just reference the already defined type
+                            nullableField.add(subrecordType);
+                        }
                     }
 
                     fieldObject.put("type", nullableField);
@@ -326,18 +391,17 @@ public class AvroSchemaGenerator {
                 InputStream schemaDefinition = new FileInputStream(xmlSchemaFilename);
                 String jsonSchema = instance.constructAvroSchemaFromXmlSchema(namespace, schemaDefinition);
 
+                System.out.println("Writing the Avro schema file to "+outputFilename);
+                // Write the schema to outputFilename
+                BufferedWriter wtr = new BufferedWriter( new FileWriter(outputFilename));
+                wtr.write(jsonSchema);
+                wtr.close();
+
                 System.out.println("Checking compiled schema with Avro's Schema.Parser...");
 
                 // Try to compile the schema
                 Schema.Parser avroParser = new Schema.Parser();
                 Schema schemaCooked = avroParser.parse(jsonSchema);
-
-                System.out.println("Writing the Avro schema file to "+outputFilename);
-
-                // Write the schema to outputFilename
-                BufferedWriter wtr = new BufferedWriter( new FileWriter(outputFilename));
-                wtr.write(jsonSchema);
-                wtr.close();
 
                 System.out.println("Done.");
 

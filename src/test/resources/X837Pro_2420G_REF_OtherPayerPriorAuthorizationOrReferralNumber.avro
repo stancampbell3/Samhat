@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2420G_REF_OtherPayerPriorAuthorizationOrReferralNumber",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2420GREF01ReferenceIdentificationQualifier", "type" : "string" },
-	{ "name" : "_2420GREF02OtherPayerPriorAuthorizationOrReferralNumber", "type" : "string" }
-  ]
-}

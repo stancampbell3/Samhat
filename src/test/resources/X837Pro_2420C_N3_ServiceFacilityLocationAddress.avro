@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2420C_N3_ServiceFacilityLocationAddress",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2420CN301LaboratoryOrFacilityAddressLine", "type" : "string" },
-	{ "name" : "_2420CN302LaboratoryOrFacilityAddressLine", "type" : "string" }
-  ]
-}

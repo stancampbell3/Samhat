@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2330A_N3_OtherSubscriberAddress",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2330AN301OtherInsuredAddressLine", "type" : "string" },
-	{ "name" : "_2330AN302OtherInsuredAddressLine", "type" : "string" }
-  ]
-}

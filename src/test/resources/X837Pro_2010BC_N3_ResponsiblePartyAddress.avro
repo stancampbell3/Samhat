@@ -1,9 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Pro_2010BC_N3_ResponsiblePartyAddress",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2010BCN301ResponsiblePartyAddressLine", "type" : "string" },
-	{ "name" : "_2010BCN302ResponsiblePartyAddressLine", "type" : "string" }
-  ]
-}

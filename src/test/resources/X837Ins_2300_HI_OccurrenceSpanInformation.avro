@@ -1,8 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Ins_2300_HI_OccurrenceSpanInformation",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-
-  ]
-}

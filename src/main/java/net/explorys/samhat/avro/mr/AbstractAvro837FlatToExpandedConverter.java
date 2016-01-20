@@ -30,6 +30,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
     private String x12Delimiter = "\\*";
 
     X12Parser x12Parser;
+    Schema.Parser avroParser = (new Schema.Parser());
     Schema x837AvroSchema;
     ObjectMapper mapper = new ObjectMapper();
 
@@ -68,7 +69,6 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
             x12Parser = new X12Parser(schema);
 
             // Instantiate our Avro schemas.
-            Schema.Parser avroParser = (new Schema.Parser());
             x837AvroSchema = avroParser.parse(x837AvroSchemaStream);
         } catch(Exception e) {
 
@@ -94,6 +94,34 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
 
     public XPath getxPath() {
         return xPath;
+    }
+
+    /**
+     * For the given subrecord, place the data in the given field.
+     * If the field already has data, add to it.
+     *
+     * @param nestedRecord
+     * @param fieldName
+     * @param data
+     */
+    public void setRecordField(GenericRecord nestedRecord, String fieldName, String[] data) throws Avro837FlatToExpandedException {
+        GenericData.Array<String> array;
+        Object currentContents = nestedRecord.get("unmapped");
+        if(null==currentContents) {
+            array = new GenericData.Array<String>(data.length, AvroSchemaGenerator.SEGMENTS_ELEMENT_SCHEMA);
+        } else {
+            array = (GenericData.Array<String>)currentContents;
+        }
+
+        for(String datum : data) {
+            array.add(datum);
+        }
+
+        try {
+            nestedRecord.put(fieldName, array);
+        } catch(Exception e) {
+            throw new Avro837FlatToExpandedException("Error setting record field for "+fieldName, e);
+        }
     }
 
     /**
@@ -126,7 +154,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
      * @param currentLoop
      * @return
      */
-    String calculateXPath(Loop currentLoop) {
+    String calculateXPath(Loop currentLoop, String elementType) {
 
         // Build the xpath expression
         Stack<String> pathStack = new Stack<String>();
@@ -137,7 +165,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
                 pathStack.push("x12_schema[@name=\""+currentLoopName+"\"]");
             } else {
                 if(loopPtr.getLoops().size()==0) {
-                    pathStack.push("segment[@name=\""+currentLoopName+"\"]");
+                    pathStack.push(elementType + "[@name=\""+currentLoopName+"\"]");
                 } else {
                     pathStack.push("loop[@name=\""+currentLoopName+"\"]");
                 }
@@ -232,16 +260,6 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
             // Segments contain data at this loop level.
             // Loops are nested collections of loops and segments.
 
-            // TODO: pass current path on param list rather than building it each time
-            String currentXPath = calculateXPath(currentLoop);
-
-            // DEBUG
-            // System.out.println("xpath: "+currentXPath);
-            // int numSegments = currentLoop.getSegments().size();
-            // System.out.println("--> segment count: "+numSegments);
-            // int numSubloops = currentLoop.getLoops().size();
-            // System.out.println("--> loop count: "+numSubloops);
-
             // For any fields which don't get set, we want to null them in the generic record.
             Set<String> schemaFieldsSet = new HashSet<>();
             for (Schema.Field field : x837Record.getSchema().getFields()) {
@@ -278,7 +296,6 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
                 }
             }
         } catch(Exception e) {
-
             throw new Avro837FlatToExpandedException("Error constructing Avro record instance", e);
         }
     }

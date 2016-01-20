@@ -1,8 +1,0 @@
-{
-  "type" : "record",
-  "name" : "X837Ins_2400_LX_ServiceLineNumber",
-  "namespace" : "net.explorys.samhat.z12.r837",
-  "fields" : [
-	{ "name" : "_2400LX01AssignedNumber", "type" : "string" }
-  ]
-}

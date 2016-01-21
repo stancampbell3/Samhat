@@ -21,9 +21,6 @@ import java.io.InputStreamReader;
 import java.nio.ByteBuffer;
 import java.util.*;
 
-/**
- * Created by stan.campbell on 1/15/16.
- */
 abstract public class AbstractAvro837FlatToExpandedConverter {
 
     // Provide for overriding the X12 delimiter

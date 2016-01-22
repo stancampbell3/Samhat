@@ -44,6 +44,11 @@ public class Avro837FlatToExpandedConverter extends AbstractAvro837FlatToExpande
         super(cfSchemaXML, x837AvroSchemaStream);
     }
 
+    public Avro837FlatToExpandedConverter(String cfSchemaXML, Schema x837AvroSchema) throws CfSchemaParsingException {
+
+        super(cfSchemaXML, x837AvroSchema);
+    }
+
     @Override
     void createTheCurrentRecord(Schema recordSchema, Loop loop,
                                 GenericRecord x837Record,

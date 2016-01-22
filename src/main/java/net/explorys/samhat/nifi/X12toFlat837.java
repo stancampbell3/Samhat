@@ -3,7 +3,6 @@ package net.explorys.samhat.nifi;
 
 import net.explorys.samhat.avro.DataStreamWriter;
 import net.explorys.samhat.z12.r837.Flat837;
-import org.apache.hadoop.io.Text;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

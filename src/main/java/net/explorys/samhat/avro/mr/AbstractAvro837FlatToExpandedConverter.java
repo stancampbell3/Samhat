@@ -35,6 +35,26 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
     Document document = null;
     XPath xPath;
 
+    public AbstractAvro837FlatToExpandedConverter(String cfSchemaXML, Schema x837AvroSchema) throws CfSchemaParsingException {
+
+        try {
+            // Load the DOM
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+
+            document = dBuilder.parse(cfSchemaXML);
+
+            // Normalize to compensate for stray whitespace in the spec
+            document.getDocumentElement().normalize();
+
+            // Instantiate our Avro schemas.
+            this.x837AvroSchema = x837AvroSchema;
+
+        } catch(Exception e) {
+            throw new CfSchemaParsingException("Error setting up schema information", e);
+        }
+    }
+
     public AbstractAvro837FlatToExpandedConverter(InputStream cfSchemaXML, InputStream x837AvroSchemaStream) throws CfSchemaParsingException {
 
         try {

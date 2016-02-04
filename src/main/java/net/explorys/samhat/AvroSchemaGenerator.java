@@ -97,7 +97,9 @@ public class AvroSchemaGenerator {
      * @param symbolCounts
      * @return
      */
-    ObjectNode constructAvroJsonFromXmlSchema(String namespace, Node elem, Map<String,Integer>symbolCounts) throws IllegalAccessException, NoSuchFieldException, ClassNotFoundException, IOException {
+    ObjectNode constructAvroJsonFromXmlSchema(String namespace,
+      Node elem, Map<String,Integer>symbolCounts) throws IllegalAccessException,
+            NoSuchFieldException, ClassNotFoundException, IOException {
 
         // symbolCounts can start null
         if(null==symbolCounts) {

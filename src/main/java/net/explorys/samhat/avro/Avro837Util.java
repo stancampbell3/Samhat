@@ -56,7 +56,7 @@ public class Avro837Util implements Serializable {
      * @throws IOException
      */
     public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
-                                 String organization, Iterator<ByteBuffer> x12837DataItr,
+                                 String organization, Iterator<CharSequence> x12837DataItr,
                                  URI fileSystemURI, String outputPath) throws IOException {
 
         FileSystem fileSystem = FileSystems.getFileSystem(fileSystemURI);
@@ -70,7 +70,7 @@ public class Avro837Util implements Serializable {
         long recordCount = 0L;
 
         while(x12837DataItr.hasNext()) {
-            ByteBuffer data = x12837DataItr.next();
+            CharSequence data = x12837DataItr.next();
 
             GenericRecord x837 = new GenericData.Record(getX12FlatDataSchema());
             x837.put("source_filename", sourceFile);
@@ -88,7 +88,7 @@ public class Avro837Util implements Serializable {
     }
 
     public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
-                                 String organization, ByteBuffer data,
+                                 String organization, CharSequence data,
                                  URI fileSystemURI, String outputPath) throws IOException {
 
         FileSystem fileSystem = FileSystems.getFileSystem(fileSystemURI);
@@ -112,7 +112,7 @@ public class Avro837Util implements Serializable {
     }
 
     public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
-                                 String organization, ByteBuffer data,
+                                 String organization, String data,
                                  String outputFilename) throws IOException {
 
         File outputFile = new File(outputFilename);
@@ -220,12 +220,10 @@ public class Avro837Util implements Serializable {
                     String outputPath = args[6];
 
                     String dataDoc = loadResourceDocument(ediPath);
-                    byte[] bytes = dataDoc.getBytes("utf-8");
-                    ByteBuffer data = ByteBuffer.wrap(bytes);
 
                     Avro837Util util = new Avro837Util(flatDataSchemaPath);
 
-                    util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, data, outputPath);
+                    util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, dataDoc, outputPath);
                 } else {
 
                     String avroExpandedSchemaPath = args[1];

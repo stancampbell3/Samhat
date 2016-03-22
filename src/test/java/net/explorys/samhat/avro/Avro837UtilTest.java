@@ -38,12 +38,10 @@ public class Avro837UtilTest {
             String outputPath = "/tmp/"+sourceFilename+".avro";
 
             String dataDoc = loadResourceDocument(ediPath);
-            byte[] bytes = dataDoc.getBytes("utf-8");
-            ByteBuffer data = ByteBuffer.wrap(bytes);
 
             Avro837Util util = new Avro837Util(flatDataSchemaPath);
 
-            util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, data, outputPath);
+            util.writeX12FlatData(sourceFilename, System.currentTimeMillis(), orgName, dataDoc, outputPath);
 
         } catch(Exception e) {
             e.printStackTrace();
@@ -58,11 +56,11 @@ public class Avro837UtilTest {
 
             String avroExpandedSchemaPath = "./src/test/resources/x12_schema_837_professional_avro.json";
             String xmlSchemaPath = "./src/test/resources/x12_schema_837_professional.xml";
-            String sourceFilename = "SomeRemoteFilename";
-            String inputPath = "./src/test/resources/"+sourceFilename+".avro";
+            String sourceFilename = "X222-wheelchair.edi.flat.avro";
+            String inputPath = "./src/test/resources/"+sourceFilename;
 
             // TODO: add guid to avoid stepping on other instances
-            String outputPath = "/tmp/"+sourceFilename+".exploded.avro";
+            String outputPath = "/tmp/"+sourceFilename.replaceAll("flat", "exploded");
 
             // Deserialize the Flat837
             DatumReader<Flat837> flat837DatumReader = new SpecificDatumReader<Flat837>(Flat837.class);

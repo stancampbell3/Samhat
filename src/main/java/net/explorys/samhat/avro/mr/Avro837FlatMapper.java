@@ -54,7 +54,7 @@ public class Avro837FlatMapper extends Mapper<LongWritable, Text, AvroKey<String
         Flat837 rec = Flat837.newBuilder().setSourceFilename(sourceFile)
                 .setIngestedTimestamp(ingestionTimestamp)
                 .setOrganization(organization)
-                .setData(ByteBuffer.wrap(ediData.getBytes())).build();
+                .setData(ediData.toString()).build();
 
         return rec;
     }

@@ -245,13 +245,12 @@ public class Avro837FlatToExpandedConverterTest {
     Flat837 createFlatTestRecordPro() throws IOException {
 
         String data = loadResourceDocument("/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-commercial-health-insurance.edi");
-        ByteBuffer dataAsBytes = ByteBuffer.wrap(data.getBytes());
 
         Flat837 outRecord = Flat837.newBuilder().
                 setSourceFilename("BigHospital_Subsystem_1441214822957.edi").
                 setOrganization("80").
                 setIngestedTimestamp(1441229222420L).
-                setData(dataAsBytes).
+                setData(data).
                 build();
 
         return outRecord;

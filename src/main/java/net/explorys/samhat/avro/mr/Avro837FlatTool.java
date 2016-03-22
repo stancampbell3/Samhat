@@ -86,7 +86,7 @@ public class Avro837FlatTool extends Configured implements Tool {
         job.setMapOutputValueClass(Flat837.class);
 
         AvroJob.setOutputKeySchema(job, Schema.create(Schema.Type.STRING));
-        AvroJob.setOutputValueSchema(job, Flat837.getClassSchema());
+        AvroJob.setOutputValueSchema(job, Flat837.SCHEMA$);
 
         FileInputFormat.setInputPaths(job, new Path(getX837EDIDataPath()));
         FileOutputFormat.setOutputPath(job, new Path(getOutputPath()));

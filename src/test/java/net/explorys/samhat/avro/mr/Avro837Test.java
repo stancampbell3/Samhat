@@ -31,7 +31,7 @@ public class Avro837Test {
         job.setConf(c);
         job.setX837FlatSchemaPath("src/test/resources/Flat837.avsc");
         job.setX837ExpandedSchemaPath("src/test/resources/x12_schema_837_professional_avro.json");
-        job.setX837FlatDataPath("src/test/resources/x837_flat__80_1441229222420_professional.avro");
+        job.setX837FlatDataPath("src/test/resources/X222-wheelchair.edi.flat.avro");
         job.setOutputPath("/tmp/AvroInAvroOut-" + System.currentTimeMillis());
         job.setX837SamhatSchemaPath("src/test/resources/x12_schema_837_professional.xml");
 
@@ -43,12 +43,12 @@ public class Avro837Test {
      * This class provides a convenient way to repeat the same data a given number of times
      * as an Iterator over ByteBuffers.
      */
-    class SingleDataIterator implements Iterator<ByteBuffer> {
+    class SingleDataIterator implements Iterator<CharSequence> {
 
-        private ByteBuffer data;
+        private CharSequence data;
         private long nextsTilEmpty;
 
-        public SingleDataIterator(ByteBuffer data, long nextsTilEmpty) {
+        public SingleDataIterator(CharSequence data, long nextsTilEmpty) {
             this.data = data;
             this.nextsTilEmpty = nextsTilEmpty;
         }
@@ -60,7 +60,7 @@ public class Avro837Test {
         }
 
         @Override
-        public ByteBuffer next() {
+        public CharSequence next() {
 
             if(nextsTilEmpty <= 0) {
                 throw new NoSuchElementException("No more data.  Iterator is empty.");
@@ -81,10 +81,8 @@ public class Avro837Test {
             String flatDataSchemaPath = "src/test/resources/Flat837.avsc";
             String x12837Path = "/ASC X12/005010/Technical Reports/Type 3/Finals/Examples/005010X222 Health Care Claim Professional/X222-ambulance.edi";
             String data = loadResourceDocument(x12837Path);
-            byte[] bytes = data.getBytes("utf-8");
-            ByteBuffer bytesBuffer = ByteBuffer.wrap(bytes);
 
-            SingleDataIterator dataIterator = new SingleDataIterator(bytesBuffer, NUM_RECS);
+            SingleDataIterator dataIterator = new SingleDataIterator(data, NUM_RECS);
 
             Avro837Util util = new Avro837Util(flatDataSchemaPath);
 

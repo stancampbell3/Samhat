@@ -24,7 +24,7 @@ public class X12toFlat837 {
         Flat837 rec = Flat837.newBuilder().setSourceFilename(sourceFile)
                 .setIngestedTimestamp(ingestionTimestamp)
                 .setOrganization(organization)
-                .setData(ByteBuffer.wrap(ediData.getBytes())).build();
+                .setData(ediData).build();
 
         return rec;
     }
@@ -45,7 +45,7 @@ public class X12toFlat837 {
             // todo: set the sourceFile and organization correctly
             Flat837 flat837 = wrapData(x12Document, "SomeLargeFile", System.currentTimeMillis(), "80");
 
-            DataStreamWriter<Flat837> wtr = new DataStreamWriter<>(System.out, Flat837.getClassSchema());
+            DataStreamWriter<Flat837> wtr = new DataStreamWriter<>(System.out, Flat837.SCHEMA$);
             wtr.write(flat837);
 
         } catch(Exception e) {

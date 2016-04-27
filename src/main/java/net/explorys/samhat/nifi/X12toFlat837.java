@@ -24,7 +24,7 @@ public class X12toFlat837 {
         Flat837 rec = Flat837.newBuilder().setSourceFilename(sourceFile)
                 .setIngestedTimestamp(ingestionTimestamp)
                 .setOrganization(organization)
-                .setData(ediData).build();
+                .setX12Data(ediData).build();
 
         return rec;
     }

@@ -7,11 +7,11 @@ package net.explorys.samhat.z12.r837;
 @SuppressWarnings("all")
 @org.apache.avro.specific.AvroGenerated
 public class Flat837 extends org.apache.avro.specific.SpecificRecordBase implements org.apache.avro.specific.SpecificRecord {
-  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Flat837\",\"namespace\":\"net.explorys.samhat.z12.r837\",\"fields\":[{\"name\":\"source_filename\",\"type\":\"string\"},{\"name\":\"ingested_timestamp\",\"type\":\"long\"},{\"name\":\"organization\",\"type\":\"string\"},{\"name\":\"data\",\"type\":\"string\"}]}");
+  public static final org.apache.avro.Schema SCHEMA$ = new org.apache.avro.Schema.Parser().parse("{\"type\":\"record\",\"name\":\"Flat837\",\"namespace\":\"net.explorys.samhat.z12.r837\",\"fields\":[{\"name\":\"source_filename\",\"type\":\"string\"},{\"name\":\"ingested_timestamp\",\"type\":\"long\"},{\"name\":\"organization\",\"type\":\"string\"},{\"name\":\"x12Data\",\"type\":\"string\"}]}");
   @Deprecated public java.lang.CharSequence source_filename;
   @Deprecated public long ingested_timestamp;
   @Deprecated public java.lang.CharSequence organization;
-  @Deprecated public java.lang.CharSequence data;
+  @Deprecated public java.lang.CharSequence x12Data;
 
   /**
    * Default constructor.
@@ -21,11 +21,11 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
   /**
    * All-args constructor.
    */
-  public Flat837(java.lang.CharSequence source_filename, java.lang.Long ingested_timestamp, java.lang.CharSequence organization, java.lang.CharSequence data) {
+  public Flat837(java.lang.CharSequence source_filename, java.lang.Long ingested_timestamp, java.lang.CharSequence organization, java.lang.CharSequence x12Data) {
     this.source_filename = source_filename;
     this.ingested_timestamp = ingested_timestamp;
     this.organization = organization;
-    this.data = data;
+    this.x12Data = x12Data;
   }
 
   public org.apache.avro.Schema getSchema() { return SCHEMA$; }
@@ -35,7 +35,7 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
       case 0: return source_filename;
       case 1: return ingested_timestamp;
       case 2: return organization;
-      case 3: return data;
+      case 3: return x12Data;
       default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -46,7 +46,7 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
       case 0: source_filename = (java.lang.CharSequence)value$; break;
       case 1: ingested_timestamp = (java.lang.Long)value$; break;
       case 2: organization = (java.lang.CharSequence)value$; break;
-      case 3: data = (java.lang.CharSequence)value$; break;
+      case 3: x12Data = (java.lang.CharSequence)value$; break;
       default: throw new org.apache.avro.AvroRuntimeException("Bad index");
     }
   }
@@ -97,18 +97,18 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
   }
 
   /**
-   * Gets the value of the 'data' field.
+   * Gets the value of the 'x12Data' field.
    */
-  public java.lang.CharSequence getData() {
-    return data;
+  public java.lang.CharSequence getX12Data() {
+    return x12Data;
   }
 
   /**
-   * Sets the value of the 'data' field.
+   * Sets the value of the 'x12Data' field.
    * @param value the value to set.
    */
-  public void setData(java.lang.CharSequence value) {
-    this.data = value;
+  public void setX12Data(java.lang.CharSequence value) {
+    this.x12Data = value;
   }
 
   /** Creates a new Flat837 RecordBuilder */
@@ -135,7 +135,7 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
     private java.lang.CharSequence source_filename;
     private long ingested_timestamp;
     private java.lang.CharSequence organization;
-    private java.lang.CharSequence data;
+    private java.lang.CharSequence x12Data;
 
     /** Creates a new Builder */
     private Builder() {
@@ -162,8 +162,8 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
         this.organization = data().deepCopy(fields()[2].schema(), other.organization);
         fieldSetFlags()[2] = true;
       }
-      if (isValidValue(fields()[3], other.data)) {
-        this.data = data().deepCopy(fields()[3].schema(), other.data);
+      if (isValidValue(fields()[3], other.x12Data)) {
+        this.x12Data = data().deepCopy(fields()[3].schema(), other.x12Data);
         fieldSetFlags()[3] = true;
       }
     }
@@ -242,27 +242,27 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
       return this;
     }
 
-    /** Gets the value of the 'data' field */
-    public java.lang.CharSequence getData() {
-      return data;
+    /** Gets the value of the 'x12Data' field */
+    public java.lang.CharSequence getX12Data() {
+      return x12Data;
     }
 
-    /** Sets the value of the 'data' field */
-    public net.explorys.samhat.z12.r837.Flat837.Builder setData(java.lang.CharSequence value) {
+    /** Sets the value of the 'x12Data' field */
+    public net.explorys.samhat.z12.r837.Flat837.Builder setX12Data(java.lang.CharSequence value) {
       validate(fields()[3], value);
-      this.data = value;
+      this.x12Data = value;
       fieldSetFlags()[3] = true;
       return this;
     }
 
-    /** Checks whether the 'data' field has been set */
-    public boolean hasData() {
+    /** Checks whether the 'x12Data' field has been set */
+    public boolean hasX12Data() {
       return fieldSetFlags()[3];
     }
 
-    /** Clears the value of the 'data' field */
-    public net.explorys.samhat.z12.r837.Flat837.Builder clearData() {
-      data = null;
+    /** Clears the value of the 'x12Data' field */
+    public net.explorys.samhat.z12.r837.Flat837.Builder clearX12Data() {
+      x12Data = null;
       fieldSetFlags()[3] = false;
       return this;
     }
@@ -274,7 +274,7 @@ public class Flat837 extends org.apache.avro.specific.SpecificRecordBase impleme
         record.source_filename = fieldSetFlags()[0] ? this.source_filename : (java.lang.CharSequence) defaultValue(fields()[0]);
         record.ingested_timestamp = fieldSetFlags()[1] ? this.ingested_timestamp : (java.lang.Long) defaultValue(fields()[1]);
         record.organization = fieldSetFlags()[2] ? this.organization : (java.lang.CharSequence) defaultValue(fields()[2]);
-        record.data = fieldSetFlags()[3] ? this.data : (java.lang.CharSequence) defaultValue(fields()[3]);
+        record.x12Data = fieldSetFlags()[3] ? this.x12Data : (java.lang.CharSequence) defaultValue(fields()[3]);
         return record;
       } catch (Exception e) {
         throw new org.apache.avro.AvroRuntimeException(e);

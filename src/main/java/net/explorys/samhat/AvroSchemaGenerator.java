@@ -369,7 +369,7 @@ public class AvroSchemaGenerator {
         field.put("type", "string");
         fieldsArray.add(field);
         field = mapper.createObjectNode();
-        field.put("name", "data");
+        field.put("name", "x12Data");
 
         // Subobjects are nullable
         ArrayNode nullableSubobjectNode = mapper.createArrayNode();

@@ -16,7 +16,7 @@
          "type": "string"
       },
       {
-         "name": "data",
+         "name": "x12Data",
          "type": "string"
       }
    ]

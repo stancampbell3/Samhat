@@ -1,6 +1,9 @@
 package net.explorys.samhat.avro.mr;
 
-import net.explorys.samhat.*;
+import net.explorys.samhat.AvroSchemaGenerator;
+import net.explorys.samhat.CfSchemaParsingException;
+import net.explorys.samhat.ICfSchemaParser;
+import net.explorys.samhat.XmlBasedCfSchemaParser;
 import net.explorys.samhat.avro.Avro837FlatToExpandedException;
 import net.explorys.samhat.avro.Avro837Util;
 import net.explorys.samhat.z12.r837.Flat837;
@@ -13,7 +16,8 @@ import org.w3c.dom.Document;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.*;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -240,14 +244,13 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
     public GenericRecord expand837(Flat837 flat837Record) throws
             CfSchemaParsingException, IOException, FormatException, Avro837FlatToExpandedException {
 
-        CharSequence data = flat837Record.getData();
+        CharSequence data = flat837Record.getX12Data();
         X12 x837 = (X12)x12Parser.parse(new ByteArrayInputStream(data.toString().getBytes()));
 
         // Build the envelope and copy over the source_file, ingestion timestamp, etc.
         Schema envSchema = x837AvroSchema;
         GenericRecord envRecord = new GenericData.Record(envSchema);
 
-        // TODO: use the proper accessors
         String sourceFilename = flat837Record.getSourceFilename().toString();
         Long ingestedTimestamp = flat837Record.getIngestedTimestamp();
         String organization = flat837Record.getOrganization().toString();
@@ -259,7 +262,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
         // Build the GenericRecord by walking the parsed X12 instance
 
         // Create the envelope record
-        Schema.Field dataField = getX837AvroSchema().getField("data");
+        Schema.Field dataField = getX837AvroSchema().getField("x12Data");
         // -- schema has this field nullable so it's a union of "null" and a record type
         // -- take the second element in the array's schema
         Iterator<Schema> typeSchemaItr = dataField.schema().getTypes().iterator();
@@ -275,7 +278,7 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
         GenericRecord x837Record = new GenericData.Record(recordSchema);
 
         // Stick it in the envelope
-        envRecord.put("data", x837Record);
+        envRecord.put("x12Data", x837Record);
 
         // Build the rest of the nested records
         walkTheLoop(x837Record, x837);
@@ -323,7 +326,12 @@ abstract public class AbstractAvro837FlatToExpandedConverter {
                 Schema recordSchema = field.schema().getType() == Schema.Type.UNION ? field.schema().getTypes().get(1) : field.schema();
 
                 // Loop processing
-                createTheCurrentRecord(recordSchema, loop, x837Record, schemaFieldsSet, recordSchemaName);
+                try {
+                    createTheCurrentRecord(recordSchema, loop, x837Record, schemaFieldsSet, recordSchemaName);
+                } catch(Exception e) {
+                    e.printStackTrace(); // debug
+                    throw new CreateCurrentRecordException(e);
+                }
             }
 
             // Check for missing fields

@@ -1,326 +1,298 @@
-X12:
-  - ISA :
-    [
-     _segment: "ISA"
-     GS :
-      [ _segment: "GS"
-        ST :
-        [
-          _segment: "ST"
-          _segmentQual: "837"
-          _segmentQualPos: "1"
-          
-          1000A:
-          [
-            _segment: "NM1"
-            _segmentQual: "41"
-            _segmentQualPos: "1"
-          ]
-
-          1000B:
-          [
-            _segment: "NM1"
-            _segmentQual: "40"
-            _segmentQualPos: "1"
-          ]
-
-          2000A:
-          [
-            _segment: "HL"
-            _segmentQual: "20"
-            _segmentQualPos: "3"
-          ]
-          
-          2010AA:
-          [
-              _segment: "NM1"
-              _segmentQual: "85"
-              _segmentQualPos: "1"
-          ]
-          
-          2010AB:
-          [
-              _segment: "NM1"
-              _segmentQual: "87"
-              _segmentQualPos: "1"
-          ]
-          
-          2010AC:
-          [
-              _segment: "NM1"
-              _segmentQual: "PE"
-              _segmentQualPos: "1"
-          ]
-          
-          2000B:
-          [
-            _segment: "HL"
-            _segmentQual: "22"
-            _segmentQualPos: "3"
-          ]
-          
-          2010BA:
-          [
-                _segment: "NM1"
-                _segmentQual: "IL"
-                _segmentQualPos: "1"
-          ]
-          
-          2010BB:
-          [
-                _segment: "NM1"
-                _segmentQual: "PR"
-                _segmentQualPos: "1"
-          ]
-          
-          2300:
-          [
-                _segment: "CLM"
-                2310A:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "DN,P3"
-                  _segmentQualPos: "1"
-                ]
-                
-                2310B:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "82"
-                  _segmentQualPos: "1"
-                ]
-                
-                2310C:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "77,FA,LA,TL"
-                  _segmentQualPos: "1"
-                ]
-                
-                2310D:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "DQ"
-                  _segmentQualPos: "1"
-                ]
-                
-                2310E:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "PW"
-                  _segmentQualPos: "1"
-                ]
-                
-                2310F:
-                [
-                  _segment: "NM1"
-                  _segmentQual: "45"
-                  _segmentQualPos: "1"
-                ]
-                
-                2320:
-                [
-                  _segment: "SBR"
-                  2330A:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "IL"
-                    _segmentQualPos: "1"
-                  ]
-                  
-                  2330B:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "PR"
-                    _segmentQualPos: "1"
-                  ]
-                  
-                  2330C:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "DN,P3"
-                    _segmentQualPos: "1"
-                  ]
-                  
-                  2330D:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "82"
-                    _segmentQualPos: "1"
-                  ]
-
-                  2330E:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "77,FA,LA,TL"
-                    _segmentQualPos: "1"
-                  ]
-
-                  2330F:
-                  [
-                    _segment: "NM1
-                    _segmentQual: "DQ"
-                    _segmentQualPos: "1"
-                  ]
-
-                  2330G:
-                  [
-                    _segment: "NM1"
-                    _segmentQual: "85"
-                    _segmentQualPos: "1"
-                  ]
-                ]
-              - 2400:
-                  _segment: "LX
-                - 2410:
-                    _segment: "LIN
-                - 2420A:
-                    _segment: "NM1
-                    _segmentQual: "82
-                    _segmentQualPos: 1
-                - 2420B:
-                    _segment: "NM1
-                    _segmentQual: "QB
-                    _segmentQualPos: 1
-                - 2420C:
-                    _segment: "NM1
-                    _segmentQual: "77,FA,LA,TL
-                    _segmentQualPos: 1
-                - 2420D:
-                    _segment: "NM1
-                    _segmentQual: "DQ
-                    _segmentQualPos: 1
-                - 2420E:
-                    _segment: "NM1
-                    _segmentQual: "DK
-                    _segmentQualPos: 1
-                - 2420F:
-                    _segment: "NM1
-                    _segmentQual: "DN,P3
-                    _segmentQualPos: 1
-                - 2420G:
-                    _segment: "NM1
-                    _segmentQual: "PW
-                    _segmentQualPos: 1
-                - 2420H:
-                    _segment: "NM1
-                    _segmentQual: "45
-                    _segmentQualPos: 1
-                - 2430:
-                    _segment: "SVD
-                - 2440:
-                    _segment: "LQ
-
-        - 2000C:
-            _segment: "HL
-            _segmentQual: "23
-            _segmentQualPos: "3
-          - 2010CA:
-              _segment: "NM1
-              _segmentQual: "QC
-              _segmentQualPos: "1
-
-          - 2300:
-              _segment: "CLM
-            - 2310A:
-                _segment: "NM1
-                _segmentQual: "DN,P3
-                _segmentQualPos: "1
-            - 2310B:
-                _segment: "NM1
-                _segmentQual: "82
-                _segmentQualPos: "1
-            - 2310C:
-                _segment: "NM1
-                _segmentQual: "77,FA,LA,TL
-                _segmentQualPos: "1
-            - 2310D:
-                _segment: "NM1
-                _segmentQual: "DQ
-                _segmentQualPos: "1
-            - 2310E:
-                _segment: "NM1
-                _segmentQual: "PW
-                _segmentQualPos: "1
-            - 2310F:
-                _segment: "NM1
-                _segmentQual: "45
-                _segmentQualPos: "1
-            - 2320:
-                _segment: "SBR
-                2330A:
-                  _segment: "NM1
-                  _segmentQual: "IL
-                  _segmentQualPos: "1
-                2330B:
-                    _segment: "NM1
-                    _segmentQual: "PR
-                    _segmentQualPos: "1
-                2330C:
-                    _segment: "NM1
-                    _segmentQual: "DN,P3
-                    _segmentQualPos: "1
-                2330D:
-                    _segment: "NM1
-                    _segmentQual: "82
-                    _segmentQualPos: "1
-                2330E:
-                    _segment: "NM1
-                    _segmentQual: "77,FA,LA,TL
-                    _segmentQualPos: "1
-                2330F:
-                    _segment: "NM1
-                    _segmentQual: "DQ
-                    _segmentQualPos: "1
-                2330G:
-                    _segment: "NM1
-                    _segmentQual: "85
-                    _segmentQualPos: "1
-
-            - 2400:
-                _segment: "LX
-              - 2410:
-                  _segment: "LIN
-              - 2420A:
-                  _segment: "NM1
-                  _segmentQual: "82
-                  _segmentQualPos: "1
-              - 2420B:
-                    _segment: "NM1
-                    _segmentQual: "QB
-                    _segmentQualPos: "1
-              - 2420C:
-                    _segment: "NM1
-                    _segmentQual: "77,FA,LA,TL
-                    _segmentQualPos: "1
-              - 2420D:
-                    _segment: "NM1
-                    _segmentQual: "DQ
-                    _segmentQualPos: "1
-              - 2420E:
-                    _segment: "NM1
-                    _segmentQual: "DK
-                    _segmentQualPos: "1
-              - 2420F:
-                    _segment: "NM1
-                    _segmentQual: "DN,P3
-                    _segmentQualPos: "1
-              - 2420G:
-                    _segment: "NM1
-                    _segmentQual: "PW
-                    _segmentQualPos: "1
-              - 2420H:
-                    _segment: "NM1
-                    _segmentQual: "45
-                    _segmentQualPos: "1
-              - 2430:
-                    _segment: "SVD
-              - 2440:
-                    _segment: "LQ
-
-      - SE:
-          _segment: "SE
-    - GE:
-      _segment: "GE
-  - IEA:
-      _segment: "IEA
+X12 :
+ -  ISA : {
+  _segment : "ISA",
+  GS : {
+   _segment : "GS",
+   ST : {
+    _segmentQualPos : "1",
+    _segmentQual : "837",
+    _segment : "ST",
+    1000A : {
+     qualifiedFields : "",
+     unqualifiedFields : "NM1, PER",
+     _segment : "NM1",
+     _segmentQualPos : "1",
+     _segmentQual : "41"
+    },
+    1000B : {
+     _segmentQualPos : "1",
+     _segmentQual : "40",
+     _segment : "NM1"
+    },
+    2000A : {
+     _segmentQualPos : "3",
+     _segmentQual : "20",
+     _segment : "HL",
+     2010AA : {
+      _segmentQualPos : "1",
+      _segmentQual : "85",
+      _segment : "NM1"
+     },
+     2010AB : {
+      _segmentQualPos : "1",
+      _segmentQual : "87",
+      _segment : "NM1"
+     },
+     2010AC : {
+      _segmentQualPos : "1",
+      _segmentQual : "PE",
+      _segment : "NM1"
+     }
+    },
+    2000B : {
+     _segmentQualPos : "3",
+     _segmentQual : "22",
+     _segment : "HL",
+     2010BA : {
+      _segmentQualPos : "1",
+      _segmentQual : "IL",
+      _segment : "NM1"
+     },
+     2010BB : {
+      _segmentQualPos : "1",
+      _segmentQual : "PR",
+      _segment : "NM1"
+     },
+     2300 : {
+      _segment : "CLM",
+      2310A : {
+       _segmentQualPos : "1",
+       _segmentQual : "71",
+       _segment : "NM1"
+      },
+      2310B : {
+       _segmentQualPos : "1",
+       _segmentQual : "72",
+       _segment : "NM1"
+      },
+      2310C : {
+       _segmentQualPos : "1",
+       _segmentQual : "ZZ",
+       _segment : "NM1"
+      },
+      2310D : {
+       _segmentQualPos : "1",
+       _segmentQual : "82",
+       _segment : "NM1"
+      },
+      2310E : {
+       _segmentQualPos : "1",
+       _segmentQual : "77",
+       _segment : "NM1"
+      },
+      2310F : {
+       _segmentQualPos : "1",
+       _segmentQual : "DN",
+       _segment : "NM1"
+      },
+      2320 : {
+       _segment : "SBR",
+       2330A : {
+        _segmentQualPos : "1",
+        _segmentQual : "IL",
+        _segment : "NM1"
+       },
+       2330B : {
+        _segmentQualPos : "1",
+        _segmentQual : "PR",
+        _segment : "NM1"
+       },
+       2330C : {
+        _segmentQualPos : "1",
+        _segmentQual : "71",
+        _segment : "NM1"
+       },
+       2330D : {
+        _segmentQualPos : "1",
+        _segmentQual : "72",
+        _segment : "NM1"
+       },
+       2330E : {
+        _segmentQualPos : "1",
+        _segmentQual : "ZZ",
+        _segment : "NM1"
+       },
+       2330F : {
+        _segmentQualPos : "1",
+        _segmentQual : "77",
+        _segment : "NM1"
+       },
+       2330G : {
+        _segmentQualPos : "1",
+        _segmentQual : "82",
+        _segment : "NM1"
+       },
+       2330H : {
+        _segmentQualPos : "1",
+        _segmentQual : "DN",
+        _segment : "NM1"
+       },
+       2330I : {
+        _segmentQualPos : "1",
+        _segmentQual : "85",
+        _segment : "NM1"
+       }
+      },
+      2400 : {
+       _segment : "LX",
+       2410 : {
+        _segment : "LIN"
+       },
+       2420A : {
+        _segmentQualPos : "1",
+        _segmentQual : "72",
+        _segment : "NM1"
+       },
+       2420B : {
+        _segmentQualPos : "1",
+        _segmentQual : "ZZ",
+        _segment : "NM1"
+       },
+       2420C : {
+        _segmentQualPos : "1",
+        _segmentQual : "82",
+        _segment : "NM1"
+       },
+       2420D : {
+        _segmentQualPos : "1",
+        _segmentQual : "DN",
+        _segment : "NM1"
+       },
+       2430 : {
+        _segment : "SVD"
+       }
+      }
+     }
+    },
+    2000C : {
+     _segmentQualPos : "3",
+     _segmentQual : "23",
+     _segment : "HL",
+     2010CA : {
+      _segmentQualPos : "1",
+      _segmentQual : "QC",
+      _segment : "NM1"
+     },
+     2300 : {
+      _segment : "CLM",
+      2310A : {
+       _segmentQualPos : "1",
+       _segmentQual : "71",
+       _segment : "NM1"
+      },
+      2310B : {
+       _segmentQualPos : "1",
+       _segmentQual : "72",
+       _segment : "NM1"
+      },
+      2310C : {
+       _segmentQualPos : "1",
+       _segmentQual : "ZZ",
+       _segment : "NM1"
+      },
+      2310D : {
+       _segmentQualPos : "1",
+       _segmentQual : "82",
+       _segment : "NM1"
+      },
+      2310E : {
+       _segmentQualPos : "1",
+       _segmentQual : "77",
+       _segment : "NM1"
+      },
+      2310F : {
+       _segmentQualPos : "1",
+       _segmentQual : "DN",
+       _segment : "NM1"
+      },
+      2320 : {
+       _segment : "SBR",
+       2330A : {
+        _segmentQualPos : "1",
+        _segmentQual : "IL",
+        _segment : "NM1"
+       },
+       2330B : {
+        _segmentQualPos : "1",
+        _segmentQual : "PR",
+        _segment : "NM1"
+       },
+       2330C : {
+        _segmentQualPos : "1",
+        _segmentQual : "71",
+        _segment : "NM1"
+       },
+       2330D : {
+        _segmentQualPos : "1",
+        _segmentQual : "72",
+        _segment : "NM1"
+       },
+       2330E : {
+        _segmentQualPos : "1",
+        _segmentQual : "ZZ",
+        _segment : "NM1"
+       },
+       2330F : {
+        _segmentQualPos : "1",
+        _segmentQual : "77",
+        _segment : "NM1"
+       },
+       2330G : {
+        _segmentQualPos : "1",
+        _segmentQual : "82",
+        _segment : "NM1"
+       },
+       2330H : {
+        _segmentQualPos : "1",
+        _segmentQual : "DN",
+        _segment : "NM1"
+       },
+       2330I : {
+        _segmentQualPos : "1",
+        _segmentQual : "85",
+        _segment : "NM1"
+       }
+      },
+      2400 : {
+       _segment : "LX",
+       2410 : {
+        _segment : "LIN"
+       },
+       2420A : {
+        _segmentQualPos : "1",
+        _segmentQual : "72",
+        _segment : "NM1"
+       },
+       2420B : {
+        _segmentQualPos : "1",
+        _segmentQual : "ZZ",
+        _segment : "NM1"
+       },
+       2420C : {
+        _segmentQualPos : "1",
+        _segmentQual : "82",
+        _segment : "NM1"
+       },
+       2420D : {
+        _segmentQualPos : "1",
+        _segmentQual : "DN",
+        _segment : "NM1"
+       },
+       2430 : {
+        _segment : "SVD"
+       }
+      }
+     }
+    }
+   },
+   SE : {
+    _segment : "SE"
+   }
+  },
+  GE : {
+   _segment : "GE"
+  }
+ }
+ -  IEA : {
+  _segment : "IEA"
+ }

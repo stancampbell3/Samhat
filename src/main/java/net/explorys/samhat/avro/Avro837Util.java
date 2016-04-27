@@ -15,7 +15,9 @@ import org.apache.avro.specific.SpecificDatumReader;
 import java.io.*;
 import java.net.URI;
 import java.nio.ByteBuffer;
-import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
@@ -49,7 +51,7 @@ public class Avro837Util implements Serializable {
      * @param sourceFile            for example "BigHospital_Subsystem_1441214822957.edi"
      * @param ingestionTimestamp    for example 1441229222420
      * @param organization          for example "80"
-     * @param x12837DataItr         an <pre>Iterator<ByteBuffer></pre> providing the separate x837 records
+     * @param x12837DataItr         an <pre>Iterator<CharSequence></pre> providing the separate x837 records
      * @param fileSystemURI         for example hdfs://localhost:54310
      * @param outputPath            for example /users/scampbell/flat837/80/
      * @return                      the number of records written to the file
@@ -63,8 +65,8 @@ public class Avro837Util implements Serializable {
         Path filePath = fileSystem.getPath(outputPath, makeFilename(organization, ingestionTimestamp));
         File outputFile = filePath.toFile();
 
-        DatumWriter<GenericRecord> datumWriter = new GenericDatumWriter<>();
-        DataFileWriter<GenericRecord> dataFileWriter = new DataFileWriter<>(datumWriter);
+        DatumWriter<Flat837> datumWriter = new GenericDatumWriter<>();
+        DataFileWriter<Flat837> dataFileWriter = new DataFileWriter<>(datumWriter);
         dataFileWriter.create(getX12FlatDataSchema(), outputFile);
 
         long recordCount = 0L;
@@ -73,12 +75,13 @@ public class Avro837Util implements Serializable {
             CharSequence data = x12837DataItr.next();
 
             GenericRecord x837 = new GenericData.Record(getX12FlatDataSchema());
-            x837.put("source_filename", sourceFile);
-            x837.put("ingested_timestamp", ingestionTimestamp);
-            x837.put("organization", organization);
-            x837.put("data", data);
+            Flat837 flat837 = Flat837.newBuilder().
+                    setSourceFilename(sourceFile).
+                    setIngestedTimestamp(ingestionTimestamp).
+                    setOrganization(organization).
+                    setX12Data(data).build();
 
-            dataFileWriter.append(x837);
+            dataFileWriter.append(flat837);
 
             recordCount+=1;
         }
@@ -88,7 +91,7 @@ public class Avro837Util implements Serializable {
     }
 
     public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
-                                 String organization, CharSequence data,
+                                 String organization, String data,
                                  URI fileSystemURI, String outputPath) throws IOException {
 
         FileSystem fileSystem = FileSystems.getFileSystem(fileSystemURI);
@@ -104,7 +107,7 @@ public class Avro837Util implements Serializable {
         x837.put("source_filename", sourceFile);
         x837.put("ingested_timestamp", ingestionTimestamp);
         x837.put("organization", organization);
-        x837.put("data", data);
+        x837.put("x12Data", data);
 
         dataFileWriter.append(x837);
         dataFileWriter.close();
@@ -112,7 +115,7 @@ public class Avro837Util implements Serializable {
     }
 
     public long writeX12FlatData(String sourceFile, long ingestionTimestamp,
-                                 String organization, String data,
+                                 String organization, CharSequence data,
                                  String outputFilename) throws IOException {
 
         File outputFile = new File(outputFilename);
@@ -126,7 +129,7 @@ public class Avro837Util implements Serializable {
         x837.put("source_filename", sourceFile);
         x837.put("ingested_timestamp", ingestionTimestamp);
         x837.put("organization", organization);
-        x837.put("data", data);
+        x837.put("x12Data", data);
 
         dataFileWriter.append(x837);
         dataFileWriter.close();

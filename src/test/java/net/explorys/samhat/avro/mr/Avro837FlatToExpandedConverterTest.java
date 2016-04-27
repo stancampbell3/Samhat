@@ -124,7 +124,7 @@ public class Avro837FlatToExpandedConverterTest {
             assertEquals(data, "80");
 
             // -- subrecord
-            GenericData.Record x12 = (GenericData.Record)expandedAvroRecord.get("data");
+            GenericData.Record x12 = (GenericData.Record)expandedAvroRecord.get("x12Data");
             assertNotNull(x12);
 
         } catch (Exception e) {
@@ -250,7 +250,7 @@ public class Avro837FlatToExpandedConverterTest {
                 setSourceFilename("BigHospital_Subsystem_1441214822957.edi").
                 setOrganization("80").
                 setIngestedTimestamp(1441229222420L).
-                setData(data).
+                setX12Data(data).
                 build();
 
         return outRecord;

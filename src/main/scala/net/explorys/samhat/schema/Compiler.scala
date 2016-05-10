@@ -23,6 +23,19 @@ trait Property[T] extends YamlWriteable with XmlWriteable {
   def toYaml(indent:Int = 0):String = (" " * indent) + getName() + " : " + getValue()
 }
 
+case class RecordProperty(name:String, fields:List[String]) extends Property[String] {
+
+  val value = "\"" + fields.mkString(", ").replaceAll("\"","") + "\""
+
+  def getName():String = name
+  def getValue():String = value
+
+  def quote(s:String) = s""""$s""""
+
+  override def toYaml(indent:Int = 0): String = (" " * indent) + "_" + name + " : " + value
+  override def toXml(indent:Int = 0): String = ""
+}
+
 /**
  * All scalars are currently implemented as String properties.  Support for other scalars such as numerics to come.
  *
@@ -85,7 +98,7 @@ case class Loop(name:String, properties:List[Property[_]]) extends YamlWriteable
     loopProperties.size match {
       case 0 => {
         // segment
-        (" " * indent) + "<segment name=\"" + name + "\" " + scalarProperties.map( p => trimLeadingUnderscore(p.getName()) + "=" + p.getValue() ).mkString(" ") + "/>\n"
+        (" " * indent) + "<segment name=\"" + name + "\" " + scalarProperties.map(p => trimLeadingUnderscore(p.getName()) + "=" + p.getValue()).mkString(" ") + "/>\n"
       }
       case _ => {
         // loop
@@ -142,8 +155,11 @@ case class SamhatSchema(val loops:List[Loop], val preamble:Option[String] = None
  * Loop -> SamhatID ":" "{" PropertyDefList "}"
  * PropertyDefList -> PropertyDef
  *   -> PropertyDef "," PropertyDefList
- * PropertyDef -> StringProperty | LoopProperty | CommentProperty
+ * PropertyDef -> StringProperty | LoopProperty | CommentProperty | RecordProperty
  * StringProperty -> SamhatID ":" stringLiteral
+ * FieldIdList -> stringLiteral
+ *   -> stringLiteral "," FieldIdList
+ * RecordProperty -> SamhatID ":" "[" FieldIdList "]"
  * LoopProperty -> Loop
  * SamhatID -> any valid Java identifier part (can start with underscores or numbers, case sensitive)
  */
@@ -168,7 +184,11 @@ class Compiler {
 
     def commentProperty: Parser[CommentProperty] = "#" ~ stringLiteral ^^ { case "#" ~ comments => CommentProperty(comments) }
 
-    def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty | commentProperty)
+    def fieldsList: Parser[List[String]] = repsep(stringLiteral, ",")
+
+    def recordProperty: Parser[RecordProperty] = samIdent ~ ":" ~ "[" ~ fieldsList  ~ "]" ^^ { case x ~ ":" ~ "[" ~ y  ~ "]" => RecordProperty(x,y) }
+
+    def propertyDef: Parser[Property[_]] = (stringProperty | loopProperty | commentProperty | recordProperty )
 
     def propDefList: Parser[List[Property[_]]] = repsep(propertyDef, ",")
 

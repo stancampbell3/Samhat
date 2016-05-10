@@ -3,6 +3,7 @@ package net.explorys.samhat.schema
 import org.scalatest.{Matchers, FlatSpec}
 
 import scala.io.Source
+import scala.xml.NodeSeq
 
 /**
  * Defines the requirements of the Compiler class.
@@ -55,6 +56,40 @@ class CompilerSpec extends FlatSpec with Matchers {
 
     ast should not be null
     ast.successful should equal(true)
+  }
+
+  it should "be able to parse a schema with segment-field identifiers" in {
+
+    val schemaYaml = getTestYaml("/simple_schema6.yml")
+    val ast = instance.parse(schemaYaml)
+
+    println(ast)
+
+    ast should not be null
+    ast.successful should equal(true)
+  }
+
+  it should "be able to generate well-formed XML from a schema with segment-field identifiers" in {
+
+    val schemaYaml = getTestYaml("/simple_schema6.yml")
+    val ast = instance.parse(schemaYaml)
+
+    println(ast)
+
+    ast should not be null
+    ast.successful should equal(true)
+
+    val samhatSchema = ast.get
+
+    val xmlStr:String = samhatSchema.toXml(0)
+
+    xmlStr should not be null
+
+    println(xmlStr)
+
+    val xml:NodeSeq = scala.xml.parsing.XhtmlParser(Source.fromString(xmlStr))
+
+    xml should not be null
   }
 
 }

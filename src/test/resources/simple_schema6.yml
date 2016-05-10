@@ -16,11 +16,14 @@ X12 :
      1000A : {
       _segmentQualPos : "1",
       _segmentQual : "41",
-      _segment : "NM1"
+      _segment : {
+        _id : "NM1",
+        _fields : [ "firstName", "lastName" ]
+      }
      }
     }
+   }
   }
- }
- -  IEA : {
+  -  IEA : {
    _segment : "IEA"
- }
+}

@@ -18,7 +18,7 @@ X12 :
       _segmentQual : "41",
       _segment : {
         _id : "NM1",
-        _fields : [ "firstName", "lastName" ]
+        _unqualifiedFields : [ "firstName", "lastName" ]
       }
      }
     }

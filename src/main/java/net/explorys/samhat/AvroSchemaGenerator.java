@@ -155,8 +155,7 @@ public class AvroSchemaGenerator {
                     fields.add(fieldObject);
                 } else {
 
-                    // If a nested element has no children, it's a segment so either create a field, or in the case
-                    // of segment-field id's present in the fields attribute, create a record with the given fields
+                    // If a nested element has no children, it's a segment so create a field
                     NamedNodeMap fieldAttributes = child.getAttributes();
                     rawName = fieldAttributes.getNamedItem("name").getNodeValue();
                     ObjectNode fieldObject = mapper.createObjectNode();
